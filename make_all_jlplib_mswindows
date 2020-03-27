@@ -1,0 +1,33 @@
+#!/bin/sh
+cd jlp_cfitsio/distrib/cfitsio_3410_zip
+./configure
+make 
+cp libcfitsio.a c:/EXEC/Mylib/
+cd ../../..
+cd jlp_fits
+make -f Makefile.jlp_fits
+cd ../jlp_numeric
+make -f Makefile.jlp_numeric
+cd ../jlp_fftw3/fftw-3.3.8
+./configure
+make
+cp .libs/libfftw3.a c:/EXEC/Mylib/
+cd ../../..
+cd jlp_splot
+make -f Makefile.jlp_splot clear
+make -f Makefile.jlp_splot
+cd ../jlp_splot_idv
+make -f Makefile.jlp_splot_idv clear
+make -f Makefile.jlp_splot_idv
+cd ../jlp_wxplot
+make -f Makefile.jlp_wxplot clear
+make -f Makefile.jlp_wxplot
+cd ../jlp_gsegraf
+make -f Makefile.jlp_gsegraf clear
+make -f Makefile.jlp_gsegraf
+cd ../jlp_gseg_wxwid
+make -f Makefile.jlp_wxgseg clear
+make -f Makefile.jlp_wxgseg
+# For Linux:
+#cd ../jlp_x11plot
+#make -f Makefile.jlp_x11plot

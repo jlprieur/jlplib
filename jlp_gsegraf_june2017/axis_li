@@ -1,0 +1,3 @@
+    strcpy(axis_type0, p_plot_param->axis_type); 
+    strcpy(axis_scale0, p_plot_param->axis_scale); 
+    strcpy(plot_box0, p_plot_param->plot_box); 

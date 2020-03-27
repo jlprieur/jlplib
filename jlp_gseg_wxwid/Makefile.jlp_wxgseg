@@ -1,0 +1,81 @@
+##############################################################
+# Makefile for jlp_wxgseg.a 
+# Linux/Windows C++ version 
+#
+# JLP
+# Version: 12-06-2017
+#############################################################
+
+# To check it, type "echo %OS%" on Windows command terminal
+ifeq ($(OS),Windows_NT)
+JLP_SYSTEM=Windows
+else
+JLP_SYSTEM=unix
+endif
+
+#############################################################
+ifeq ($(JLP_SYSTEM),unix)
+
+mylib=$(JLPLIB)/jlp
+
+LOCAL_FLAGS=-I. -I../jlp_gsegraf/jlp_gsegraf_include \
+	-I../jlp_gnome -I../jlp_fits \
+	-I../jlp_splot -I../jlp_wxplot/jlp_wxplot_include -I../jlp_numeric \
+	-Dunix -DSYSTEM_FIVE
+
+# C++ flags to use with wxWidgets code 
+CPP_WXFLAGS := `wx-config --cppflags`
+WX_LIB := `wx-config --libs base,core`
+
+JLP_WXGSEG_LIB = $(mylib)/jlp_gseg_wxwid.a
+
+CPP = g++
+
+###############################################################
+## WINDOWS
+###############################################################
+else
+
+LOCAL_FLAGS=-I. -I..\\jlp_gsegraf\\jlp_gsegraf_include -I..\\jlp_wxplot\\jlp_wxplot_include -I..\\jlp_fits \
+	-I..\\jlp_splot -I..\\jlp_numeric \
+	-D$(JLP_SYSTEM)
+CPP_WXFLAGS= -IC:\\wxWidgets-3.1.1\\include -std=gnu++11 
+CPP = g++
+
+JLP_WXGSEG_LIB = c:\\EXEC\\MyLib\\jlp_gseg_wxwid.a
+endif
+
+DEP_WXGSEG = jlp_gseg_wxwid.h \
+	jlp_gseg_param_panel.h jlp_gseg_param_panel_id.h \
+	jlp_gseg_weight_dlg.h jlp_gsegset_defs.h jlp_gsegset_params.h \
+	jlp_gsegset_rw_ascii.h 
+SRC_WXGSEG = jlp_gseg_wxwid.cpp jlp_wxgseg_utils.cpp \
+	jlp_gseg_wxwid_draw.cpp jlp_gseg_wxwid_labels.cpp \
+	jlp_gseg_wxwid_image.cpp \
+	jlp_gseg_param_panel.cpp jlp_gseg_param_panel_menu.cpp \
+	jlp_gseg_param_panel_onclick.cpp jlp_gseg_weight_dlg.cpp \
+	jlp_gsegset_params.cpp jlp_gsegset_rw_ascii.cpp \
+	jlp_wxgseg_utils.cpp 
+OBJ_WXGSEG=$(SRC_WXGSEG:.cpp=.o)
+
+WX_INCL = -I. 
+
+.SUFFIXES:
+.SUFFIXES: .for .c .cpp .o $(SUFFIXES) 
+
+# For all cpp files: 
+.cpp.o:
+	$(CPP) -c $(CFLAGS) $(LOCAL_FLAGS)  $(CPP_WXFLAGS) $*.cpp
+	ar r $(JLP_WXGSEG_LIB) $*.o
+
+all: $(OBJ_WXGSEG)
+	ranlib $(JLP_WXGSEG_LIB)
+
+jlp_gseg_wxwid.o : jlp_gseg_wxwid.cpp $(DEP_WXGSEG) 
+
+clean: 
+	rm -f $(OBJ_WXGSEG)
+
+clear:
+	rm -f $(OBJ_WXGSEG)
+	rm -f $(JLP_WXGSEG_LIB)

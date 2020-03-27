@@ -1,0 +1,146 @@
+##############################################################
+# Makefile for jlp_splot_idv.a 
+# WINDOWS/Linux version 
+#
+# JLP
+# Version: 02-12-2014
+#############################################################
+
+# To check it, type "echo %OS%" on Windows command terminal
+ifeq ($(OS),Windows_NT)
+JLP_SYSTEM=Windows
+else
+JLP_SYSTEM=Linux
+endif 
+
+JLPLIB_DIR = ..
+CFITSIO_INCL_DIR=$(JLPLIB_DIR)/cfitsio/incl
+
+##############################################################
+ifeq ($(JLP_SYSTEM),Linux)
+
+#LOCAL_FLAGS=-Dunix -DSYSTEM_FIVE
+# To test Xdisp1 with jlp_splot_image:
+#LOCAL_FLAGS=-Dunix -DSYSTEM_FIVE -D$(JLP_SYSTEM) \
+#       -DJLP_USE_X11 -I../jlp_x11plot
+# Otherwise:
+# (malloc needed for Macintosh)
+LOCAL_FLAGS=-Dunix -DSYSTEM_FIVE -D$(JLP_SYSTEM) -I$(JLPLIB_DIR)/jlp_numeric \
+        -I$(JLPLIB_DIR)/jlp_fits \
+        -I$(JLPLIB_DIR)/jlp_gsegraf/jlp_gsegraf_include \
+        -I$(JLPLIB_DIR)/jlp_splot -I$(JLPLIB_DIR)/jlp_splot_idv \
+        -I$(CFITSIO_INCL_DIR) -I/dev/include/malloc
+#
+# Not used: -DJLP_USE_WXWID -I../jlp_wxplot_src
+#
+
+mylib=$(JLPLIB)/jlp
+
+CPP = g++
+
+PATHSEP1=/
+RM=rm -f
+
+else
+##############################################################
+# Windows operating system:
+##############################################################
+
+CPP = g++
+
+
+# Need two back slashes for Linux compatibility:
+PATHSEP1=\\
+
+PATHSEP=$(strip $(PATHSEP1))
+mylib=c:$(PATHSEP)EXEC$(PATHSEP)MyLib
+
+#In fact "rm -f" is known by "GNU make":
+# RM=del /F
+RM=rm -f
+
+LOCAL_FLAGS=-D$(JLP_SYSTEM) -I../jlp_numeric -I$(JLPLIB_DIR)/jlp_fits \
+        -I$(JLPLIB_DIR)/jlp_splot -I$(JLPLIB_DIR)/jlp_splot_idv \
+        -I$(JLPLIB_DIR)/jlp_gsegraf/jlp_gsegraf_include \
+        -I$(CFITSIO_INCL_DIR)
+
+endif
+
+#Remove extra blank before $(PATHSEP1):
+PATHSEP=$(strip $(PATHSEP1))
+EXEC_DIR = $(EXEC)$(PATHSEP)
+JLP_SPLOT_IDV_LIB = $(mylib)$(PATHSEP)jlp_splot_idv.a
+
+##############################################################
+
+MY_DEPENDENCIES = jlp_splot_idv.h jlp_splot_idv_prototypes.h 
+
+SRCC= $(wildcard *.cpp)
+OBJJ= $(SRC:.cpp=.o)
+
+OBJ =   splot_for.o jlp_splot.o jlp_splot1.o jlp_splot2.o \
+	jlp_splot_box.o jlp_splot_symbol.o jlp_splot_image.o \
+	jlp_newplot.o jlp_display1.o jlp_display2.o jlp_newplot100.o \
+	jlp_splot_lut1.o jlp_gdev_access.o jlp_graphfile.o \
+	jlp_plot1.o 
+
+SRCE=$(OBJ:.o=.cpp)
+
+
+.SUFFIXES:
+.SUFFIXES: .for .c .cpp .o $(SUFFIXES) 
+
+# For all cpp files: 
+.cpp.o:
+	$(CPP) -c $(CFLAGS) $(LOCAL_FLAGS) $(CPP_WXFLAGS) $*.cpp
+	ar r $(JLP_SPLOT_IDV_LIB) $*.o
+
+all: $(OBJ) 
+	@echo "OK: JLP_SYSTEM=$(JLP_SYSTEM)"
+	ranlib $(JLP_SPLOT_IDV_LIB)
+
+jlp_plot1.o : jlp_plot1.cpp jlp_plot1.h
+
+jlp_display1.o : jlp_display1.cpp $(MY_DEPENDENCIES)
+
+jlp_display2.o : jlp_display2.cpp $(MY_DEPENDENCIES)
+
+jlp_splot.o : jlp_splot.cpp $(MY_DEPENDENCIES)
+
+jlp_splot_symbol.o : jlp_splot_symbol.cpp $(MY_DEPENDENCIES)
+
+jlp_splot2.o : jlp_splot2.cpp $(MY_DEPENDENCIES)
+
+jlp_newplot.o : jlp_newplot.cpp $(MY_DEPENDENCIES)
+
+jlp_hpgl.o: jlp_hpgl.cpp $(MY_DEPENDENCIES)
+
+jlp_graphfile.o : jlp_graphfile.cpp $(MY_DEPENDENCIES)
+
+pst_set.o: pst_set.cpp $(MY_DEPENDENCIES)
+
+get1char.o : get1char.cpp $(MY_DEPENDENCIES)
+
+pstcp0.exe: $(JLP_SPLOT_IDV_LIB) pstcp0.cpp 
+	$(CPP) -c $(CFLAGS) pstcp0.cpp
+	$(CPP) $(CFLAGS) -o $(EXEC_DIR)pstcp0.exe pstcp0.o \
+	     $(JLIB) $(MIDLIB) $(XLIB) $(F77LIB) -lm
+
+jlp_test_splot.exe: $(JLP_SPLOT_IDV_LIB) jlp_test_splot.cpp 
+	$(CPP) -c $(CFLAGS) jlp_test_splot.cpp
+	$(CPP) $(CFLAGS) -o $(EXEC_DIR/jlp_test_splot.exe jlp_test_splot.o \
+	     $(JLIB) $(MIDLIB) $(XLIB) -lc $(F77LIB) -lm
+
+jlp_test_newplot.exe: $(JLP_SPLOT_IDV_LIB) jlp_test_newplot.cpp 
+	$(CPP) -c $(CFLAGS) jlp_test_newplot.cpp
+	$(CPP) $(CFLAGS) -o $(EXEC_DIR)jlp_test_newplot.exe jlp_test_newplot.o \
+	$(JLIB) $(MIDLIB) $(XLIB) -lc $(F77LIB) -lm
+#	$(F77) -o $(EXEC_DIR)jlp_test_newplot.exe jlp_test_newplot.o \
+#	$(JLIB) $(MIDLIB) $(XLIB) -lm
+
+clear: 
+	$(RM) $(OBJ) 
+	$(RM) $(JLP_SPLOT_IDV_LIB)
+
+clean:
+	$(RM) $(OBJ) 

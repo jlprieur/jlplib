@@ -1,0 +1,167 @@
+##############################################################
+# Makefile for jlp_numeric.a
+# WINDOWS/Linux version    
+#
+# JLP
+# Version: 02-12-2014
+#############################################################
+
+# To check it, type "echo %OS%" on Windows command terminal
+ifeq ($(OS),Windows_NT)
+JLP_SYSTEM=Windows
+else
+JLP_SYSTEM=Linux
+endif
+
+##############################################################
+ifeq ($(JLP_SYSTEM),Linux)
+
+CC=cc
+# Check if /* is in comments:
+# Check correct format in "printf" "scanf", ...
+# malloc needed for Macintosh
+CFLAGS=-g -Wcomment -Wformat -Wall -I. -I/dev/include/malloc 
+
+F77=gfortran
+# For SUSE 6.4: -fno_globals to avoid pb with MADRID() ...
+#FFLAGS=-g -fno-globals
+FFLAGS=-g -Wall
+
+mylib=$(JLPLIB)/jlp
+
+PATHSEP1=/
+
+OBJ = $(OBJ_C) $(OBJ_CPP) $(OBJ_F)
+
+else
+
+##############################################################
+# Windows operating system:
+##############################################################
+
+CC=gcc
+CFLAGS=-g -Wcomment -Wformat -Wall -I. 
+
+F77=gfortran
+FFLAGS=-g -Wall
+
+mylib=c:\\EXEC\\MyLib
+
+# Need two back slashes for Linux compatibility:
+PATHSEP1=\\
+
+OBJ = $(OBJ_C) $(OBJ_CPP) 
+
+endif
+
+INCL=
+
+#Remove extra blank before $(PATHSEP1):
+PATHSEP=$(strip $(PATHSEP1))
+
+FFT_DIR=.$(PATHSEP)fft_num$(PATHSEP)
+EXEC_DIR = $(EXEC)$(PATHSEP)
+JLP_NUM_LIB = $(mylib)$(PATHSEP)jlp_numeric.a
+
+OBJ_CPP = jlp_median.o rotate_set.o 
+
+OBJ_C = conju_grad.o jlp_sort.o fit_gauss.o \
+	fftw_set.o fourn.o recent_fft.o \
+	jlp_minimize.o jlp_random.o jlp_linear_regression.o \
+	matrix_set.o polyfit_utils.o
+
+OBJ_F = fft_fourn.o fft1_jlp.o fft2.o
+
+.SUFFIXES:
+.SUFFIXES: .for .o .c.cpp .exe $(SUFFIXES) 
+
+.for.o:
+	runs esoext1 -f $*.for
+	$(F77) $(FFLAGS) -c $*.f
+	ar r $(JLP_NUM_LIB) $*.o
+	rm $*.f
+
+.cpp.o:
+	$(CC) -c $(CFLAGS) $*.cpp
+	ar r $(JLP_NUM_LIB) $*.o
+
+.c.o:
+	$(CC) -c $(CFLAGS) $*.c
+	ar r $(JLP_NUM_LIB) $*.o
+
+.o.exe:
+	$(CC) -g -o $(EXEC_DIR)$*.exe $*.o $(JLIB) -lm
+	ar r $(JLP_NUM_LIB) $*.o
+
+.c.exe:
+	$(CC) -c $(CFLAGS) $*.c
+	$(CC) -g -o $(EXEC_DIR)$*.exe $*.o $(JLIB) -lm
+
+all: $(OBJ) 
+	ranlib $(JLP_NUM_LIB) 
+
+########
+
+conju_grad.o : conju_grad.c 
+
+fit_gauss.o : fit_gauss.c 
+
+jlp_sort.o: jlp_sort.c
+
+jlp_minimize.o: jlp_minimize.c
+
+jlp_random.o: jlp_random.c
+
+matrix_set.o: matrix_set.c
+
+polyfit_utils.o : polyfit_utils.c 
+
+rotate_set.o : rotate_set.cpp
+
+jlp_median.o : jlp_median.cpp
+
+############# FFT/C:
+
+fftw_set.o : $(FFT_DIR)fftw_set.c
+	$(CC) -c $(CFLAGS) $(INCL) -o fftw_set.o $(FFT_DIR)fftw_set.c
+	ar r $(JLP_NUM_LIB) fftw_set.o
+
+fourn.o : $(FFT_DIR)fourn.c
+	$(CC) -c $(CFLAGS) $(INCL) -o fourn.o $(FFT_DIR)fourn.c
+	ar r $(JLP_NUM_LIB) fourn.o
+
+recent_fft.o : $(FFT_DIR)recent_fft.c
+	$(CC) -c $(CFLAGS) $(INCL) -o recent_fft.o $(FFT_DIR)recent_fft.c
+	ar r $(JLP_NUM_LIB) recent_fft.o
+
+############## FFT Fortran:
+fft_fourn.o : $(FFT_DIR)fft_fourn.for
+	$(F77) -c $(FFLAGS) $(INCL) -o fft_fourn.o $(FFT_DIR)fft_fourn.for
+	ar r $(JLP_NUM_LIB) fft_fourn.o
+
+fft1_jlp.o : $(FFT_DIR)fft1_jlp.for
+	$(F77) -c $(FFLAGS) $(INCL) -o fft1_jlp.o $(FFT_DIR)fft1_jlp.for
+	ar r $(JLP_NUM_LIB) fft1_jlp.o
+
+fft2.o : $(FFT_DIR)fft2.for
+	$(F77) -c $(FFLAGS) $(INCL) -o fft2.o $(FFT_DIR)fft2.for
+	ar r $(JLP_NUM_LIB) fft2.o
+
+#####################################################################
+#### EXE:
+
+conju_grad.exe : conju_grad.c 
+	$(CC) -c $(CFLAGS) -DMAIN_PROG conju_grad.c
+	$(CC) -g -o $(EXEC_DIR)conju_grad.exe conju_grad.o $(JLIB) -lm
+
+mat1.exe: mat1.c
+	$(CC) -c $(CFLAGS) mat1.c
+	$(CC) -g -o $(EXEC_DIR)mat1.exe mat1.o $(JLIB) -lm
+
+#####################################################################
+
+clean:
+	rm -f $(OBJ)
+
+clear: clean 
+	rm -f $(JLP_NUM_LIB)

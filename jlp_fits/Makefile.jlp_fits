@@ -1,0 +1,97 @@
+##############################################################################
+# Makefile for jlp_fits.a 
+# Linux C++ version 
+#
+# JLP
+# Version: 03-12-2014
+##############################################################################
+
+# To check it, type "echo %OS%" on Windows command terminal
+ifeq ($(OS),Windows_NT)
+JLP_SYSTEM=Windows
+else
+JLP_SYSTEM=Linux
+endif
+
+##############################################################
+ifeq ($(JLP_SYSTEM),Linux)
+
+CPP = g++
+
+# Check if /* is in comments:
+# Check correct format in "printf" "scanf", ...
+# malloc is needed for Macintosh
+CPPFLAGS=-g -Dunix -Wcomment -Wformat -Wall -DLINUX \
+-I. -I$(CFITSIO_INCL_DIR) -I/usr/include/malloc
+
+mylib=$(JLPLIB)/jlp
+
+PATHSEP1=/
+
+else
+##############################################################
+# Windows operating system:
+##############################################################
+
+CPP=c++
+CPPFLAGS=-g -Wcomment -Wformat -Wall -I. -I$(CFITSIO_INCL_DIR)
+
+mylib=c:\\EXEC\\Mylib
+
+# Need two back slashes for Linux compatibility:
+PATHSEP1=\\
+
+endif
+
+#Remove extra blank before $(PATHSEP1):
+PATHSEP=$(strip $(PATHSEP1))
+
+EXEC_DIR = $(EXEC)$(PATHSEP)
+JLP_FITS_LIB = $(mylib)$(PATHSEP)jlp_fits.a
+CFITSIO_INCL_DIR=..$(PATHSEP)cfitsio$(PATHSEP)incl
+
+# jlp0_spectra_fitsio not working now ...
+#	jlp0_fits_utils.o jlp0_spectra_fitsio.o jlp_string.o
+OBJ =   jlp0_rdfitsio.o jlp0_rdfitsio_utils.o jlp_rdfitsio.o jlp_wrfitsio.o \
+	jlp0_wrfitsio.o jlp0_fits_utils.o jlp0_spectra_fitsio.o jlp_string.o \
+	jlp_time0.o
+
+SRCE=$(OBJ:.o=.cpp)
+
+.SUFFIXES:
+.SUFFIXES: .c .cpp .o $(SUFFIXES) 
+
+# For all cpp files: 
+.cpp.o:
+	$(CPP) -c $(CPPFLAGS) $*.cpp
+	ar r $(JLP_FITS_LIB) $*.o
+
+all: $(OBJ) 
+	ranlib $(JLP_FITS_LIB)
+
+jlp_time0.o : jlp_time0.cpp jlp_time0.h
+
+jlp_rdfitsio.o : jlp_rdfitsio.cpp jlp_fitsio.h
+
+jlp0_rdfitsio.o : jlp0_rdfitsio.cpp jlp_fitsio.h
+
+jlp0_fits_utils.o : jlp0_fits_utils.cpp jlp_fitsio.h
+
+jlp_wrfitsio.o : jlp_wrfitsio.cpp jlp_fitsio.h
+
+jlp0_wrfitsio.o : jlp0_wrfitsio.cpp jlp_fitsio.h
+
+jlp0_spectra_fitsio.o : jlp0_spectra_fitsio.cpp jlp_fitsio.h
+
+jlp_string.o : jlp_string.cpp  jlp_string.h 
+
+jlp_test_fits.exe: $(JLP_FITS_LIB) jlp_test_fits.cpp 
+	$(CPP) -c $(CFLAGS) jlp_test_fits.cpp
+	$(CPP) $(CFLAGS) -o $(EXEC_DIR)jlp_test_fits.exe jlp_test_fits.o \
+	     $(JLIB) $(FITSLIB) -lc $(F77LIB) -lm
+
+clear: clean
+	rm -f $(JLP_FITS_LIB)
+
+clean:
+	rm -f $(OBJ) 

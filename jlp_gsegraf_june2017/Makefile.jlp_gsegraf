@@ -1,0 +1,183 @@
+##############################################################
+# Makefile for jlp_gsegraf.a 
+# Linux/Windows C++ version 
+#
+# JLP
+# Version: 14-10-2016
+#############################################################
+
+# To check it, type "echo %OS%" on Windows command terminal
+ifeq ($(OS),Windows_NT)
+JLP_SYSTEM=Windows
+else
+JLP_SYSTEM=unix
+endif
+
+#############################################################
+ifeq ($(JLP_SYSTEM),unix)
+
+include $(JLPSRC)/jlp_make.mk
+
+mylib=$(JLPLIB)/jlp
+
+LOCAL_FLAGS=-I. -I../jlp_gseg_gnome -I../jlp_gsegraf \
+   -I../jlp_fits -I../jlp_splot -I../jlp_numeric \
+   -Dunix -DSYSTEM_FIVE -DJLP_USE_WXWID
+
+# C++ flags to use with wxWidgets code 
+CPP_WXFLAGS := `wx-config --cppflags`
+WX_LIB := `wx-config --libs base,core`
+
+JLP_GSEG_LIB = $(mylib)/jlp_gsegraf.a
+
+CPP = g++
+CC = gcc
+
+################################################################################
+################################################################################
+CFLAGS = -g 
+#COMPILE = $(CC) $(DEFS) -I. $(INCLUDES) $(AM_CPPFLAGS) \
+#	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+#LINK = $(CC) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+COMPILE = $(CC) -I. $(AM_CFLAGS) $(CFLAGS)
+
+LIBS = 
+# PREFIX, DATADIR, SYSCONFDIR are needed by GSEGrafix.cpp
+prefix = /usr
+AM_CFLAGS = \
+   `pkg-config --cflags libgnomeui-2.0` \
+   `pkg-config --cflags libgnomeprintui-2.2` \
+   -DPREFIX=\""$(prefix)"\" \
+   -DDATADIR=\""$(prefix)/share"\" \
+   -DSYSCONFDIR=\""$(prefix)/etc"\" \
+   -DLIBDIR=\""$(prefix)/lib"\"
+
+AM_LDFLAGS = \
+   `pkg-config --libs libgnomeui-2.0` \
+   `pkg-config --libs libgnomeprintui-2.2`
+
+###############################################################
+## WINDOWS
+###############################################################
+else
+
+LOCAL_FLAGS=-I. -I..\\jlp_fits -I..\\jlp_splot -I..\\jlp_numeric \
+	-D$(JLP_SYSTEM) -DJLP_USE_WXWID
+CPP_WXFLAGS= -IC:\\wxWidgets-3.0.2_32bits\\include -std=gnu++11 
+CPP = g++
+
+JLP_GSEG_LIB = c:\\EXEC\\MyLib\\jlp_gsegraf.a
+endif
+
+
+# Starting with the main routines of the JLP_Gseg class:
+gsegraf_SRC = jlp_Gsegraf.cpp \
+   jlp_Gsegraf_AxesTools.cpp \
+   jlp_Gsegraf_CheckParamData.cpp \
+   jlp_Gsegraf_DataTools.cpp \
+   jlp_Gsegraf_DrawGraph.cpp \
+   jlp_Gsegraf_PlotImage.cpp \
+   jlp_Gsegraf_DrawLines.cpp jlp_Gsegraf_DrawLines1.cpp \
+   jlp_Gsegraf_DrawSymbols1.cpp \
+   jlp_Gsegraf_DrawMiscel.cpp \
+   jlp_Gsegraf_InitializePlot.cpp \
+   jlp_Gsegraf_InitializeVariables.cpp \
+   jlp_Gsegraf_DrawHistogram.cpp \
+   jlp_Gsegraf_PolarPlot.cpp \
+   jlp_Gsegraf_PlotExtraEllipses.cpp \
+   jlp_Gsegraf_PlotExtraLines.cpp \
+   jlp_Gsegraf_PlotExtraRectangles.cpp \
+   jlp_Gsegraf_PlotExtraSymbols.cpp \
+   jlp_Gsegraf_DrawTheLegend.cpp \
+   jlp_Gsegraf_ReadParamFile.cpp \
+   jlp_Gsegraf_ReDrawPlot.cpp jlp_Gsegraf_UserFromDeviceCoord.cpp \
+   jlp_Gsegraf_ZoomIn.cpp jlp_Gsegraf_ZoomOut.cpp \
+   jlp_Gsegraf_DrawExtraText.cpp \
+   jlp_Gsegraf_ColorPlot2d.cpp \
+   jlp_Gsegraf_PlotData2d.cpp \
+   jlp_Gsegraf_ContourPlot2d.cpp \
+   jlp_Gsegraf_ColorPlot3d.cpp \
+   jlp_Gsegraf_ContourPlot3d.cpp \
+   jlp_Gsegraf_DrawContours3d.cpp \
+   jlp_Gsegraf_MeshPlot3d.cpp \
+   jlp_Gsegraf_PlotData3d.cpp \
+   jlp_Gsegraf_PlotInterp3d.cpp \
+   jlp_Gsegraf_PlotNormal3d.cpp \
+   jlp_Gsegraf_PlotPoints3d.cpp \
+\
+   jlp_GsegData.cpp \
+   jlp_GsegData_CheckParameters.cpp \
+   jlp_GsegData_ReadDataParamFile.cpp \
+   jlp_GsegData_ContourLabels.cpp \
+   jlp_GsegData_ComputeHistogram.cpp \
+   jlp_GsegData_Read2dFiles.cpp \
+   jlp_GsegData_Read3dFiles.cpp \
+   jlp_GsegData_DataMinMax.cpp \
+   jlp_GsegData_DataMinMax3d.cpp \
+   jlp_GsegData_ReadExtraLines.cpp \
+   jlp_GsegData_ReadExtraEllipses.cpp \
+   jlp_GsegData_ReadExtraRectangles.cpp \
+   jlp_GsegData_ReadExtraSymbols.cpp \
+   jlp_GsegData_ReadExtraText.cpp \
+   jlp_GsegData_ReadTheLegend.cpp \
+   jlp_GsegData_ReadImagePlotSettings.cpp \
+\
+   jlp_GsegAxes.cpp \
+   jlp_GsegAxes_Setup.cpp \
+   jlp_GsegAxes_ReadPlotParamFile.cpp \
+   jlp_GsegAxes_GetPlotSettings.cpp \
+   jlp_GsegAxes_AutoScale.cpp jlp_GsegAxes_AxesEqual.cpp \
+   jlp_GsegAxes_AxisLimits.cpp jlp_GsegAxes_ChangeAxesLimits.cpp \
+   jlp_GsegAxes_GetWindowCoords.cpp \
+   jlp_GsegAxes_DrawAxisLabels.cpp \
+   jlp_GsegAxes_DrawGrid2d.cpp \
+   jlp_GsegAxes_DrawGrid3d.cpp jlp_GsegAxes_DrawGrid.cpp \
+   jlp_GsegAxes_DrawGridLog.cpp \
+   jlp_GsegAxes_DrawBackgroundImage.cpp \
+   jlp_GsegAxes_DrawColorScale.cpp \
+   jlp_GsegAxes_DrawDateTime.cpp \
+   jlp_GsegAxes_DrawLabels3d.cpp \
+   jlp_GsegAxes_DrawPolarBox.cpp \
+   jlp_GsegAxes_DrawTickLabels2d.cpp jlp_GsegAxes_DrawTickLabelsLog.cpp \
+   jlp_GsegAxes_DrawTickLabels.cpp \
+   jlp_GsegAxes_DrawTickMarks.cpp jlp_GsegAxes_DrawTickMarks3d.cpp \
+   jlp_GsegAxes_Initialize3d.cpp \
+\
+   jlp_gseg_canvas_points.cpp \
+   jlp_gseg_pixbuf.cpp jlp_gseg_utils.cpp \
+   jlp_gseg_clip.cpp
+
+gsegraf_DEPS = jlp_gseg.h jlp_gsegraf.h jlp_gseg_axes.h \
+	jlp_gseg_data.h jlp_gseg_utils.h 
+gsegraf_OBJ=$(gsegraf_SRC:.cpp=.o)
+
+.SUFFIXES:
+.SUFFIXES: .cpp .c .o $(SUFFIXES)
+
+DEPDIR =.deps
+
+.c.o:
+	$(CC) -c $(AM_CFLAGS) $(CFLAGS) $(LOCAL_FLAGS) $*.c 
+########
+#	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Po -c -o $@ $<
+########
+#	source='$<' object='$@' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(COMPILE) -c $<
+########
+	ar r $(JLP_GSEG_LIB) $*.o
+
+# For all cpp files: 
+.cpp.o:
+	$(CPP) -c $(AM_CFLAGS) $(CFLAGS) $(LOCAL_FLAGS) $(CPP_WXFLAGS) $*.cpp
+	ar r $(JLP_GSEG_LIB) $*.o
+
+all : $(gsegraf_OBJ) 
+	ranlib $(JLP_GSEG_LIB)
+
+clean: 
+	rm -f $(gsegraf_OBJ)
+
+clear:
+	rm -f $(gsegraf_OBJ) 
+	rm -f $(JLP_GSEG_LIB)

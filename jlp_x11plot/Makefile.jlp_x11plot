@@ -1,0 +1,73 @@
+##############################################################################
+# Makefile for jlp_x11plot.a 
+# Linux C++ version 
+#
+# JLP
+# Version: 07-02-2013
+##############################################################################
+include $(JLPSRC)/jlp_make.mk
+
+INCL_SPLOT = -I../ -I../jlp_splot -I../jlp_splot_idv \
+ -I../jlp_wxplot -I../jlp_fits
+LOCAL_FLAGS=$(INCL_SPLOT) -Dunix -DSYSTEM_FIVE -DJLP_USE_X11 
+
+DEP_X11 = jlp_dialog.h jlp_gdlg.h 
+
+OBJ_X11 = jlp_gdev_x11.o jlp_gdev_x11_menu.o jlp_gdev_x11_static.o \
+        jlp_x11_utils.o
+
+SRCE_X11=$(OBJ_X11:.o=.cpp)
+
+OBJ_WIDGETS = jlp_gdlg_x11.o jlp_gdlg.o jlp_dialog.o \
+        jlp_splot2_set.o jlp_glogbk.o jlp_glogbk_x11.o jlp_logbook.o
+
+SRCE_WIDGETS=$(OBJ_WIDGETS:.o=.cpp)
+
+mylib=$(JLPLIB)/jlp
+
+.SUFFIXES:
+.SUFFIXES: .for .c .cpp .o $(SUFFIXES) 
+
+# For all cpp files: 
+.cpp.o:
+	$(CPP) -c $(CFLAGS) $(LOCAL_FLAGS) $*.cpp
+	ar r $(mylib)/jlp_x11plot.a $*.o
+
+all: $(OBJ_X11) $(OBJ_WIDGETS) 
+	ranlib $(mylib)/jlp_x11plot.a
+
+jlp_gdev_x11.o : jlp_gdev_x11.cpp jlp_gdev_x11.h $(DEP_X11)
+
+jlp_gdev_x11_menu.o : jlp_gdev_x11_menu.cpp jlp_gdev_x11.h $(DEP_X11)
+
+jlp_gdev_x11_static.o : jlp_gdev_x11_static.cpp jlp_gdev_x11.h $(DEP_X11)
+
+jlp_x11_utils.o : jlp_x11_utils.cpp jlp_x11_utils.h
+
+jlp_dialog.o : jlp_dialog.cpp jlp_gdlg_x11.h jlp_gdlg.h
+
+jlp_gdlg_x11.o : $(SRC_WIDGETS) jlp_gdlg.h jlp_gdlg_x11.h
+
+jlp_gdlg.o : $(SRC_WIDGETS) jlp_gdlg.h jlp_gdlg_x11.h
+
+jlp_logbook.o : $(SRC_WIDGETS) jlp_glogbk.h jlp_glogbk_x11.h
+
+jlp_glogbk.o : $(SRC_WIDGETS) jlp_glogbk.h
+
+jlp_glogbk_x11.o : $(SRC_WIDGETS) jlp_gdlg.h jlp_glogbk_x11.h
+
+###########################################################################
+# Fonts (needed fo X11) 
+###########################################################################
+fonts: hershey_oc.dat font_index read_fonts.cpp
+	$(CPP) -c $(CFLAGS) $(LOCAL_FLAGS) read_fonts.cpp
+	$(CPP) $(CFLAGS) -o $(EXEC)/read_fonts read_fonts.o -lm
+	$(EXEC)/read_fonts hershey_oc.dat font_index $(EXEC)/fonts.bin
+	rm $(EXEC)/read_fonts
+	rm read_fonts.o
+
+clear: clean
+	rm -f $(mylib)/jlp_x11plot.a
+
+clean:
+	rm -f $(OBJ_X11) $(OBJ_WIDGETS)

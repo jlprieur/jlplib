@@ -1,0 +1,777 @@
+/*******************************************************************************
+* jlp_GsegData_ReadDataParamFile.cpp
+* JLP_GsegData class
+*
+* JLP
+* Version 29/07/2017
+*******************************************************************************/
+#include <stdlib.h>         // exit()
+#include <ctype.h>          // isdigit()
+#include <math.h>
+#include "jlp_gseg_data.h"
+#include "jlp_gseg_plot_data1.h"   // jlp_gseg_copy_plot_data()
+
+//#define DEBUG
+
+/*************************************************************************
+* Load all plot data parameters from GSEG_PLOT_DATA structure
+*************************************************************************/
+int JLP_GsegData::SetPlotDataParamsFromGsegPlotData(GSEG_PLOT_DATA *gseg_pltdata0,
+                                                    const int nplots0)
+{
+int iplot;
+
+nplots1 = nplots0;
+
+// Initialize private variable:
+gsegdata_from_paramfile = 0;
+
+// Copy the input GSEG_PLOT_DAT structures to the private ones:
+// iplot index starts at 1 !
+for(iplot = 1; iplot <= nplots1; iplot++) {
+// From gseg_pltdata0 to gseg_plotdata1[iplot]
+ jlp_gseg_copy_plot_data(&(gseg_plotdata1[iplot]), gseg_pltdata0[iplot]);
+   }
+
+// Initialize data arays and data options
+ InitDataArraysAndOptions(nplots0);
+
+return(0);
+}
+/*************************************************************************
+* Read plot styles, extra lines, ellipses, etc
+*
+* INPUT:
+*  nplots0 : number of input (curves or image) files
+**************************************************************************/
+int JLP_GsegData::ReadComplementoryDataFromFile(char *param_filename,
+                                                int nplots0, int ncoords0,
+                                                char *axis_type0)
+{
+int status;
+
+// Read plot styles :
+ status = ReadPlotStylesFromFile(param_filename, axis_type0);
+ if(status != 0) return(-1);
+
+// Initialize data arays and data options
+ InitDataArraysAndOptions(nplots0);
+
+// Initialize data arays and data options from input parameter file
+ InitOptionsFromFile(param_filename);
+
+// Read complementary data in the parameter file:
+ ReadExtraLinesFromFile(param_filename, ncoords0);
+ ReadExtraEllipsesFromFile(param_filename);
+ ReadExtraRectanglesFromFile(param_filename);
+ ReadExtraSymbolsFromFile(param_filename, ncoords0);
+ ReadExtraTextFromFile(param_filename, axis_type0);
+ ReadTheLegendFromFile(param_filename, axis_type0);
+ ReadExtraImagePlotSettingsFromFile(param_filename, axis_type0);
+
+ if ( strcmp(axis_type0, "3d") == 0 ) {
+   ReadDataMinMax3dFromFile(param_filename);
+   ReadSymbolMinMax3dFromFile(param_filename);
+   } else {
+   ReadDataMinMaxFromFile(param_filename, axis_type0);
+   ReadSymbolMinMaxFromFile(param_filename, axis_type0);
+   }
+
+return(0);
+}
+/***************************************************************************
+* Read the file parameters from the parameter file
+*
+* OUTPUT:
+*  nplots0 : number of files that have been successfully checked for opening
+***************************************************************************/
+int JLP_GsegData::ReadFileParamsFromFile(char *param_filename, int *nplots0)
+{
+int iplot, iformat;
+unsigned int i1_str, i2_str, size;
+char line1[256], *string;
+const char *error_str[] =
+      { "Missing file_name data.",
+        "Missing file_format data.",
+        "Invalid or missing plot_type parameter." };
+FILE *fptr;
+
+*nplots0 = 0;
+
+// Initialize private variable:
+gsegdata_from_paramfile = 1;
+
+/* Open plot-parameter file */
+ if ( (fptr = fopen(param_filename, "r")) == NULL )
+    {
+    size = strlen("Cannot open plot-parameter file:\n")
+           + strlen(param_filename);
+    string = new char[size + 1];
+    sprintf(string, "%s%s", "Cannot open plot-parameter file:\n",
+            param_filename);
+    JLP_ErrorDialog(string);
+    delete[] string;
+    return(-1);
+    }
+
+/* Get number of file_name entries */
+ iplot = 0;
+ while ( fgets(line1, 256, fptr) != NULL )
+    {
+    if ( strncmp(line1, "file_name", 9) == 0 )
+       iplot++;
+    else if ( strncmp(line1, "#####", 5) == 0 )
+       break;
+    }
+
+// Save this value to private variable:
+ nplots1 = iplot;
+
+// Check if not too large:
+ if(nplots1 >= NPLOTS_MAXI -1 ) {
+   fprintf(stderr, "ReadFileParamsFromFile/Error: nplots=%d > maximum value=%d \n",
+           nplots1, NPLOTS_MAXI);
+   fclose(fptr);
+   return(-1);
+   }
+
+// If OK, save to output variable:
+ *nplots0 = nplots1;
+
+#ifdef DEBUG
+printf("ReadFileParamsFromFile/nplots1 = %d\n", nplots1);
+#endif
+
+/* Get number of file_format entries */
+ iformat = 0;
+ rewind(fptr);
+ while ( fgets(line1, 256, fptr) != NULL )
+    {
+    if ( strncmp(line1, "file_format", 11) == 0 )
+       iformat++;
+    else if ( strncmp(line1, "#####", 5) == 0 )
+       break;
+    if (iformat > nplots1 ) {
+       fprintf(stderr, "ReadFileParamsFromFile/Error: iformat=%d  > nplots1=%d \n",
+               iformat, nplots1);
+       break;
+       }
+    }
+
+/* Check if filename sizes are OK */
+ iplot = 0;
+ rewind(fptr);
+ while ( fgets(line1, 256, fptr) != NULL )
+   {
+   if ( strncmp(line1, "file_name", 9) == 0 )
+      {
+      iplot++;
+      size = strlen(&line1[9]);
+      if ( (string = gseg_get_string(string_get, &line1[9], &i1_str, &i2_str, &size, 0)) != NULL ) {
+// If OK, check if filename is no too large
+        if(size > MAXI_FILENAME_LENGTH) {
+          fprintf(stderr, "ReadFileParamsFromFile/Error: filename length=%d  > maximum value=%d \n",
+          size, MAXI_FILENAME_LENGTH);
+          fclose(fptr);
+          return(-1);
+          }
+        } else {
+          JLP_ErrorDialog(error_str[0]);
+          return(-1);
+        }
+      }
+      else if ( strncmp(line1, "#####", 5) == 0 ) {
+       break;
+      }
+   }
+
+/* Check if format sizes are OK */
+ iformat = 0;
+ rewind(fptr);
+ while ( fgets(line1, 256, fptr) != NULL )
+   {
+   if ( strncmp(line1, "file_format", 11) == 0 )
+     {
+     iformat++;
+     size = strlen(&line1[11]);
+     if ( (string = gseg_get_string(string_get, &line1[11], &i1_str, &i2_str, &size, 0)) != NULL ) {
+// If OK, check if format is no too large
+       if(size > MAXI_FORMAT_LENGTH) {
+         fprintf(stderr, "ReadFileParamsFromFile/Error: format length=%d  > maximum value=%d \n",
+         size, MAXI_FORMAT_LENGTH);
+         fclose(fptr);
+         return(-1);
+         }
+       } else {
+         JLP_ErrorDialog(error_str[1]);
+         return(-1);
+       }
+     }
+     else if ( strncmp(line1, "#####", 5) == 0 )
+        break;
+   }
+
+/* Read filenames and file formats */
+ iplot = 0;
+ rewind(fptr);
+ while ( fgets(line1, 256, fptr) != NULL )
+   {
+   if ( strncmp(line1, "file_name", 9) == 0 )
+      {
+      iplot++;
+      size = strlen(&line1[9]);
+        if ( (string = gseg_get_string(string_get, &line1[9], &i1_str, &i2_str, &size, 0)) != NULL )
+           {
+           strcpy(gseg_plotdata1[iplot].filename, string);
+           }
+      }
+    else if ( strncmp(line1, "file_format", 11) == 0 )
+      {
+      size = strlen(&line1[11]);
+      if ( (string = gseg_get_string(string_get, &line1[11], &i1_str, &i2_str, &size, 0)) != NULL )
+        {
+        strcpy(gseg_plotdata1[iplot].prnt_formats, string);
+        }
+      }
+    else if ( strncmp(line1, "#####", 5) == 0 )
+      break;
+   }
+
+
+return(0);
+}
+/***************************************************************************
+* Read the plot types from the parameter file
+* Read also ninterp and miscelaneous options
+***************************************************************************/
+int JLP_GsegData::ReadPlotTypesFromFile(char *param_filename)
+{
+int iplot, nval, ninterp0;
+unsigned int i1_str, i2_str, size;
+char line1[256], *string;
+FILE *fptr;
+const char *error_str[] = { "Invalid plot type.",
+                            "Invalid ninterp value." };
+
+   if ( nplots1 <= 0 ) return(-1);
+
+/* Open plot-parameter file */
+ if ( (fptr = fopen(param_filename, "r")) == NULL )
+    {
+    size = strlen("Cannot open plot-parameter file:\n")
+           + strlen(param_filename);
+    string = new char[size + 1];
+    sprintf(string, "%s%s", "Cannot open plot-parameter file:\n",
+            param_filename);
+    JLP_ErrorDialog(string);
+    delete[] string;
+    return(-1);
+    }
+
+/* Read plot types */
+iplot = 0;
+ while ( fgets(line1, 256, fptr) != NULL )
+   {
+    if ( strncmp(line1, "file_name", 9) == 0 )
+      {
+      iplot++;
+      }
+    else if ( strncmp(line1, "plot_type", 9) == 0 )
+      {
+      size = strlen(&line1[9]);
+      if ( (string = gseg_get_string(string_get, &line1[9],
+                                     &i1_str, &i2_str, &size, 0)) != NULL )
+       {
+/* gseg_plot_type:
+* 1="points"
+* 2="histogram"
+* 3="contour"
+* 4="color"
+* 5="mesh"
+*************************/
+        if (strcmp(string, "points") == 0)
+              gseg_plotdata1[iplot].gseg_plot_type = 1;
+        else if (strcmp(string, "histogram") == 0)
+              gseg_plotdata1[iplot].gseg_plot_type = 2;
+        else if (strcmp(string, "contour") == 0)
+              gseg_plotdata1[iplot].gseg_plot_type = 3;
+        else if (strcmp(string, "color") == 0)
+              gseg_plotdata1[iplot].gseg_plot_type = 4;
+        else if (strcmp(string, "mesh") == 0)
+              gseg_plotdata1[iplot].gseg_plot_type = 5;
+        else   {
+          fprintf(stderr, "ReadPlotTypesFromFile/ gseg_plot_type=%d\n",
+                  gseg_plotdata1[iplot].gseg_plot_type);
+          JLP_ErrorDialog(error_str[0]);
+          return(-1);
+          }
+       }
+     }
+// Number of interpolation intervalls (for 3d color plots)
+    else if ( strncmp(line1, "ninterp", 7) == 0 )
+       {
+         nval = sscanf(&line1[7], "%d", &ninterp0);
+         if ( nval == 1 ) {
+             gseg_plotdata1[iplot].ninterp = ninterp0;
+             } else {
+             JLP_ErrorDialog(error_str[1]);
+             return(-1);
+             }
+       }
+
+    else if ( strncmp(line1, "#####", 5) == 0 )
+         break;
+  } // EOF while
+
+fclose(fptr);
+
+return(0);
+}
+/***************************************************************************
+* Read the plot color settings from the parameter file
+***************************************************************************/
+int JLP_GsegData::ReadPlotColorSettingsFromFile(char *param_filename)
+{
+int iplot, nval1, nval2, status;
+unsigned int size;
+char line1[256], *string, char0;
+FILE *fptr;
+const char *error_str[] = { "Invalid plot type." };
+UINT32 contour_color0, mesh_color0;
+
+/* Open plot-parameter file */
+ if ( (fptr = fopen(param_filename, "r")) == NULL )
+    {
+    size = strlen("Cannot open plot-parameter file:\n")
+           + strlen(param_filename);
+    string = new char[size + 1];
+    sprintf(string, "%s%s", "Cannot open plot-parameter file:\n",
+            param_filename);
+    JLP_ErrorDialog(string);
+    delete[] string;
+    return(-1);
+    }
+
+iplot = 0;
+ while ( fgets(line1, 256, fptr) != NULL )
+   {
+    if ( strncmp(line1, "file_name", 9) == 0 )
+      {
+      iplot++;
+      }
+    else if ( strncmp(line1, "contour_color", 13) == 0 )
+      {
+       status = 1;
+       contour_color0 = 0;
+// First try to read hexadecimal (color) value :
+       nval1 = nval2 = 0;
+       nval1 = sscanf(&line1[13], " 0x%x",
+                   (unsigned int *) &contour_color0);
+       if(nval1 == 1) {
+         gseg_plotdata1[iplot].style_color1 = contour_color0;
+         status = 0;
+         } else {
+         nval2 = sscanf(&line1[13], " 0X%x", (unsigned int *) &contour_color0);
+         if(nval2 == 1) {
+           gseg_plotdata1[iplot].style_color1 = contour_color0;
+           status = 0;
+           }
+         }
+// Else try to read encoded (color) value as a character:
+        if ( nval1 != 1 && nval2 != 1)
+          {
+          nval1 = sscanf(&line1[13], " %c", &char0);
+// char0 compared to  color_string = "kaswrylqbfmogtnpx"
+          if (nval1 == 1 &&
+            (GetStyleColorFromStyleChar(char0, &contour_color0) == 0))
+            {
+/* Set specified color */
+            gseg_plotdata1[iplot].style_color1 = contour_color0;
+            status = 0;
+            }
+          }
+       if(status != 0)
+          {
+          fprintf(stderr, " contour_color0=%d\n", contour_color0);
+          JLP_ErrorDialog(error_str[1]);
+          return(-1);
+          }
+       }
+   else if ( strncmp(line1, "mesh_color", 10) == 0 )
+      {
+       status = 1;
+       mesh_color0 = 0;
+// First try to read hexadecimal (color) value :
+       nval1 = nval2 = 0;
+       nval1 = sscanf(&line1[10], " 0x%x",
+                   (unsigned int *) &mesh_color0);
+       if(nval1 == 1) {
+         gseg_plotdata1[iplot].mesh_color = mesh_color0;
+         } else {
+         nval2 = sscanf(&line1[10], " 0X%x",
+                     (unsigned int *) &mesh_color0);
+         if(nval2 == 1) gseg_plotdata1[iplot].mesh_color = mesh_color0;
+         }
+// Else try to read encoded (color) value as a character:
+       if ( nval1 != 1 && nval2 != 1)
+           {
+           nval1 = sscanf(&line1[10], " %c", &char0);
+// char0 compared to  color_string = "kaswrylqbfmogtnpx"
+           if (nval1 == 1 &&
+              (GetStyleColorFromStyleChar(char0, &mesh_color0) == 0))
+              {
+/* Set specified color */
+              gseg_plotdata1[iplot].mesh_color = mesh_color0;
+              status = 0;
+              }
+           }
+        if(status != 0)
+           {
+          fprintf(stderr, " mesh_color0=%d\n", mesh_color0);
+           JLP_ErrorDialog(error_str[2]);
+           return(-1);
+           }
+       }
+}
+
+fclose(fptr);
+
+return(0);
+}
+/***************************************************************************
+* Read the plot styles from the parameter file
+***************************************************************************/
+int JLP_GsegData::ReadPlotStylesFromFile(char *param_filename,
+                                         char *axis_type0)
+{
+int iplot, stylesize0, nval1, nval2, ifunc0;
+double zblack_0, zwhite_0;
+unsigned int i1_str, i2_str, size;
+char line1[256], *string, stylechar10, stylechar20;
+UINT32 stylecolor10, stylecolor20, alphacolor_0;
+FILE *fptr;
+
+/* Open plot-parameter file */
+ if ( (fptr = fopen(param_filename, "r")) == NULL )
+    {
+    size = strlen("Cannot open plot-parameter file:\n")
+           + strlen(param_filename);
+    string = new char[size + 1];
+    sprintf(string, "%s%s", "Cannot open plot-parameter file:\n",
+            param_filename);
+    JLP_ErrorDialog(string);
+    delete[] string;
+    return(-1);
+    }
+#ifdef DEBUG
+printf("ReadPlotStylesFromFile/ reading %s (with axis_type0=%s)\n",
+         param_filename, axis_type0);
+#endif
+
+/* Read plot styles */
+ iplot = 0;
+while ( fgets(line1, 256, fptr) != NULL )
+ {
+ if ( strncmp(line1, "file_name", 9) == 0 )
+    {
+     iplot++;
+    }
+ else if ( strncmp(line1, "plot_style", 10) == 0 )
+    {
+#ifdef DEBUG
+printf("ReadPlotStylesFromFile/plot_style iplot=%d, gseg_plot_type=%d (in line: \n%s\n",
+    iplot, gseg_plotdata1[iplot].gseg_plot_type, line1);
+#endif
+
+/* gseg_plot_type:
+* 1="points"
+* 2="histogram"
+* 3="contour"
+* 4="color"
+* 5="mesh"
+*************************/
+// 1="points" or 2="histogram"
+    if ( gseg_plotdata1[iplot].gseg_plot_type == 1 ||
+         gseg_plotdata1[iplot].gseg_plot_type == 2 )
+       {
+// First try to read style char and hexadecimal ( style color) values :
+       nval1 = nval2 = 0;
+       nval1 = sscanf(&line1[10], " %c 0x%x", &stylechar10,
+                   (unsigned int *) &stylecolor20);
+       if(nval1 != 2) {
+         nval2 = sscanf(&line1[10], " %c 0X%x", &stylechar10,
+                        (unsigned int *) &stylecolor20);
+         }
+#ifdef DEBUG
+         printf("ReadPlotStylesFromFile/nval1=%d nval2=%d (line1=%s)\n stylechar10=%c stylecolor20=%d\n",
+                nval1, nval2, &line1[10], stylechar10, stylecolor20);
+#endif
+       if((nval1 == 2 || nval2 == 2) && isdigit(stylechar10) == 0) {
+/****************************************************************************
+* 2d points and 3d points plot types
+* Read symbol character, hexadecimal color, and symbol size
+*
+* 2d histogram
+* Read symbol character and hexadecimal color
+****************************************************************************/
+        gseg_plotdata1[iplot].style_flag = 4;
+        gseg_plotdata1[iplot].style_char1 = stylechar10;
+        gseg_plotdata1[iplot].style_color2 = stylecolor20;
+// Set outline_colors_rgba et fill_colors_rgba
+        SetOutlineAndFillColorFromStyleColor(iplot, stylecolor20, stylechar10);
+// Check if it is a symbol and set default symbol size to 6 in that case
+// decode style_char1 in symbol_string1 ("cCtTsSiIpPhH")
+          if (DrawSymbol1OptionFromStyleChar1(iplot, &ifunc0) == 0 ) {
+            gseg_plotdata1[iplot].style_size = 6;
+// Get symbol size if present
+            if ( sscanf(&line1[10], " %*c %*c %d", &stylesize0) == 1 )
+                  gseg_plotdata1[iplot].style_size = abs(stylesize0);
+          }
+        }
+      else if(sscanf(&line1[10], " %c %c", &stylechar10, &stylechar20) == 2 &&
+// Set outline_colors_rgba et fill_colors_rgba
+         (SetOutlineAndFillColorFromStyleChars(iplot, &stylecolor20,
+                                               stylechar10, stylechar20) == 0))
+      {
+/****************************************************************************
+* 2d points and 3d points plot types
+* Read symbol character, color character, and symbol size
+*
+* 2d histogram
+* Read symbol character and color character
+****************************************************************************/
+#ifdef DEBUG
+         printf("ReadPlotStylesFromFile/(line1=%s)\n stylechar10=%c stylechar20=%c stylecolor20=%d\n",
+                        &line1[10], stylechar10, stylechar20, stylecolor20);
+#endif
+          gseg_plotdata1[iplot].style_flag = 2;
+          gseg_plotdata1[iplot].style_char1 = stylechar10;
+          gseg_plotdata1[iplot].style_color2 = stylecolor20;
+// Check if it is a symbol and set default symbol size to 6 in that case
+// decode style_char1 in symbol_string1 ("cCtTsSiIpPhH")
+          if (DrawSymbol1OptionFromStyleChar1(iplot, &ifunc0) == 0 ) {
+            gseg_plotdata1[iplot].style_size = 6;
+// Get symbol size if present
+            if ( sscanf(&line1[10], " %*c %*c %d", &stylesize0) == 1 )
+                  gseg_plotdata1[iplot].style_size = abs(stylesize0);
+          }
+       }
+       }
+
+// 4="color" and axis_type0="linear"
+       else if( (gseg_plotdata1[iplot].gseg_plot_type == 4)  &&
+                  strcmp(axis_type0, "linear") == 0 )
+           {
+           size = strlen(&line1[10]);
+           if ( (string = gseg_get_string(string_get, &line1[10],
+                                          &i1_str, &i2_str, &size, 0)) != NULL )
+              {
+/************************************************************
+* 2d color plot type
+* Read "nearest" or "bilinear" string and two decimal numbers
+************************************************************/
+              if ( strcmp(string, "nearest") == 0 )
+                 {
+                 gseg_plotdata1[iplot].style_flag = 9;
+                 if(sscanf(&string[size+1], " %lf %lf",
+                        &zblack_0, &zwhite_0) == 2)
+                    SetZBlackWhite(iplot, zblack_0, zwhite_0);
+                 }
+              else if ( strcmp(string, "bilinear") == 0 )
+                 {
+                 gseg_plotdata1[iplot].style_flag = 8;
+                 if(sscanf(&string[size+1], " %lf %lf",
+                        &zblack_0, &zwhite_0) == 2)
+                    SetZBlackWhite(iplot, zblack_0, zwhite_0);
+                 }
+              }
+           }
+
+/* gseg_plot_type:
+* 1="points"
+* 2="histogram"
+* 3="contour"
+* 4="color"
+* 5="mesh"
+*************************/
+// 3="contour" and axis_type0="linear"
+       else if( (gseg_plotdata1[iplot].gseg_plot_type == 3)  &&
+                  strcmp(axis_type0, "linear") == 0 )
+           {
+           size = strlen(&line1[10]);
+           if ( (string = gseg_get_string(string_get, &line1[10], &i1_str,
+                                          &i2_str, &size, 0)) != NULL )
+              {
+/************************************************************
+*
+* 2d contour plot type
+* Input with "auto" and size; set style_flag = 7 (variable colors)
+* Read "auto" string and line width
+*
+************************************************************/
+             if ( strcmp(string, "auto") == 0 )
+                 {
+                 gseg_plotdata1[iplot].style_flag = 7;
+/* Get line width */
+                 if ( sscanf(&string[size+1], " %d", &stylesize0) == 1 )
+                    gseg_plotdata1[iplot].style_size = abs(stylesize0);
+                 }
+              }
+
+           else if ( sscanf(&line1[10], " 0x%x",
+                      (unsigned int *) &stylecolor10) == 1 ||
+                     sscanf(&line1[10], " 0X%x",
+                      (unsigned int *) &stylecolor10) == 1 )
+              {
+/************************************************************
+*
+* 2d contour plot type
+* Input with an hexadecimal color; set style_flag = 3 (constant color)
+* Read hexadecimal color and line width
+*
+************************************************************/
+              gseg_plotdata1[iplot].style_flag = 3;
+// Get line width if present
+              if ( sscanf(&line1[10], " %*s %d", &stylesize0) == 1 )
+                 gseg_plotdata1[iplot].style_size = abs(stylesize0);
+              }
+
+           else if ( sscanf(&line1[10], " %c", &stylechar10) == 1 &&
+                (GetStyleColorFromStyleChar(stylechar10, &stylecolor10) == 0))
+              {
+/************************************************************
+* 2d contour plot type
+* Input with an encoded color; set style_flag = 1 (constant color)
+* Read color character and line width
+*
+************************************************************/
+              gseg_plotdata1[iplot].style_flag = 1;
+/* Get specified color */
+              gseg_plotdata1[iplot].style_color1 = stylecolor10;
+// Get line width if present
+              if ( sscanf(&line1[10], " %*c %d", &stylesize0) == 1 )
+                 gseg_plotdata1[iplot].style_size = abs(stylesize0);
+              }
+           }
+
+/* gseg_plot_type:
+* 1="points"
+* 2="histogram"
+* 3="contour"
+* 4="color"
+* 5="mesh"
+*************************/
+// 3="contour", 4="color", or 5="mesh" and axis_type0=="3d"
+       else if( (gseg_plotdata1[iplot].gseg_plot_type == 3 ||
+                 gseg_plotdata1[iplot].gseg_plot_type == 4 ||
+                 gseg_plotdata1[iplot].gseg_plot_type == 5 ) &&
+                  strcmp(axis_type0, "3d") == 0 )
+           {
+           size = strlen(&line1[10]);
+
+// 4="color" or 5="mesh"
+           if( (gseg_plotdata1[iplot].gseg_plot_type == 4 ||
+                gseg_plotdata1[iplot].gseg_plot_type == 5) &&
+                (string = gseg_get_string(string_get, &line1[10],
+                                      &i1_str, &i2_str, &size, 0)) != NULL )
+              {
+/************************************************************
+*
+* 3d color and 3d mesh plot types
+* Read "auto" string and color alpha value ("auto" leads to style_flag=7)
+*
+************************************************************/
+              if ( strcmp(string, "auto") == 0 )
+                 {
+                 gseg_plotdata1[iplot].style_flag = 7;
+                 if ( sscanf(&string[size+1], " 0x%x",
+                             (unsigned int *) &alphacolor_0) == 1 ||
+                      sscanf(&string[size+1], " 0X%x",
+                             (unsigned int *) &alphacolor_0) == 1 )
+                   {
+                   SetAlphaColor(iplot, alphacolor_0);
+                   }
+                 }
+              }
+           else if ( sscanf(&line1[10], " 0x%x 0x%x",
+                            (unsigned int *) &stylecolor10,
+                            (unsigned int *) &stylecolor20) == 2 ||
+                     sscanf(&line1[10], " 0X%x 0X%x",
+                            (unsigned int *) &stylecolor10,
+                            (unsigned int *) &stylecolor20) == 2 ||
+                     sscanf(&line1[10], " 0x%x 0X%x",
+                            (unsigned int *) &stylecolor10,
+                            (unsigned int *) &stylecolor20) == 2 ||
+                     sscanf(&line1[10], " 0X%x 0x%x",
+                            (unsigned int *) &stylecolor10,
+                            (unsigned int *) &stylecolor20) == 2 )
+             {
+/************************************************************
+*
+* 3d contour and 3d mesh plot types
+* Read two hexadecimal colors (leads to style_flag=6)
+*
+************************************************************/
+              gseg_plotdata1[iplot].style_color1 = stylecolor10;
+              gseg_plotdata1[iplot].style_color2 = stylecolor20;
+              gseg_plotdata1[iplot].style_flag = 6;
+              }
+
+           else if ( sscanf(&line1[10], " 0x%x %c",
+                            (unsigned int *) &stylecolor10,
+                            &stylechar20) == 2 ||
+                     sscanf(&line1[10], " 0X%x %c",
+                            (unsigned int *) &stylecolor10,
+                             &stylechar20) == 2 )
+              {
+/************************************************************
+*
+* 3d contour and 3d mesh plot types
+* Read hexadecimal color and color character (leads to style_flag=5)
+*
+************************************************************/
+              gseg_plotdata1[iplot].style_color1 = stylecolor10;
+              gseg_plotdata1[iplot].style_char2 = stylechar20;
+              gseg_plotdata1[iplot].style_flag = 5;
+              }
+
+           else if ( sscanf(&line1[10], " %c 0x%x", &stylechar10,
+                            (unsigned int *) &stylecolor20) == 2 ||
+                     sscanf(&line1[10], " %c 0X%x", &stylechar10,
+                            (unsigned int *) &stylecolor20) == 2 )
+              {
+/************************************************************
+*
+* 3d contour and 3d mesh plot types
+* Read color character and hexadecimal color (leads to style_flag=4)
+*
+************************************************************/
+              gseg_plotdata1[iplot].style_char1 = stylechar10;
+              gseg_plotdata1[iplot].style_color2 = stylecolor20;
+              gseg_plotdata1[iplot].style_flag = 4;
+              }
+
+           else if ( sscanf(&line1[10], " %c %c", &stylechar10,
+                            &stylechar20) == 2 )
+              {
+/************************************************************
+*
+* 3d contour and 3d mesh plot types
+* Read two color characters (leads to style_flag=2)
+*
+************************************************************/
+              gseg_plotdata1[iplot].style_char1 = stylechar10;
+              gseg_plotdata1[iplot].style_char2 = stylechar20;
+              gseg_plotdata1[iplot].style_flag = 2;
+              }
+           }
+
+        }
+
+     else if ( strncmp(line1, "#####", 5) == 0 )
+        break;
+     }
+fclose(fptr);
+
+return(0);
+}

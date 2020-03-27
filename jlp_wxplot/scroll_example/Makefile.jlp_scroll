@@ -1,0 +1,41 @@
+##################################################################
+# Makefile for wxwidget programs 
+#
+# JLP
+# Version 10-09-2017
+##################################################################
+include $(JLPSRC)/jlp_make.mk
+
+MY_INCL =
+# To obtain the cpp flags, run the program wx-config with
+# the --cppflags option:
+CXFLAGS = `wx-config --cppflags` $(MY_INCL)
+#
+# To obtain the list of the libraries, run the program wx-config with
+# the --lib option:
+WX_LIB := `wx-config --libs base,core`
+
+.SUFFIXES:
+.SUFFIXES: .o .cpp .exe $(SUFFIXES) 
+
+.cpp.o:
+	$(CPP) -c $(CXFLAGS) $*.cpp
+
+.o.exe:
+	$(CPP) -o $(EXEC)/$*.exe $*.o jlp_wx_scrolled1.o \
+	$(JLIB) $(MIDLIB) $(MATHLIB) $(F77LIB) $(WX_LIB) -lm
+
+.cpp.exe:
+	$(CPP) -c $(CXFLAGS) $*.cpp
+	$(CPP) -o $(EXEC)/$*.exe $*.o jlp_wx_scrolled1.o \
+	$(JLIB) $(MIDLIB) $(MATHLIB) $(F77LIB) $(WX_LIB) -lm
+
+all: jlp_scroll.exe jlp_wx_scrolled1.o
+
+jlp_scroll.exe : jlp_scroll.cpp jlp_wx_scrolled1.h jlp_wx_scrolled1.o 
+
+jlp_wx_scrolled1.o : jlp_wx_scrolled1.cpp jlp_wx_scrolled1.h
+
+clear:
+	rm -f *.o
+	rm -f $(EXEC)/jlp_scroll.exe

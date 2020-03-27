@@ -1,0 +1,64 @@
+######################################################################
+# Makefile for JLP FFT routines 
+#
+# JLP
+# Version 02-10-2014
+######################################################################
+include $(JLPSRC)/jlp_make.mk
+FFT_OBJ=fftw_set.o
+#DESTIN=$(JLPLIB)/math
+DESTIN=../lib
+
+
+.SUFFIXES: 
+.SUFFIXES: .o .c .for .exe $(SUFFIXES)
+
+.for.o:
+	runs esoext1 -f $*.for
+	$(F77) $(FFLAGS) -c $*.f
+	rm $*.f
+
+.for.exe:
+	runs esoext1 -f $*.for
+	$(F77) $(FFLAGS) -c $*.f
+	$(F77) -g -o $(EXEC)/$*.exe $*.o \
+	$(JLIB) $(MATHLIB) $(MIDLIB) $(F77LIB) -lm
+	rm $*.o
+
+.c.o:
+	cc -c $(CFLAGS) $*.c
+
+.c.exe:
+	cc -c $(CFLAGS) $*.c
+	cc -o $(EXEC)/$*.exe $*.o \
+	$(JLIB) $(MATHLIB) $(MIDLIB) $(F77LIB) $(XLIB) -lm
+
+all: $(FFT_OBJ)
+	ar r $(DESTIN)/jlp_numeric.a $(FFT_OBJ)
+
+fourn.o : fourn.c
+
+fft_jlp.o : fft_jlp.for 
+
+fft2.exe: fft2.for 
+
+fft2_norm.exe: fft2_norm.for
+
+fft1.exe: fft1.for
+
+fft1_jlp.exe: fft1_jlp.for fft_jlp.for
+
+fftw_set.o: fftw_set.c
+	cc -c $(CFLAGS) $*.c
+
+fftw_set.exe: fftw_set.c
+	cc -c -DMAIN_TEST $(CFLAGS) $*.c
+	cc -o $(EXEC)/$*.exe $*.o \
+	$(MATHLIB) $(JLIB) $(MIDLIB) $(F77LIB) $(XLIB) -lm
+
+nagfft.o : nagfft.for
+
+fft_nag.o : fft_nag.for
+
+clear:
+	rm -f $(FFT_OBJ)

@@ -1,0 +1,197 @@
+##############################################################
+# Makefile for jlp_gsegraf.a 
+# Linux/Windows C++ version 
+#
+# JLP
+# Version: 14-10-2016
+#############################################################
+
+# To check it, type "echo %OS%" on Windows command terminal
+ifeq ($(OS),Windows_NT)
+JLP_SYSTEM=Windows
+else
+JLP_SYSTEM=unix
+endif
+
+CFITSIO_INCL_DIR = ../cfitsio/incl
+
+#############################################################
+ifeq ($(JLP_SYSTEM),unix)
+
+mylib=$(JLPLIB)/jlp
+
+
+LOCAL_FLAGS=-I./jlp_gsegraf_include -I../jlp_gseg_gnome -I../jlp_gsegraf \
+   -I../jlp_fits -I../jlp_splot -I../jlp_numeric  -I$(CFITSIO_INCL_DIR) \
+   -Dunix -DSYSTEM_FIVE 
+
+JLP_GSEG_LIB = $(mylib)/jlp_gsegraf.a
+
+CPP = g++
+CC = gcc
+
+################################################################################
+################################################################################
+CFLAGS = -g -Wall 
+#COMPILE = $(CC) $(DEFS) -I. $(INCLUDES) $(AM_CPPFLAGS) \
+#	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+#LINK = $(CC) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+COMPILE = $(CC) -I. $(AM_CFLAGS) $(CFLAGS)
+
+LIBS = 
+# PREFIX, DATADIR, SYSCONFDIR are needed by GSEGrafix.cpp
+prefix = /usr
+AM_CFLAGS = \
+   `pkg-config --cflags libgnomeui-2.0` \
+   `pkg-config --cflags libgnomeprintui-2.2` \
+   -DPREFIX=\""$(prefix)"\" \
+   -DDATADIR=\""$(prefix)/share"\" \
+   -DSYSCONFDIR=\""$(prefix)/etc"\" \
+   -DLIBDIR=\""$(prefix)/lib"\"
+
+AM_LDFLAGS = \
+   `pkg-config --libs libgnomeui-2.0` \
+   `pkg-config --libs libgnomeprintui-2.2`
+
+###############################################################
+## WINDOWS
+###############################################################
+else
+
+CFLAGS = -g -Wall 
+LOCAL_FLAGS=-I.\\jlp_gsegraf_include -I..\\jlp_fits -I..\\jlp_splot -I..\\jlp_numeric \
+	-I$(CFITSIO_INCL_DIR) \
+	-D$(JLP_SYSTEM) 
+CPP = g++
+
+JLP_GSEG_LIB = c:\\EXEC\\MyLib\\jlp_gsegraf.a
+endif
+
+
+SRC_GSEG_PLOT_DIR = jlp_gsegraf_plot
+SRC_GSEG_DATA_DIR = jlp_gsegraf_data
+SRC_GSEG_AXES_DIR = jlp_gsegraf_axes
+OBJ_GSEG_PLOT_DIR = ../obj/gseg_plot
+OBJ_GSEG_DATA_DIR = ../obj/gseg_data
+OBJ_GSEG_AXES_DIR = ../obj/gseg_axes
+
+# Starting with the main routines of the JLP_Gseg class:
+GSEG_PLOT_SRC = jlp_Gsegraf.cpp \
+   jlp_Gsegraf_AxesTools.cpp \
+   jlp_Gsegraf_CheckParamData.cpp \
+   jlp_Gsegraf_ContourPlot2d.cpp \
+   jlp_Gsegraf_ColorPlot2d.cpp \
+   jlp_Gsegraf_ColorPlot3d.cpp \
+   jlp_Gsegraf_ContourPlot3d.cpp \
+   jlp_Gsegraf_DataTools.cpp \
+   jlp_Gsegraf_DrawContours3d.cpp \
+   jlp_Gsegraf_DrawExtraText.cpp \
+   jlp_Gsegraf_DrawGraph.cpp \
+   jlp_Gsegraf_DrawHistogram.cpp \
+   jlp_Gsegraf_DrawLines.cpp jlp_Gsegraf_DrawLines1.cpp \
+   jlp_Gsegraf_DrawMiscel.cpp \
+   jlp_Gsegraf_DrawSymbols1.cpp \
+   jlp_Gsegraf_DrawTheLegend.cpp \
+   jlp_Gsegraf_InitializePlot.cpp \
+   jlp_Gsegraf_InitializeVariables.cpp \
+   jlp_Gsegraf_MeshPlot3d.cpp \
+   jlp_Gsegraf_PolarPlot.cpp \
+   jlp_Gsegraf_PlotData2d.cpp \
+   jlp_Gsegraf_PlotExtraImage.cpp \
+   jlp_Gsegraf_PlotExtraEllipses.cpp \
+   jlp_Gsegraf_PlotExtraLines.cpp \
+   jlp_Gsegraf_PlotExtraRectangles.cpp \
+   jlp_Gsegraf_PlotExtraSymbols.cpp \
+   jlp_Gsegraf_PlotData3d.cpp \
+   jlp_Gsegraf_PlotInterp3d.cpp \
+   jlp_Gsegraf_PlotNormal3d.cpp \
+   jlp_Gsegraf_PlotPoints3d.cpp \
+   jlp_Gsegraf_ReadParamFile.cpp \
+   jlp_Gsegraf_ReDrawPlot.cpp jlp_Gsegraf_UserFromDeviceCoord.cpp \
+   jlp_Gsegraf_ZoomIn.cpp jlp_Gsegraf_ZoomOut.cpp \
+   jlp_gseg_canvas_points.cpp \
+   jlp_gseg_pixbuf.cpp jlp_gseg_utils.cpp \
+   jlp_gseg_plot_data1.cpp jlp_gseg_axis_data1.cpp \
+   jlp_gseg_clip.cpp
+
+GSEG_PLOT_SRC1 = $(foreach fnam, $(GSEG_PLOT_SRC), $(addprefix $(SRC_GSEG_PLOT_DIR)/, $(fnam)))
+
+# Routines handling the data of the JLP_Gseg class:
+GSEG_DATA_SRC = jlp_GsegData.cpp \
+   jlp_GsegData_CheckParameters.cpp \
+   jlp_GsegData_ReadDataParamFile.cpp \
+   jlp_GsegData_ContourLabels.cpp \
+   jlp_GsegData_ComputeHistogram.cpp \
+   jlp_GsegData_PlotStyles.cpp \
+   jlp_GsegData_ReadPlotDataFiles.cpp \
+   jlp_GsegData_Read2dFiles.cpp \
+   jlp_GsegData_Read3dFiles.cpp \
+   jlp_GsegData_DataMinMax.cpp \
+   jlp_GsegData_DataMinMax3d.cpp \
+   jlp_GsegData_ReadExtraLines.cpp \
+   jlp_GsegData_ReadExtraEllipses.cpp \
+   jlp_GsegData_ReadExtraRectangles.cpp \
+   jlp_GsegData_ReadExtraSymbols.cpp \
+   jlp_GsegData_ReadExtraText.cpp \
+   jlp_GsegData_ReadTheLegend.cpp \
+   jlp_GsegData_ReadExtraImagePlotSettings.cpp
+
+GSEG_DATA_SRC1 = $(foreach fnam, $(GSEG_DATA_SRC), $(addprefix $(SRC_GSEG_DATA_DIR)/, $(fnam)))
+
+# Routines handling the data of the JLP_Gseg class:
+# Routines handling the axes of the JLP_Gseg class:
+GSEG_AXES_SRC = jlp_GsegAxes.cpp \
+   jlp_GsegAxes_Setup.cpp \
+   jlp_GsegAxes_ReadPlotParamFile.cpp \
+   jlp_GsegAxes_GetPlotSettings.cpp \
+   jlp_GsegAxes_AutoScale.cpp jlp_GsegAxes_AxesEqual.cpp \
+   jlp_GsegAxes_AxisLimits.cpp jlp_GsegAxes_ChangeAxesLimits.cpp \
+   jlp_GsegAxes_GetWindowCoords.cpp \
+   jlp_GsegAxes_DrawAxisLabels.cpp \
+   jlp_GsegAxes_DrawGrid2d.cpp \
+   jlp_GsegAxes_DrawGrid3d.cpp jlp_GsegAxes_DrawGrid.cpp \
+   jlp_GsegAxes_DrawGridLog.cpp \
+   jlp_GsegAxes_DrawBackgroundImage.cpp \
+   jlp_GsegAxes_DrawColorScale.cpp \
+   jlp_GsegAxes_DrawDateTime.cpp \
+   jlp_GsegAxes_DrawLabels3d.cpp \
+   jlp_GsegAxes_DrawPolarBox.cpp \
+   jlp_GsegAxes_DrawTickLabels2d.cpp jlp_GsegAxes_DrawTickLabelsLog.cpp \
+   jlp_GsegAxes_DrawTickLabels.cpp \
+   jlp_GsegAxes_DrawTickMarks.cpp jlp_GsegAxes_DrawTickMarks3d.cpp \
+   jlp_GsegAxes_Initialize3d.cpp
+
+GSEG_AXES_SRC1 = $(foreach fnam, $(GSEG_AXES_SRC), $(addprefix $(SRC_GSEG_AXES_DIR)/, $(fnam)))
+
+GSEG_DEPS1 = jlp_gseg.h jlp_gsegraf.h jlp_gseg_axes.h \
+	jlp_gseg_data.h jlp_gseg_utils.h jlp_gseg_plot_data1.h 
+GSEG_DEPS = $(foreach fnam, $(GSEG_DEPS1), $(addprefix jlp_gsegraf_include/, $(fnam)))
+
+GSEG_PLOT_OBJ = $(addprefix $(OBJ_GSEG_PLOT_DIR)/, $(GSEG_PLOT_SRC:.cpp=.o))
+GSEG_DATA_OBJ = $(addprefix $(OBJ_GSEG_DATA_DIR)/, $(GSEG_DATA_SRC:.cpp=.o))
+GSEG_AXES_OBJ = $(addprefix $(OBJ_GSEG_AXES_DIR)/, $(GSEG_AXES_SRC:.cpp=.o))
+
+
+########################################################################
+$(OBJ_GSEG_PLOT_DIR)/%.o: $(SRC_GSEG_PLOT_DIR)/%.cpp $(GSEG_DEPS)
+	$(CPP) -c $(AM_CFLAGS) $(CFLAGS) $(LOCAL_FLAGS) $< -o $@
+	ar r $(JLP_GSEG_LIB) $@
+
+$(OBJ_GSEG_DATA_DIR)/%.o: $(SRC_GSEG_DATA_DIR)/%.cpp $(GSEG_DEPS)
+	$(CPP) -c $(AM_CFLAGS) $(CFLAGS) $(LOCAL_FLAGS) $< -o $@
+	ar r $(JLP_GSEG_LIB) $@
+
+$(OBJ_GSEG_AXES_DIR)/%.o: $(SRC_GSEG_AXES_DIR)/%.cpp $(GSEG_DEPS)
+	$(CPP) -c $(AM_CFLAGS) $(CFLAGS) $(LOCAL_FLAGS) $< -o $@
+	ar r $(JLP_GSEG_LIB) $@
+
+########################################################################
+all : $(GSEG_PLOT_OBJ) $(GSEG_DATA_OBJ) $(GSEG_AXES_OBJ) 
+	ranlib $(JLP_GSEG_LIB)
+
+clean: 
+	rm -f $(GSEG_PLOT_OBJ) $(GSEG_DATA_OBJ) $(GSEG_AXES_OBJ) 
+
+clear:
+	rm -f $(GSEG_PLOT_OBJ) $(GSEG_DATA_OBJ) $(GSEG_AXES_OBJ) 
+	rm -f $(JLP_GSEG_LIB)

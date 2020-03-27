@@ -1,0 +1,136 @@
+##############################################################
+# Makefile for jlp_wxplot.a 
+# Linux/Windows C++ version 
+#
+# JLP
+# Version: 02-09-2017
+#############################################################
+
+# To check it, type "echo %OS%" on Windows command terminal
+ifeq ($(OS),Windows_NT)
+JLP_SYSTEM=Windows
+else
+JLP_SYSTEM=unix
+endif
+
+CFITSIO_INCL_DIR  = ../cfitsio/incl
+
+#############################################################
+ifeq ($(JLP_SYSTEM),unix)
+
+CPP = g++
+CPPFLAGS=-g -Wcomment -Wformat -Wall  
+
+mylib=$(JLPLIB)/jlp
+
+LOCAL_FLAGS=-I./jlp_wxplot_include -I. \
+	-I../jlp_fits -I../jlp_splot -I../jlp_splot_idv \
+	-I../jlp_gsegraf/jlp_gsegraf_include -I../jlp_gseg_wxwid \
+	-I../jlp_numeric -I$(CFITSIO_INCL_DIR) \
+	-Dunix -DSYSTEM_FIVE -DJLP_USE_WXWID2
+
+# C++ flags to use with wxWidgets code 
+CPP_WXFLAGS := `wx-config --cppflags`
+WX_LIB := `wx-config --libs base,core`
+
+JLP_WXPLOT_LIB = $(mylib)/jlp_wxplot.a
+
+###############################################################
+## WINDOWS
+###############################################################
+else
+
+CPP = c++
+CPPFLAGS=-g -Wcomment -Wformat -Wall  
+
+LOCAL_FLAGS=-I./jlp_wxplot_include -I. \
+	-I..\\jlp_fits -I..\\jlp_splot \
+	-I../jlp_splot_idv -I../jlp_gsegraf/jlp_gsegraf_include \
+	-I../jlp_gseg_wxwid \
+	-I../jlp_numeric -I$(CFITSIO_INCL_DIR) \
+	-D$(JLP_SYSTEM) -DJLP_USE_WXWID2
+CPP_WXFLAGS= -IC:\\wxWidgets-3.1.1\\include -std=gnu++11 
+
+JLP_WXPLOT_LIB = c:\\EXEC\\MyLib\\jlp_wxplot.a
+endif
+
+SRC_WXP_GDEV_DIR = jlp_wxplot_gdev
+SRC_WXP_PLOT_DIR = jlp_wxplot_plot
+OBJ_WXP_PLOT_DIR = ../obj/wxp_plot
+OBJ_WXP_GDEV_DIR = ../obj/wxp_gdev
+
+DEP_WXWID = jlp_gdev_wxwid.h jlp_gdev_wxwid.h \
+	jlp_wx_loadimage1.h jlp_wx_gdproc.h jlp_wx_gdproc1.h \
+	jlp_gdev_wxwid.h jlp_wxgdev_popup_id.h \
+	jlp_wxgdev_popup_events.h jlp_wxgdev_labels.h jlp_wxgdev_shapes.h \
+	jlp_wx_pstcopy_dlg.h \
+	jlp_wxgseg_curve_dlg.h jlp_wxgseg_image_dlg.h jlp_wx_scrolled1.h \
+	jlp_wx_image1.h jlp_wx_video_panel.h jlp_wx_cursor.h
+
+# Graphic display (for Gdpisco and FileSpeck2):
+GD_DEP = jlp_wx_ipanel.h jlp_wx_ipanel_filters.h jlp_wx_ipanel_speckle.h \
+        jlp_wxspeckle1_dlg.h jlp_wxspeckle1_dlg_utils.h \
+        jlp_wxlogbook.h jlp_wx_ipanel_utils.h \
+	jlp_wx_gpanel.h jlp_wxgplot_dlg.h jlp_wxplot_frame.h \
+	jlp_wxplot_frame.h jlp_wxgdev_popup.h \
+	jlp_wx_gframe.h $(DEP_WXWID)
+GD_DEPS = $(foreach fnam, $(GD_DEP), $(addprefix jlp_wxplot_include/, $(fnam)))
+
+WXP_GDEV_SRC = jlp_gdev_wxwid_images.cpp jlp_gdev_wxwid_curves.cpp \
+	jlp_gdev_wxwid_events.cpp \
+	jlp_gdev_wxwid_utils.cpp jlp_gdev_wxwid_plot.cpp \
+	jlp_wxgdev_popup.cpp jlp_wxgdev_popup_create.cpp \
+	jlp_wxgdev_popup_update.cpp jlp_wxgdev_popup_onclick1.cpp \
+	jlp_wxgdev_popup_onclick2.cpp \
+	jlp_gdev_wxwid_popup_update.cpp jlp_gdev_wxwid_popup_onclick.cpp \
+	jlp_gdev_wxwid_canvas.cpp jlp_gdev_wxwid_labels.cpp \
+	jlp_gdev_wxwid_shapes.cpp jlp_wxgdev_shapes.cpp \
+	jlp_gdev_wxwid_process.cpp jlp_gdev_wxwid_save.cpp \
+	jlp_gdev_wxwid_gseg.cpp jlp_gdev_wxwid_gdev_param.cpp \
+	jlp_gdev_wxwid_metafile.cpp \
+	jlp_wxgdev_labels.cpp
+## WXP_GDEV_SRC1 := $(foreach fnam, $(WXP_GDEV_SRC), $(addprefix jlp_wxplot_gdev/, $(fnam)))
+## WXP_GDEV_OBJ=$(WXP_GDEV_SRC1:.cpp=.o)
+
+WXP_GDEV_OBJ = $(addprefix $(OBJ_WXP_GDEV_DIR)/, $(WXP_GDEV_SRC:.cpp=.o))
+
+WXP_PLOT_SRC = jlp_wx_gdproc.cpp jlp_wx_gdproc1.cpp  \
+	jlp_wx_pstcopy_dlg.cpp jlp_wx_patch_dlg.cpp \
+	jlp_wxgseg_curve_dlg.cpp jlp_wxgseg_image_dlg.cpp \
+	jlp_wx_scrolled1.cpp \
+	jlp_wx_video_panel.cpp jlp_wx_video_onclick.cpp \
+	jlp_wx_video_rw_fits.cpp jlp_wx_loadimage1.cpp \
+	jlp_wx_cursor.cpp jlp_wx_image1.cpp jlp_wxlogbook.cpp \
+	jlp_wx_ipanel.cpp jlp_wx_ipanel_filters.cpp jlp_wx_ipanel_process.cpp \
+	jlp_wx_ipanel_speckle.cpp jlp_wx_ipanel_utils.cpp \
+	jlp_wxspeckle1_dlg.cpp jlp_wxspeckle1_dlg_utils.cpp \
+	jlp_wx_gpanel.cpp jlp_wx_gpanel_plot.cpp jlp_wx_gpanel_menu.cpp \
+	jlp_wxgplot_dlg.cpp jlp_wxplot_frame.cpp jlp_wx_gframe.cpp 
+
+## WXP_PLOT_OBJ2=$(WXP_PLOT_SRC:.cpp=.o)
+## WXP_PLOT_OBJ = $(foreach fnam, $(WXP_PLOT_OBJ2), $(addprefix $(OBJ_WXP_PLOT_DIR)/, $(fnam)))
+
+WXP_PLOT_OBJ = $(addprefix $(OBJ_WXP_PLOT_DIR)/, $(WXP_PLOT_SRC:.cpp=.o))
+
+########################################################################
+all: $(WXP_PLOT_OBJ) $(WXP_GDEV_OBJ)
+	ranlib $(JLP_WXPLOT_LIB)
+
+########################################################################
+$(OBJ_WXP_GDEV_DIR)/%.o: $(SRC_WXP_GDEV_DIR)/%.cpp $(GD_DEPS)
+	$(CPP) -c $(CPPFLAGS) $(LOCAL_FLAGS) $(CPP_WXFLAGS) $< -o $@ 
+	ar r $(JLP_WXPLOT_LIB) $@
+
+$(OBJ_WXP_PLOT_DIR)/%.o: $(SRC_WXP_PLOT_DIR)/%.cpp $(GD_DEPS)
+	$(CPP) -c $(CPPFLAGS) $(LOCAL_FLAGS) $(CPP_WXFLAGS) $< -o $@ 
+# -o $(OBJ_WXP_PLOT_DIR)/$(@F)
+# $(@F) : filename of the target without directory:
+	ar r $(JLP_WXPLOT_LIB) $@
+
+########################################################################
+clean: 
+	rm -f $(WXP_PLOT_OBJ) $(WXP_GDEV_OBJ)
+
+clear:
+	rm -f $(WXP_PLOT_OBJ) $(WXP_GDEV_OBJ)
+	rm -f $(JLP_WXPLOT_LIB)

@@ -1,0 +1,44 @@
+https://en.wikipedia.org/wiki/Non-negative_least_squares
+
+Algorithms
+
+The first widely used algorithm for solving this problem is an active set method published by Lawson and Hanson in their 1974 book Solving Least Squares Problems.[5]:291 In pseudocode, this algorithm looks as follows:[1][2]
+
+    Inputs:
+        a real-valued matrix A of dimension m × n
+        a real-valued vector y of dimension m
+        a real value t, the tolerance for the stopping criterion
+    Initialize:
+        Set P = \empty_set 
+        Set R = {1, ..., n}
+        Set x to an all-zero vector of dimension n
+        Set w = A^T(y - Ax)
+    Main loop: while R \neq \empty_set and max(w) > t,
+        Let j be the index of max(w) in w
+        Add j to P
+        Remove j from R
+        Let A^P be A restricted to the variables included in P
+        Let S^P = ((A^P)^T A^P)^{-1} (A^P)^T y
+        While min(S^P) <= 0:
+            Let \alpha = min(\frac{x_i}{x_i - s_i}) for i in P where s_i <= 0
+            Set x to x + \alpha(s - x)
+            Move to R all indices j in P such that x_j = 0
+            Set s^P = ((A^P)^T A^P)^{-1} (A^P)^T y
+            Set s^R to zero
+        Set x to s
+        Set w to A^T(y - Ax)
+
+This algorithm takes a finite number of steps to reach a solution 
+and smoothly improves its candidate solution as it goes 
+(so it can find good approximate solutions when cut off at a reasonable number 
+of iterations), but is very slow in practice, owing largely to the computation 
+of the pseudoinverse ((A^P)^T A^P)^{-1}. Variants of this algorithm 
+are available in Matlab as the routine lsqnonneg[1] and in SciPy 
+as optimize.nnls.[8]
+
+Many improved algorithms have been suggested since 1974.[1] 
+Fast NNLS (FNNLS) is an optimized version of the Lawson--Hanson algorithm.[2] 
+Other algorithms include variants of Landweber's gradient descent method[9] 
+and coordinate-wise optimization based on the quadratic programming 
+problem above.[7]
+

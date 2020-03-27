@@ -1,0 +1,107 @@
+##############################################################
+# Makefile for jlp_gseg_gnome.a 
+# Linux/Windows C++ version 
+#
+# JLP
+# Version: 14-10-2016
+#############################################################
+
+# To check it, type "echo %OS%" on Windows command terminal
+ifeq ($(OS),Windows_NT)
+JLP_SYSTEM=Windows
+else
+JLP_SYSTEM=unix
+endif
+
+#############################################################
+ifeq ($(JLP_SYSTEM),unix)
+
+include $(JLPSRC)/jlp_make.mk
+
+mylib=$(JLPLIB)/jlp
+
+LOCAL_FLAGS=-I. -I../jlp_gsegraf -I../jlp_fits -I../jlp_splot -I../jlp_numeric \
+	-Dunix -DSYSTEM_FIVE -DJLP_USE_WXWID
+
+# C++ flags to use with wxWidgets code 
+CPP_WXFLAGS := `wx-config --cppflags`
+WX_LIB := `wx-config --libs base,core`
+
+JLP_GNOME_LIB = $(mylib)/jlp_gseg_gnome.a
+
+CPP = g++
+CC = gcc
+
+################################################################################
+################################################################################
+CFLAGS = -g 
+#COMPILE = $(CC) $(DEFS) -I. $(INCLUDES) $(AM_CPPFLAGS) \
+#	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+#LINK = $(CC) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+COMPILE = $(CC) -I. $(AM_CFLAGS) $(CFLAGS)
+
+LIBS = 
+# PREFIX, DATADIR, SYSCONFDIR are needed by GSEGrafix.cpp
+prefix = /usr
+AM_CFLAGS = \
+   `pkg-config --cflags libgnomeui-2.0` \
+   `pkg-config --cflags libgnomeprintui-2.2` \
+   -DPREFIX=\""$(prefix)"\" \
+   -DDATADIR=\""$(prefix)/share"\" \
+   -DSYSCONFDIR=\""$(prefix)/etc"\" \
+   -DLIBDIR=\""$(prefix)/lib"\"
+
+AM_LDFLAGS = \
+   `pkg-config --libs libgnomeui-2.0` \
+   `pkg-config --libs libgnomeprintui-2.2`
+
+###############################################################
+## WINDOWS
+###############################################################
+else
+
+LOCAL_FLAGS=-I. -I..\\jlp_fits -I..\\jlp_splot -I..\\jlp_numeric \
+	-D$(JLP_SYSTEM) -DJLP_USE_WXWID
+CPP_WXFLAGS= -IC:\\wxWidgets-3.0.2_32bits\\include -std=gnu++11 
+CPP = g++
+
+JLP_GNOME_LIB = c:\\EXEC\\MyLib\\jlp_gseg_gnome.a
+endif
+
+gseg_gnome_SRC = jlp_gseg_gnome.cpp \
+	jlp_gseg_gnome_draw.cpp jlp_gseg_gnome_labels.cpp \
+	jlp_gseg_gnome_image.cpp 
+
+gseg_DEPS = jlp_gseg.h jlp_gseg_defs.h jlp_gseg_gnome.h
+gseg_gnome_OBJ=$(gseg_gnome_SRC:.cpp=.o)
+
+.SUFFIXES:
+.SUFFIXES: .cpp .c .o $(SUFFIXES)
+
+DEPDIR =.deps
+
+.c.o:
+	$(CC) -c $(AM_CFLAGS) $(CFLAGS) $(LOCAL_FLAGS) $*.c 
+########
+#	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Po -c -o $@ $<
+########
+#	source='$<' object='$@' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(COMPILE) -c $<
+########
+	ar r $(JLP_GNOME_LIB) $*.o
+
+# For all cpp files: 
+.cpp.o:
+	$(CPP) -c $(AM_CFLAGS) $(CFLAGS) $(LOCAL_FLAGS) $(CPP_WXFLAGS) $*.cpp
+	ar r $(JLP_GNOME_LIB) $*.o
+
+all : $(gseg_gnome_OBJ) 
+	ranlib $(JLP_GNOME_LIB)
+
+clean: 
+	rm -f $(gseg_gnome_OBJ)
+
+clear:
+	rm -f $(gseg_gnome_OBJ)
+	rm -f $(JLP_GNOME_LIB)

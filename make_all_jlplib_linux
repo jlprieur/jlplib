@@ -1,0 +1,73 @@
+#!/bin/csh
+###########################################################################
+# .cshrc file to generate JLP libraries
+# needs environment variables to be set first (by jlp_definitions)
+# EXEC, JLPLIB
+# 
+# JLP 
+# Version 24/08/2019
+##########################################################################
+mkdir $JLPLIB/jlp/
+########################################
+# 1. Create $JLPLIB/jlp/libcfitsio.a
+########################################
+cd jlp_cfitsio/distrib/cfitsio_3410_tar
+./configure
+make 
+cp libcfitsio.a $JLPLIB/jlp/ 
+cd ../../..
+########################################
+# 2. Create $JLPLIB/jlp/jlp_fits.a
+########################################
+cd jlp_fits
+make -f Makefile.jlp_fits
+cd ..
+########################################
+# 3. Create $JLPLIB/jlp/jlp_numeric.a
+########################################
+cd jlp_numeric
+make -f Makefile.jlp_numeric
+cd ..
+########################################
+# 4. Create $JLPLIB/jlp/libfftw3.a
+########################################
+cd jlp_fftw3/fftw-3.3.8
+./configure
+make
+cp .libs/libfftw3.a $JLPLIB/math/ 
+cd ../..
+########################################
+# 5. Create $JLPLIB/jlp/jlp_splot.a
+########################################
+cd jlp_splot
+make -f Makefile.jlp_splot
+cd ..
+########################################
+# 6. Create $JLPLIB/jlp/jlp_splot_idv.a
+########################################
+cd jlp_splot_idv
+make -f Makefile.jlp_splot_idv
+cd ..
+########################################
+# 7. Create $JLPLIB/jlp/jlp_wxsplot.a
+########################################
+cd jlp_wxplot
+make -f Makefile.jlp_wxplot
+########################################
+# 8. Create $JLPLIB/jlp/jlp_gsegraf.a
+########################################
+cd jlp_gsegraf
+make -f Makefile.jlp_gsegraf
+########################################
+# 9. Create $JLPLIB/jlp/jlp_gseg_wxwid.a
+########################################
+cd jlp_gseg_wxwid
+make -f Makefile.jlp_wxgseg
+########################################
+# 10. Create $JLPLIB/jlp/jlp_x11plot.a (option that is not always needed)
+########################################
+goto end
+# For X11/Linux:
+cd ../jlp_x11plot
+make -f Makefile.jlp_x11plot
+end:
