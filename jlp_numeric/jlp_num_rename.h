@@ -52,7 +52,7 @@ SunOS
 #define JLP_RENAME_INCLUDED
 
 /* jlp_sort.c (in sourcc) */
-#define JLP_QSORT              RENAME_(jlp_qsort)
+#define JLP_QSORT_FLOAT        RENAME_(jlp_qsort_float)
 #define JLP_QSORT_DBLE         RENAME_(jlp_qsort_dble)
 #define JLP_QSORT_INDX         RENAME_(jlp_qsort_indx)
 #define JLP_QSORT_INDX_CHAR    RENAME_(jlp_qsort_indx_char)

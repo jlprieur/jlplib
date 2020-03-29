@@ -11,7 +11,7 @@
 int JLP_QSORT_INDX_CHAR(char *array, int *index, int *nn);
 int JLP_QSORT_INDX_DBLE(double *array, int *index, int *nn);
 int JLP_QSORT_INDX(float *array, int *index, int *nn);
-int JLP_QSORT(float *array, int *nn);
+int JLP_QSORT_FLOAT(float *array, int *nn);
 int JLP_QSORT_DBLE(double *array, int *nn);
 int JLP_MEDIAN(float *data, int npts, float *value);
 int JLP_MEDIAN_DBLE(double *data, int npts, double *value);
@@ -44,8 +44,8 @@ register int i, k;
 /* Calling sorting routine: */
    if(k == 0)
    {
-   JLP_QSORT(array, &nn);
-   printf("Output of JLP_QSORT is: \n");
+   JLP_QSORT_FLOAT(array, &nn);
+   printf("Output of JLP_QSORT_FLOAT is: \n");
    }
    else
    {
@@ -69,7 +69,7 @@ register int i, k;
 * OUTPUT:
 *  array[nn]: sorted array
 ****************************************************************************/
-int JLP_QSORT(float *array, int *nn)
+int JLP_QSORT_FLOAT(float *array, int *nn)
 {
 if(*nn < 2) return(0);
  qs(array, 0, (*nn)-1);

@@ -78,7 +78,7 @@ int JLP_CGRAD(double *aa, double *psi, double *phi, INT4 *nx1, INT4 *ny1,
 int JLP_QSORT_INDX_CHAR(char *array, int *length, int *index, int *nn);
 int JLP_QSORT_INDX_DBLE(double *array, int *index, int *nn);
 int JLP_QSORT_INDX(float *array, int *index, int *nn);
-int JLP_QSORT(float *array, int *nn);
+int JLP_QSORT_FLOAT(float *array, int *nn);
 int JLP_QSORT_DBLE(double *array, int *nn);
 int JLP_MEDIAN(float *data, int npts, float *value);
 int JLP_MEDIAN_DBLE(double *data, int npts, double *value);
@@ -132,7 +132,8 @@ int jlp_linear_regression(double *yy, double *xx, int npts, double *aa,
 int jlp_sort_array_intensities(double *image0, int nx0, int ny0,
                                double *out_intens, int n_intens);
 int JLP_QSORT_INDEX(double *array, int *index, int *nn);
-int JLP_QSORT(double *array, int *nn);
+int JLP_QSORT_DBLE(double *array, int *nn);
+int JLP_QSORT_DBLE(double *array, int *nn);
 
 // rotate.cpp
 int rotimage(double *ima, double *imarot, int nx, int ny, double angle);
