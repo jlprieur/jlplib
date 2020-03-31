@@ -567,7 +567,7 @@ int JLP_GDev::Curves_LoadPlotDataToPrivateFromLatex(char *latex_fname0,
                                           const char *pcolor0,
                                           const int reset_first0)
 {
-int i, status, npts0, error_bars0;
+int i, status, npts0, npts_size0, error_bars0;
 double w1, w2;
 char buffer[80];
 double *xplot0, *yplot0, *errorx0, *errory0;
@@ -583,9 +583,10 @@ int jlp_read_latex_table_file(char *latex_fname0, int icol_x, int icol_y,
                           double **yplot0, double **errorx0, double **errory0,
                           int *npts0, int *error_bars0);
 */
-   status = jlp_read_latex_table_file(latex_fname0, icol_x, icol_y,
+   status = jlp_read_latex_table_to_double(latex_fname0, icol_x, icol_y,
                                       icol_errx, icol_erry, &xplot0, &yplot0, 
-                                      &errorx0, &errory0, &npts0, &error_bars0);
+                                      &errorx0, &errory0, &npts_size0,
+                                      &npts0, &error_bars0);
 
 // Load data to private arrays:
  if((status == 0) && (npts0 > 0)) {

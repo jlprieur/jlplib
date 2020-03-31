@@ -350,7 +350,7 @@ int JLP_MEDIAN(float *data, int npts, float *value)
 {
 
 /* Sort the array in increasing order: */
-JLP_QSORT(data, &npts);
+JLP_QSORT_FLOAT(data, &npts);
 
 *value = data[npts/2];
 

@@ -35,6 +35,11 @@ void Plot1_Plot1SettingsFromFileParam(PLOT1_SETTINGS *pset0,
 void Plot1_Plot1FileDataFromFileParam(PLOT1_FILE_DATA *pfdat0, int n_pfdat0,
                                       PLOT1_FILE_PARAM *pfpar0, int n_pfpar0,
                                       int index);
+int Plot1_ReadLatexTableFileToFloat(char *in_latex_fname, int icol_x, 
+                                    int icol_y, int icol_xerr, int icol_yerr,
+                                    float **x_plot, float **y_plot,
+                                    float **xerr_plot, float **yerr_plot,
+                                    int *npts, int *error_bars);
 
 #ifdef __cplusplus
 }

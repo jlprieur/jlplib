@@ -14,7 +14,7 @@ JLP_SYSTEM=Linux
 endif 
 
 JLPLIB_DIR = ..
-CFITSIO_INCL_DIR=$(JLPLIB_DIR)/cfitsio/incl
+CFITSIO_INCL_DIR=$(JLPLIB_DIR)/jlp_cfitsio/incl
 
 ##############################################################
 ifeq ($(JLP_SYSTEM),Linux)
@@ -76,7 +76,8 @@ JLP_SPLOT_LIB = $(mylib)$(PATHSEP)jlp_splot.a
 MY_DEPENDENCIES = jlp_gdev.h jlp_gtext.h \
 	jlp_gdev_pst.h jlp_gdev_idv.h jlp_gdev_def.h \
 	jlp_itt1.h jlp_read_ascii_data.h jlp_read_latex_tables.h \
-	jlp_read_keywd.h jlp_plot1_def.h jlp_plot1_utils.h jlp_plot1_gsegraf.h 
+	jlp_read_keywd.h jlp_plot1_def.h \
+	jlp_plot1_utils.h jlp_plot1_gsegraf.h 
 
 SRCC= $(wildcard *.cpp)
 OBJJ= $(SRC:.cpp=.o)
@@ -89,7 +90,7 @@ OBJ =   jlp_random.o \
 	jlp_gdev_idv.o jlp_gdev_pst.o \
 	jlp_gdev_pstcopy.o jlp_process_curves.o jlp_process_images.o \
 	jlp_patch_set1.o jlp_read_ascii_data.o jlp_read_latex_tables.o \
-	jlp_read_keywd.o \
+	jlp_read_keywd.o jlp_plot1.o \
 	jlp_plot1_utils.o jlp_plot1_gsegraf.o jlp_gdev_gsegraf.o \
 	pst_set.o \
 	jlp_auto_scale1.o jlp_gdev_lut.o jlp_itt1.o

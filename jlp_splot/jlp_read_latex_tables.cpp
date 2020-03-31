@@ -3,7 +3,7 @@
 * to read files containing latex tables
 *
 *  JLP
-* Version 15-03-2019
+* Version 31-03-2020
 **********************************************************************/
 #include <stdio.h>
 #include <string.h>
@@ -27,20 +27,21 @@
 *  icol_y : number of the column containing yplot0
 *  icol_errorx : number of the column containing errorx0
 *  icol_errory : number of the column containing errory0
+*
+* OUTPUT:
 *  xplot0: array of the X data to be plotted
 *  yplot0: array of the Y data to be plotted
 *  errorx0: array of the X error data to be plotted
 *  errory0: array of the Y error data to be plotted
-*
-* OUTPUT:
+*  npts_size0 : size used to create the output arrays 
 *  npts0 : number of points (curve xplot0, yplot0)
 *  error_bars0 : flag set to one if error_bars
 *
 *************************************************************************/
-int jlp_read_latex_table_file(char *latex_fname0, int icol_x, int icol_y,
+int jlp_read_latex_table_to_double(char *latex_fname0, int icol_x, int icol_y,
                           int icol_errorx, int icol_errory, double **xplot0,
                           double **yplot0, double **errorx0, double **errory0,
-                          int *npts0, int *error_bars0)
+                          int *npts_size0, int *npts0, int *error_bars0)
 {
 char in_line[256];
 int iline, ipts, stat_x, stat_y, stat_xerr, stat_yerr, nlines, iverbose = 1;
@@ -52,7 +53,7 @@ char out_fname[64];
 FILE *fp_out;
   strcpy(out_fname, "out_file_debug.txt");
   if((fp_out = fopen(out_fname, "w")) == NULL) {
-    fprintf(stderr, "plot_latex/Fatal error opening output ascii file: %s\n",
+    fprintf(stderr, "read_latex_table/DEBUG/Fatal error opening output ascii file: %s\n",
            out_fname);
     return(-1);
    }
@@ -86,6 +87,7 @@ fclose(fp_in_latex);
 *errorx0 = new double[nlines];
 *errory0 = new double[nlines];
 *error_bars0 = 0;
+*npts_size0 = nlines;
 
 // Initialize error values to zero:
 for(ipts = 0; ipts < nlines; ipts++) {
@@ -145,6 +147,57 @@ fclose(fp_out);
 printf("jlp_read_latex_table/output debug file %s successfuly written\n", out_fname);
 #endif
 return(0);
+}
+
+/************************************************************************
+* Scan an input file containing a latex table
+*
+* INPUT:
+*  latex_fname0: filename of the input file containing the latex table
+*  icol_x : number of the column containing xplot0
+*  icol_y : number of the column containing yplot0
+*  icol_errorx : number of the column containing errorx0
+*  icol_errory : number of the column containing errory0
+*
+* OUTPUT:
+*  xplot0: array of the X data to be plotted
+*  yplot0: array of the Y data to be plotted
+*  errorx0: array of the X error data to be plotted
+*  errory0: array of the Y error data to be plotted
+*  npts_size0: size used to create the output arrays 
+*  npts0 : number of points (curve xplot0, yplot0)
+*  error_bars0 : flag set to one if error_bars
+*
+*************************************************************************/
+int jlp_read_latex_table_to_float(char *latex_fname0, int icol_x, int icol_y,
+                          int icol_errorx, int icol_errory, float **xplot0,
+                          float **yplot0, float **errorx0, float **errory0,
+                          int *npts_size0, int *npts0, int *error_bars0)
+{
+int status, i;
+double *xxplot0, *yyplot0, *errorxx0, *erroryy0;
+
+status = jlp_read_latex_table_to_double(latex_fname0, icol_x, icol_y,
+                          icol_errorx, icol_errory, &xxplot0,
+                          &yyplot0, &errorxx0, &erroryy0, 
+                          npts_size0, npts0, error_bars0);
+if(status == 0) {
+  *xplot0 = new float[*npts_size0];
+  *yplot0 = new float[*npts_size0];
+  *errorx0 = new float[*npts_size0];
+  *errory0 = new float[*npts_size0];
+  for(i = 0; i < *npts_size0; i++) {
+    *xplot0[i] = (float)(xxplot0[i]);
+    *yplot0[i] = (float)(yyplot0[i]);
+    *errorx0[i] = (float)(errorxx0[i]);
+    *errory0[i] = (float)(erroryy0[i]);
+    } // EOF i loop
+  delete[] xxplot0;
+  delete[] yyplot0;
+  delete[] errorxx0;
+  delete[] erroryy0;
+  } // EOF status==0 case 
+return(status);
 }
 /**************************************************************************
 * Read integer value in column #icol from b_data string
