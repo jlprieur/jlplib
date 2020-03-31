@@ -25,6 +25,7 @@ SunOS
 #define jlp_splot_idv_rename_
 
 /* Concatenates name and extension: */
+/******************
 #ifdef ibm
 #define RENAME(name) name
 #define RENAME_(name) name
@@ -34,19 +35,20 @@ SunOS
 #elif defined(linux) && !defined(gnu_f90)
 #define RENAME(name) name ## _
 #define RENAME_(name) name ## __
-/* Cambridge gcc and f90 in Solaris: */
-/* Debian gcc and f90 in Merate*/
+// Cambridge gcc and f90 in Solaris: 
+// Debian gcc and f90 in Merate
 #elif defined(solaris) || defined(gnu_f90)
 #define RENAME(name) name ## _
 #define RENAME_(name) name ## _
 #elif defined(Windows)
 #define RENAME(name) name ## _
 #define RENAME_(name) name ## __
-#else   /* Just in case JLP_SYSTEM is not defined */
+#else   // Just in case JLP_SYSTEM is not defined 
 // #pragma message('jlp_splot_idv_rename/WARNING: unknown operating system (-D$(JLP_SYSTEM) as a CFLAG): will go anyway')
 #define RENAME(name) name ## _
 #define RENAME_(name) name ## __
 #endif
+******************/
 
 /* Debian10 */
 #define RENAME(name) name ## _
