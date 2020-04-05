@@ -138,7 +138,8 @@ if(iplane == 0) printf("WARNING: iplane=0 I will read all the data !!!\n");
      exit(-1);
     }
 
-    if(f_array2 == NULL && i1_array2 == NULL && i2_array2 == NULL && i4_array2 == NULL) {
+    if(f_array2 == NULL || i1_array2 == NULL || i2_array2 == NULL 
+      || i4_array2 == NULL) {
      fprintf(stderr, "jlp0_rdfits/fatal error allocating memory, nel=%ld\n",nelements);
      *istatus = -2;  fits_close_file(fptr,&istat); return(-2);
      }
@@ -284,7 +285,8 @@ i4_array2 = NULL;
   return(-1);
   }
 
- if(f_array2 == NULL && i1_array2 == NULL && i2_array2 == NULL && i4_array2 == NULL) {
+ if(f_array2 == NULL || i1_array2 == NULL || i2_array2 == NULL 
+    || i4_array2 == NULL) {
    fprintf(stderr, "jlp0_rdfits/fatal error allocating memory, nel=%ld\n",nelements);
    *istatus = -2;  fits_close_file(fptr,&istat); return(-2);
   }

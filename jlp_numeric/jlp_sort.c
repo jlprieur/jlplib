@@ -21,7 +21,6 @@ static void qs_dble(double *array, int left, int right);
 static void qs2(float *array, int *index, int left, int right);
 static void qs2_dble(double *array, int *index, int left, int right);
 static  int qs2_char(char *array, int length, int *index, int left, int right);
-int JLP_strncmp(char *str1, char *str2, int len);
 
 /* #define MAIN_PROGRAM */
 #ifdef MAIN_PROGRAM 
@@ -189,9 +188,27 @@ return(0);
 int JLP_QSORT_INDX_CHAR(char *array, int *length, int *index, int *nn)
 {
 register int i;
+
+/* DEBUG
+int k;
+for(i = 0; i < *nn; i++) printf("Before: array[%d]=%s\n", i, &array[i*(*length)]);
+*/
+
 for(i = 0; i < *nn; i++) index[i] = i;
 if(*nn < 2) return(0);
  qs2_char(array, *length, index, 0, (*nn)-1);
+
+/* DEBUG
+for(k = 0; k < *nn; k++) {
+  for(i = 0; i < *nn; i++) {
+    if(k == index[i]) {
+    printf("After: k=%d array[%d]=%s\n", 
+                                k, index[i], &array[index[i]*(*length)]);
+     break;
+     }
+   }
+ }
+*/
 return(0);
 }
 /**************************************************************************
@@ -269,8 +286,11 @@ return;
 /*******************************************************************
 * The Quicksort, with index array 
 * Character string version: 
+* INPUT:
+*  i_left: smallest index of input array
+*  i_right: largest index of input array
 *******************************************************************/
-static int qs2_char(char *array, int length, int *index, int left, int right)
+static int qs2_char(char *array, int length, int *index, int i_left, int i_right)
 {
 register int i, j, jc;
 int iy, nlen = length;
@@ -281,17 +301,27 @@ if(length > 80) {
           length);
   exit(-1);
   }
-i = left; j = right;
+i = i_left; j = i_right;
 /* Take the element in the middle as reference to partition the array: */
-jc = (left+right)/2;
+jc = (i_left + i_right)/2;
 strncpy(x, &array[length * jc], length);
 x[length-1] = '\0';
 
 /* Put the elements < x to the left and those > x to the right: */ 
-/* nlen = 1: sort elements according to first letter only */
+/* When nlen = 1, sort elements according to first letter only */
 do {
-  while((JLP_strncmp(&array[length * i], x, nlen) < 0) && (i < right)) i++;
-  while((JLP_strncmp(x, &array[length * j], nlen) < 0)  && (j > left)) j--;
+/***************************************************************
+* To compare alphabetically two strings
+* if the first unmatched character of str1 < str2 return -1
+* if all nlen characters are equal str1 == str2 return 0
+* if the first unmatched character of str1 > str2 return 1
+***************************************************************/
+  while((strncmp(&array[length * i], x, nlen) < 0) && (i < i_right)) i++;
+  while((strncmp(x, &array[length * j], nlen) < 0)  && (j > i_left)) j--;
+/*
+  while((strcmp(&array[length * i], x) < 0) && (i < i_right)) i++;
+  while((strcmp(x, &array[length * j]) < 0)  && (j > i_left)) j--;
+*/
   if(i <= j) {
 /* Exchange array[i] and array[j]: */
     strncpy(y, &array[length * i], length);
@@ -307,32 +337,10 @@ do {
 } while(i <= j);
 
 /* Recursive calls: */
-if(left < j) qs2_char(array, length, index, left, j);
-if(i < right) qs2_char(array, length, index, i, right);
+if(i_left < j) qs2_char(array, length, index, i_left, j);
+if(i < i_right) qs2_char(array, length, index, i, i_right);
 
 return(0);
-}
-/***************************************************************
-* To compare alphabetically two strings
-* if str1 < str2 return -1
-* if str1 == str2 return 0
-* if str1 > str2 return 1
-***************************************************************/
-int JLP_strncmp(char *str1, char *str2, int len)
-{
-int i, ival = 0;
-
-for(i = 0; i < len; i++) {
-  if(str1[i] < str2[i]) {
-    ival = -1;
-    break;
-  } else if (str1[i] > str2[i]) {
-    ival = 1;
-    break;
-  } 
-}
-
-return(ival);
 }
 /**************************************************************************
 * JLP_MEDIAN 

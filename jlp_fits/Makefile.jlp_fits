@@ -48,7 +48,7 @@ PATHSEP=$(strip $(PATHSEP1))
 
 EXEC_DIR = $(EXEC)$(PATHSEP)
 JLP_FITS_LIB = $(mylib)$(PATHSEP)jlp_fits.a
-CFITSIO_INCL_DIR=..$(PATHSEP)cfitsio$(PATHSEP)incl
+CFITSIO_INCL_DIR=..$(PATHSEP)jlp_cfitsio$(PATHSEP)incl
 
 # jlp0_spectra_fitsio not working now ...
 #	jlp0_fits_utils.o jlp0_spectra_fitsio.o jlp_string.o

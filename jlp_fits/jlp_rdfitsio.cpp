@@ -5,7 +5,7 @@
 * Formats supported are : FITS 8,16,32,-32,-64
 * (i.e. 1-byte, 2-byte or 4-byte integer, and 4-byte or 8-byte float values)
 * JLP: comments and jlp_descriptors
-*
+* 
 * JLP
 * Version 02-10-2016
 ---------------------------------------------------------------------*/
