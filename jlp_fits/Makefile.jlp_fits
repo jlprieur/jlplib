@@ -52,9 +52,10 @@ CFITSIO_INCL_DIR=..$(PATHSEP)jlp_cfitsio$(PATHSEP)incl
 
 # jlp0_spectra_fitsio not working now ...
 #	jlp0_fits_utils.o jlp0_spectra_fitsio.o jlp_string.o
-OBJ =   jlp0_rdfitsio.o jlp0_rdfitsio_utils.o jlp_rdfitsio.o jlp_wrfitsio.o \
+OBJ =   jlp0_rdfitsio.o jlp0_rdfitsio_utils.o jlp_fitsio.o \
+	jlp_rdfitsio.o jlp_wrfitsio.o \
 	jlp0_wrfitsio.o jlp0_fits_utils.o jlp0_spectra_fitsio.o jlp_string.o \
-	jlp_time0.o
+	jlp0_fits_utils.o jlp_time0.o
 
 SRCE=$(OBJ:.o=.cpp)
 
@@ -70,6 +71,8 @@ all: $(OBJ)
 	ranlib $(JLP_FITS_LIB)
 
 jlp_time0.o : jlp_time0.cpp jlp_time0.h
+
+jlp_fitsio.o : jlp_fitsio.cpp jlp_fitsio.h
 
 jlp_rdfitsio.o : jlp_rdfitsio.cpp jlp_fitsio.h
 

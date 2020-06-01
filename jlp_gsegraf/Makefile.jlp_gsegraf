@@ -13,7 +13,7 @@ else
 JLP_SYSTEM=unix
 endif
 
-CFITSIO_INCL_DIR = ../cfitsio/incl
+CFITSIO_INCL_DIR = ../jlp_cfitsio/incl
 
 #############################################################
 ifeq ($(JLP_SYSTEM),unix)

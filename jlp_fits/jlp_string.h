@@ -12,10 +12,9 @@
 extern "C" {
 #endif
 
+int jlp_remove_ext_string(char *str1, int len1);
 int jlp_trim_string(char *str1, int len1);
-
 int jlp_compact_string(char *str1, int len1);
-
 int jlp_cleanup_string(char *str1, int len1);
 
 #ifdef __cplusplus

@@ -15,6 +15,24 @@
 #include "jlp_string.h"
 
 /************************************************************************
+* Removes the extension from a filename 
+*
+************************************************************************/
+int jlp_remove_ext_string(char *str1, int len1)
+{
+char *pc1;
+
+// Look for the first '.' if present:
+pc1 = str1; 
+str1[len1 - 1] = '\0';
+while(*pc1 && (*pc1 != '.')) {
+  pc1++;
+  }
+*pc1 = '\0';
+
+return (0);
+}
+/************************************************************************
 * Removes the trailing blanks 
 * and the extra-blanks (more than one successive blanks) contained in string
 *

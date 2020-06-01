@@ -52,6 +52,10 @@ int JLP_julian_epoch(double aa, int mm, int idd, double time, double *j_date);
 int JLP_besselian_to_julian_epoch(double b_date, double *j_date);
 
 /********************* jlp_rdfitsio.cpp */
+int JLP_LoadFITSImage(char *filename1, char *comments1,
+                      double **dble_image1, int *nx1, int *ny1);
+int JLP_SaveFITSImage(char *filename1, char *comments1,
+                      double *dble_image1, int nx1, int ny1);
 int jlp1_open_fits_file0(char *infile, fitsfile **fptr, char *err_mess);
 int JLP_RDFITS_2D_UINT1(UINT1 **array1, int *nx1, int *ny1, int *nz1,
                         int iplane, char *infile, char *comments, char *err_mess);

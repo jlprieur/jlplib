@@ -55,29 +55,23 @@ JLP_INQUIFMT();
       printf(" Output MIDAS/FITS file : ");
       scanf("%s",outfile);
 
-#if DEBUG
+/*
     printf(" Input FITS file   : >%s< \n",infile);
     printf(" Output FITSfile : >%s< \n",outfile);
-#endif
+*/
 
 /* Set dflag to -1, since no descriptors are wanted */
 idim = 1000; dflag = -1;
 JLP_RDFITS(array,&nx1,&ny1,&idim,infile,comments,jlp_descr,&dflag,&istatus);
-#if DEBUG
  printf(" JLP_RDFITS/istatus = %d \n",istatus);
-#endif
 
-#if DEBUG
  printf(" nx = %d, ny = %d \n",nx1,ny1);
  printf(" comments: %s \n",comments);
  printf(" image[0...20]: \n");
  for(i = 0; i < 20; i++) printf(" %f ",array[i]);
-#endif
 
  JLP_WRITEIMAG(array,&nx1,&ny1,&idim,outfile,comments);
-#if DEBUG
  printf(" JLP_WRFITS/istatus = %d \n",istatus);
-#endif
 
 JLP_END();
 }

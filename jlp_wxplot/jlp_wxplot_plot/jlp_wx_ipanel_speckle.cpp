@@ -393,7 +393,8 @@ if(n_edges <= 3 || maxval == 0.) {
 /* Test of quality */
 if(*negval_percent > 33. || ABS(mean_edges/maxval) > 0.18) {
   *bad_fit = 1;
-  wxLogError(_T("WARNING: the background could not be estimated properly\n"));
+// Do not display a warning (to avoid problems with automatic processing)
+//  wxLogError(_T("WARNING: the background could not be estimated properly\n"));
 } else {
   *bad_fit = 0;
 }

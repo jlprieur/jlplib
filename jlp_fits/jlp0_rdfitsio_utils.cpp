@@ -123,26 +123,40 @@ if(iplane == 0) printf("WARNING: iplane=0 I will read all the data !!!\n");
 
 /* Allocate memory space: */
     if(bitpix < 0) {
-       f_array2 = (float *) malloc(nelements * sizeof(float));
+      f_array2 = (float *) malloc(nelements * sizeof(float));
+      if(f_array2 == NULL) {
+        fprintf(stderr, "jlp0_rdfits/fatal error allocating memory, nel=%ld\n",
+                 nelements);
+         *istatus = -2;  fits_close_file(fptr,&istat); return(-2);
+       }
     } else if(bitpix == 8){
 // JLP2015: Allocate more space than needed:
-       i1_array2 = (INT1 *) malloc(nelements * sizeof(INT4));
+      i1_array2 = (INT1 *) malloc(nelements * sizeof(INT4));
+      if(i1_array2 == NULL) {
+        fprintf(stderr, "jlp0_rdfits/fatal error allocating memory, nel=%ld\n",
+                 nelements);
+         *istatus = -2;  fits_close_file(fptr,&istat); return(-2);
+       }
     } else if(bitpix == 16){
 // JLP2009: Allocate more space than needed:
-       i2_array2 = (INT2 *) malloc(nelements * sizeof(INT4));
+      i2_array2 = (INT2 *) malloc(nelements * sizeof(INT4));
+      if(i2_array2 == NULL) {
+        fprintf(stderr, "jlp0_rdfits/fatal error allocating memory, nel=%ld\n",
+                 nelements);
+         *istatus = -2;  fits_close_file(fptr,&istat); return(-2);
+       }
     } else if(bitpix == 32){
-       i4_array2 = (INT4 *) malloc(nelements * sizeof(INT4));
+      i4_array2 = (INT4 *) malloc(nelements * sizeof(INT4));
+      if(i4_array2 == NULL) {
+        fprintf(stderr, "jlp0_rdfits/fatal error allocating memory, nel=%ld\n",
+                 nelements);
+         *istatus = -2;  fits_close_file(fptr,&istat); return(-2);
+       }
     } else {
      fprintf(stderr, "jlp0_rdfits_2d_data_dble/Fatal error: bitpix=%d is unsupported!\n",
              bitpix);
      exit(-1);
     }
-
-    if(f_array2 == NULL || i1_array2 == NULL || i2_array2 == NULL 
-      || i4_array2 == NULL) {
-     fprintf(stderr, "jlp0_rdfits/fatal error allocating memory, nel=%ld\n",nelements);
-     *istatus = -2;  fits_close_file(fptr,&istat); return(-2);
-     }
 
 #ifdef DEBUG
    printf(" nx=%d, ny=%d, nz=%d bitpix=%d nelements=%ld \n",
