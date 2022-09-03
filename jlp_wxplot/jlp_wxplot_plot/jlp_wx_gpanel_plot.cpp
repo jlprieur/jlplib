@@ -24,16 +24,7 @@ if(initialized == 1234) {
   Drawing_wxgdev->UpdateCursor(x_value);
   }
 }
-/***************************************************************************
-* ClearDrawingDisplay (for curves) 
-* (called by external routines)
-***************************************************************************/
-void JLP_wxGraphicPanel::wxGP_ClearDrawingDisplay() 
-{
-
-if(initialized == 1234) Drawing_wxgdev->ClearDrawingDisplay();
-
-}
+#ifdef ZZZ
 /***************************************************************************
 * PlotToDrawingDisplay (for curves) 
 * (called by external routines)
@@ -43,63 +34,6 @@ void JLP_wxGraphicPanel::wxGP_PlotToDrawingDisplay()
 
 if(initialized == 1234) Drawing_wxgdev->PlotToDrawingDisplay();
 
-}
-/***************************************************************************
-* LoadPlotDataToPrivateParameters0 (for curves)
-* Load data to xplot and yplot arrays
-* (called by external routines)
-*
-* INPUT: 
-*  xplot, yplot: arrays of the user coordinates of the points to be plotted
-*  reset_first: flag used to reset all private arrays
-*                (if 1: erase all old data; if 0: add this data to old data)
-*
-***************************************************************************/
-int JLP_wxGraphicPanel::wxGP_LoadPlotDataToPrivateParameters0(double *xplot, 
-                                         double *yplot, const int npts, 
-                                         const char *nchar_type, 
-                                         const char *pcolor, 
-                                         const char *plot_fname, 
-                                         const int reset_first)
-{
-int status = -1;
-
-if(initialized == 1234) {
-  status = Drawing_wxgdev->Curves_LoadPlotDataToPrivateParameters0(xplot, 
-                                              yplot, npts, nchar_type, 
-                                              pcolor, plot_fname, reset_first);
-  }
-
-return(status);
-}
-/***************************************************************************
-* LoadPlotDataToPrivateParameters (for curves)
-* Load data to xplot and yplot arrays
-* (called by external routines)
-*
-* INPUT: 
-*  xplot, yplot: arrays of the user coordinates of the points to be plotted
-*  reset_first: flag used to reset all private arrays
-*                (if 1: erase all old data; if 0: add this data to old data)
-*
-***************************************************************************/
-int JLP_wxGraphicPanel::wxGP_LoadPlotDataToPrivateParameters(double *xplot, 
-                                         double *yplot, double *errorx, 
-                                         double *errory, const int npts, 
-                                         const char *nchar_type, 
-                                         const char *pcolor, 
-                                         const char *plot_fname, 
-                                         const int reset_first)
-{
-int status = -1;
-
-if(initialized == 1234) {
-  status = Drawing_wxgdev->Curves_LoadPlotDataToPrivateParameters(xplot, yplot, 
-                                              errorx, errory, npts, nchar_type, 
-                                              pcolor, plot_fname, reset_first);
-  }
-
-return(status);
 }
 /***************************************************************************
 * LoadPlotLabel
@@ -189,27 +123,4 @@ if(initialized == 1234) {
 
 return(status);
 }
-/*************************************************************
-* Load plot the settings that will be used by PlotDisplay()  (for curves)
-* (generally called by external routines)
-*************************************************************/
-int JLP_wxGraphicPanel::wxGP_LoadPlotSettings(const char *xlabel, const char *ylabel,
-                                         const char *title, 
-                                         const int xgrid_is_wanted, 
-                                         const int ygrid_is_wanted, 
-                                         const int jlp_axes_are_wanted,
-                                         const int iplan, const double x1,
-                                         const double x2, const double y1,
-                                         const double y2)
-{
-int status = -1;
-
-if(initialized == 1234) {
-  status = Drawing_wxgdev->Curves_LoadPlotSettings(xlabel, ylabel, title, 
-                                           xgrid_is_wanted, ygrid_is_wanted,
-                                           jlp_axes_are_wanted, iplan, 
-                                           x1, x2, y1, y2);
-  }
-
-return(status);
-}
+#endif

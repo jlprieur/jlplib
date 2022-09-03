@@ -20,38 +20,45 @@
 ************************************************************************/
 void JLP_wxGDev_Popup::OnSetCursor(wxCommandEvent& event)
 {
+wxGDev_SETTINGS wxgdev_settings0;
 
 if(initialized != 1234) return;
+
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
 
   switch (event.GetId())
   {
 // Set the canvas cursor to Cross Hair
    case ID_CURSOR_CROSSHAIR:
-     wxgdev_settings1.cursor_type = wxT("CrossHair");
+     wxgdev_settings0.cursor_type = wxT("CrossHair");
      break;
 // Set the canvas cursor to Cross Hair with a cross in the center
 // (necessary when crosshair is not well refreshed)
    case ID_CURSOR_CROSSHAIR1:
-     wxgdev_settings1.cursor_type = wxT("CrossHair1");
+     wxgdev_settings0.cursor_type = wxT("CrossHair1");
      break;
 // Set the canvas cursor to down arrow (with bitmap)
    case ID_CURSOR_DOWN_ARROW:
-     wxgdev_settings1.cursor_type = wxT("DownArrow");
+     wxgdev_settings0.cursor_type = wxT("DownArrow");
      break;
 // Set the canvas cursor to Arrow
    case ID_CURSOR_ARROW:
-     wxgdev_settings1.cursor_type = wxT("Arrow");
+     wxgdev_settings0.cursor_type = wxT("Arrow");
      break;
 // Set the canvas cursor to BigCross
    case ID_CURSOR_BIG_CROSS:
-     wxgdev_settings1.cursor_type = wxT("BigCross");
+     wxgdev_settings0.cursor_type = wxT("BigCross");
      break;
 // Set the canvas cursor to Cross
    default:
    case ID_CURSOR_CROSS:
-     wxgdev_settings1.cursor_type = wxT("Cross");
+     wxgdev_settings0.cursor_type = wxT("Cross");
      break;
   }
+
+// Update new settings 
+ jlp_gdev_wxwid1->GDevLoad_wxGDevSettings(wxgdev_settings0);
 
 // Update the popup menu and settings of JLP_GDev_wxWID
 UpdatePopupMenu_Cursor();
@@ -63,31 +70,38 @@ return;
 ************************************************************************/
 void JLP_wxGDev_Popup::OnSetPenColour(wxCommandEvent& event)
 {
+wxGDev_SETTINGS wxgdev_settings0;
 int update_display = 1;
 
 if(initialized != 1234) return;
+
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
 
   switch (event.GetId())
   {
    default:
    case ID_BLACK_PEN_COLOUR:
-     wxgdev_settings1.pen_default_colour = *wxBLACK;
+     wxgdev_settings0.pen_default_colour = *wxBLACK;
      break;
    case ID_RED_PEN_COLOUR:
-     wxgdev_settings1.pen_default_colour = *wxRED;
+     wxgdev_settings0.pen_default_colour = *wxRED;
      break;
    case ID_GREEN_PEN_COLOUR:
-     wxgdev_settings1.pen_default_colour = *wxGREEN;
+     wxgdev_settings0.pen_default_colour = *wxGREEN;
      break;
    case ID_BLUE_PEN_COLOUR:
-     wxgdev_settings1.pen_default_colour = *wxBLUE;
+     wxgdev_settings0.pen_default_colour = *wxBLUE;
      break;
    case ID_WHITE_PEN_COLOUR:
-     wxgdev_settings1.pen_default_colour = *wxWHITE;
+     wxgdev_settings0.pen_default_colour = *wxWHITE;
      break;
   }
 
- wxgdev_settings1.pen_colour = wxgdev_settings1.pen_default_colour;
+ wxgdev_settings0.pen_colour = wxgdev_settings0.pen_default_colour;
+
+// Update new settings 
+ jlp_gdev_wxwid1->GDevLoad_wxGDevSettings(wxgdev_settings0);
 
 // Update the popup menu and settings of JLP_GDev_wxWID
  UpdatePopupMenu_PenColour(update_display);
@@ -99,25 +113,32 @@ return;
 ************************************************************************/
 void JLP_wxGDev_Popup::OnSetBackgdColour(wxCommandEvent& event)
 {
+wxGDev_SETTINGS wxgdev_settings0;
 int update_display = 1;
 
 if(initialized != 1234) return;
 
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
+
   switch (event.GetId())
   {
    case ID_BLACK_BACK_COLOUR:
-     wxgdev_settings1.backgd_colour = *wxBLACK;
+     wxgdev_settings0.backgd_colour = *wxBLACK;
      break;
    case ID_YELLOW_BACK_COLOUR:
-     wxgdev_settings1.backgd_colour = *wxYELLOW;
+     wxgdev_settings0.backgd_colour = *wxYELLOW;
      break;
    case ID_GREY_BACK_COLOUR:
-     wxgdev_settings1.backgd_colour = *wxLIGHT_GREY;
+     wxgdev_settings0.backgd_colour = *wxLIGHT_GREY;
      break;
    case ID_WHITE_BACK_COLOUR:
-     wxgdev_settings1.backgd_colour = *wxWHITE;
+     wxgdev_settings0.backgd_colour = *wxWHITE;
      break;
   }
+
+// Update new settings 
+ jlp_gdev_wxwid1->GDevLoad_wxGDevSettings(wxgdev_settings0);
 
 // Update the popup menu and settings of JLP_GDev_wxWID
  UpdatePopupMenu_BackgroundColour(update_display);
@@ -131,38 +152,45 @@ return;
 ************************************************************************/
 void JLP_wxGDev_Popup::OnSetBoxType(wxCommandEvent& event)
 {
+wxGDev_SETTINGS wxgdev_settings0;
 int update_display = 1;
 
 if(initialized != 1234) return;
+
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
 
   switch (event.GetId())
   {
 // MGO axes:
    default:
    case ID_BOX_TYPE0:
-     wxgdev_settings1.box_type = 0;
+     wxgdev_settings0.box_type = 0;
      break;
 // JLP axes:
    case ID_BOX_TYPE1:
-     wxgdev_settings1.box_type = 1;
+     wxgdev_settings0.box_type = 1;
      break;
 // GSEG axes:
    case ID_BOX_TYPE2:
-     wxgdev_settings1.box_type = 2;
+     wxgdev_settings0.box_type = 2;
      break;
 // Toggle ticks_in:
    case ID_BOX_TICKS_IN:
-     wxgdev_settings1.ticks_in = 1 - wxgdev_settings1.ticks_in;
+     wxgdev_settings0.ticks_in = 1 - wxgdev_settings0.ticks_in;
      break;
 // Toggle x grid:
    case ID_BOX_XGRID:
-     wxgdev_settings1.xgrid = 1 - wxgdev_settings1.xgrid;
+     wxgdev_settings0.xgrid = 1 - wxgdev_settings0.xgrid;
      break;
 // Toggle y grid:
    case ID_BOX_YGRID:
-     wxgdev_settings1.ygrid = 1 - wxgdev_settings1.ygrid;
+     wxgdev_settings0.ygrid = 1 - wxgdev_settings0.ygrid;
      break;
   }
+
+// Update new settings 
+ jlp_gdev_wxwid1->GDevLoad_wxGDevSettings(wxgdev_settings0);
 
 // Update the popup menu and settings of JLP_GDev_wxWID
 UpdatePopupMenu_BoxType(update_display);
@@ -178,8 +206,12 @@ return;
 ************************************************************************/
 void JLP_wxGDev_Popup::OnChangeBoxLimits(wxCommandEvent& event)
 {
+wxGDev_SETTINGS wxgdev_settings0;
 
 if(initialized != 1234) return;
+
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
 
 // Possible problem avoided here!
 // (i.e. conflict between "Statistics" and "FromBox")
@@ -191,9 +223,9 @@ if(initialized != 1234) return;
    }
 
 // Stop interactive ITT threshold selection if no box selection:
- if((wxgdev_settings1.InternalProcessingMode == 0)
+ if((wxgdev_settings0.InternalProcessingMode == 0)
        && (event.GetId() != ID_BOX_LIMITS_WITH_BOX)) {
-    wxgdev_settings1.InternalProcessingMode = -1;
+    wxgdev_settings0.InternalProcessingMode = -1;
     }
 
 switch (event.GetId())
@@ -201,7 +233,7 @@ switch (event.GetId())
   default:
   case ID_BOX_LIMITS_WITH_BOX:
 // ProcessingMode=0 for interactive selection of box limits
-    wxgdev_settings1.InternalProcessingMode = 0;
+    wxgdev_settings0.InternalProcessingMode = 0;
   case ID_BOX_LIMITS_AUTO:
     jlp_gdev_wxwid1->Curves_BoxLimitsAuto();
     break;
@@ -213,8 +245,8 @@ switch (event.GetId())
     break;
   }
 
-// Update the popup menu and settings of JLP_GDev_wxWID
-UpdatePopupMenu(wxgdev_settings1);
+// Update new settings 
+ jlp_gdev_wxwid1->GDevLoad_wxGDevSettings(wxgdev_settings0);
 
 // Draw the graph again:
 jlp_gdev_wxwid1->RedrawToBackupDC(4004);
@@ -230,45 +262,52 @@ return;
 ************************************************************************/
 void JLP_wxGDev_Popup::OnChangeLUT(wxCommandEvent& event)
 {
+wxGDev_SETTINGS wxgdev_settings0;
 int update_display = 1;
 
 if(initialized != 1234) return;
+
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
 
   switch (event.GetId())
   {
 // Rainbow1:
    case ID_LUT_RAIN1:
-     strcpy(wxgdev_settings1.lut_type,"log rainbow1");
+     strcpy(wxgdev_settings0.lut_type,"log rainbow1");
      break;
 // Rainbow2:
    case ID_LUT_RAIN2:
-     strcpy(wxgdev_settings1.lut_type,"rainbow2");
+     strcpy(wxgdev_settings0.lut_type,"rainbow2");
      break;
 // Saw:
    case ID_LUT_SAW:
-     strcpy(wxgdev_settings1.lut_type,"saw");
+     strcpy(wxgdev_settings0.lut_type,"saw");
      break;
 // Gray:
    case ID_LUT_GRAY:
-     strcpy(wxgdev_settings1.lut_type,"gray");
+     strcpy(wxgdev_settings0.lut_type,"gray");
      break;
 // For curves:
    case ID_LUT_CUR:
-     strcpy(wxgdev_settings1.lut_type,"curves");
+     strcpy(wxgdev_settings0.lut_type,"curves");
      break;
 // Pisco-like:
    default:
    case ID_LUT_PISCO:
-     strcpy(wxgdev_settings1.lut_type,"pisco");
+     strcpy(wxgdev_settings0.lut_type,"pisco");
      break;
 // Reverse LUT:
    case ID_LUT_REV:
-     wxgdev_settings1.lut_reversed = 1 - wxgdev_settings1.lut_reversed;
+     wxgdev_settings0.lut_reversed = 1 - wxgdev_settings0.lut_reversed;
      break;
    }
 
+// Update new settings 
+ jlp_gdev_wxwid1->GDevLoad_wxGDevSettings(wxgdev_settings0);
+
 // Apply changes to JLP_GDev_wxWID object:
-jlp_gdev_wxwid1->ApplyLUTSettings(wxgdev_settings1, update_display);
+jlp_gdev_wxwid1->ApplyLUTSettings(wxgdev_settings0, update_display);
 
 return;
 }
@@ -279,88 +318,95 @@ return;
 ************************************************************************/
 void JLP_wxGDev_Popup::OnChangeZoom(wxCommandEvent& event)
 {
+wxGDev_SETTINGS wxgdev_settings0;
 int update_display = 1;
 
 if(initialized != 1234) return;
+
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
 
   switch (event.GetId())
   {
 // zoom_fact = -2:
    case ID_ZOOM_C2:
-     wxgdev_settings1.zoom = -2;
+     wxgdev_settings0.zoom = -2;
      break;
 // zoom_fact = -3:
    case ID_ZOOM_C3:
-     wxgdev_settings1.zoom = -3;
+     wxgdev_settings0.zoom = -3;
      break;
 // zoom_fact = -4:
    case ID_ZOOM_C4:
-     wxgdev_settings1.zoom = -4;
+     wxgdev_settings0.zoom = -4;
      break;
 // zoom_fact = -5:
    case ID_ZOOM_C5:
-     wxgdev_settings1.zoom = -5;
+     wxgdev_settings0.zoom = -5;
      break;
 // zoom_fact = -6:
    case ID_ZOOM_C6:
-     wxgdev_settings1.zoom = -6;
+     wxgdev_settings0.zoom = -6;
      break;
 // zoom_fact = -7:
    case ID_ZOOM_C7:
-     wxgdev_settings1.zoom = -7;
+     wxgdev_settings0.zoom = -7;
      break;
 // zoom_fact = -8:
    case ID_ZOOM_C8:
-     wxgdev_settings1.zoom = -8;
+     wxgdev_settings0.zoom = -8;
      break;
 // zoom_fact = 1:
    case ID_ZOOM1:
-     wxgdev_settings1.zoom = 1;
+     wxgdev_settings0.zoom = 1;
      break;
 // zoom_fact = 2:
    case ID_ZOOM2:
-     wxgdev_settings1.zoom = 2;
+     wxgdev_settings0.zoom = 2;
      break;
 // zoom_fact = 3:
    case ID_ZOOM3:
-     wxgdev_settings1.zoom = 3;
+     wxgdev_settings0.zoom = 3;
      break;
 // zoom_fact = 4:
    case ID_ZOOM4:
-     wxgdev_settings1.zoom = 4;
+     wxgdev_settings0.zoom = 4;
      break;
 // zoom_fact = 5:
    case ID_ZOOM5:
-     wxgdev_settings1.zoom = 5;
+     wxgdev_settings0.zoom = 5;
      break;
 // zoom_fact = 6:
    case ID_ZOOM6:
-     wxgdev_settings1.zoom = 6;
+     wxgdev_settings0.zoom = 6;
      break;
 // zoom_fact = 8:
    case ID_ZOOM8:
-     wxgdev_settings1.zoom = 8;
+     wxgdev_settings0.zoom = 8;
      break;
 // zoom_fact = 10:
    case ID_ZOOM10:
-     wxgdev_settings1.zoom = 10;
+     wxgdev_settings0.zoom = 10;
      break;
 // zoom_fact = 15:
    case ID_ZOOM15:
-     wxgdev_settings1.zoom = 15;
+     wxgdev_settings0.zoom = 15;
      break;
 // zoom_fact = 20:
    case ID_ZOOM20:
-     wxgdev_settings1.zoom = 20;
+     wxgdev_settings0.zoom = 20;
      break;
 // zoom_fact = 40:
    case ID_ZOOM40:
-     wxgdev_settings1.zoom = 40;
+     wxgdev_settings0.zoom = 40;
      break;
   }
 
+// Update new settings 
+ jlp_gdev_wxwid1->GDevLoad_wxGDevSettings(wxgdev_settings0);
+
 // Apply changes to JLP_GDev_wxWID object:
-jlp_gdev_wxwid1->ApplyZoomSettings(wxgdev_settings1, update_display);
+jlp_gdev_wxwid1->ApplyZoomSettings(wxgdev_settings0, update_display);
 
 // Update the popup menu (after applying the zoom factor):
  UpdatePopupMenu_Zoom();
@@ -379,21 +425,33 @@ return;
 ************************************************************************/
 void JLP_wxGDev_Popup::OnChangeITT_is_linear(wxCommandEvent& event)
 {
+wxGDev_SETTINGS wxgdev_settings0;
 int update_display = 1;
 
 if(initialized != 1234) return;
+
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
 
   switch (event.GetId())
   {
 // Switch to linear scale:
    case ID_ITT_LIN:
      jlp_gdev_wxwid1->GDevSetITT_linear(1);
+     wxgdev_settings0.itt_is_linear = 1;
      break;
 // Switch to logarithmic scale
    case ID_ITT_LOG:
      jlp_gdev_wxwid1->GDevSetITT_linear(0);
+     wxgdev_settings0.itt_is_linear = 0;
      break;
   }
+
+// Update new settings 
+ jlp_gdev_wxwid1->GDevLoad_wxGDevSettings(wxgdev_settings0);
+
+// Apply changes to JLP_GDev_wxWID object:
+jlp_gdev_wxwid1->ApplyITTSettings(wxgdev_settings0, update_display);
 
 // Update the popup menu:
  UpdatePopupMenu_ITT(update_display);
@@ -410,9 +468,13 @@ if(initialized != 1234) return;
 ************************************************************************/
 void JLP_wxGDev_Popup::OnChangeITT_thresholds(wxCommandEvent& event)
 {
+wxGDev_SETTINGS wxgdev_settings0;
 int update_display = 1;
 
 if(initialized != 1234) return;
+
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
 
 // Possible problem avoided here!
 // (i.e. conflict between "Statistics" and "FromBox")
@@ -424,11 +486,11 @@ if(initialized != 1234) return;
    }
 
 // Stop interactive ITT threshold selection if no box selection:
- if((wxgdev_settings1.InternalProcessingMode == 0)
+ if((wxgdev_settings0.InternalProcessingMode == 0)
        && (event.GetId() != ID_THR_BOX)) {
-    wxgdev_settings1.InternalProcessingMode = -1;
+    wxgdev_settings0.InternalProcessingMode = -1;
 // Update settings of JLP_GDev_wxWID:
-    jlp_gdev_wxwid1->ApplyInternalProcessingModeSettings(wxgdev_settings1);
+    jlp_gdev_wxwid1->ApplyInternalProcessingModeSettings(wxgdev_settings0);
     }
 
 // Then select required option:
@@ -438,9 +500,9 @@ if(initialized != 1234) return;
 // with Low_Threshold and Up_Threshold computed in the box chosen by the user
    case ID_THR_BOX:
 // ProcessingMode=0 when automatic thresholds are activated
-     wxgdev_settings1.InternalProcessingMode = 0;
+     wxgdev_settings0.InternalProcessingMode = 0;
 // Update settings of JLP_GDev_wxWID:
-     jlp_gdev_wxwid1->ApplyInternalProcessingModeSettings(wxgdev_settings1);
+     jlp_gdev_wxwid1->ApplyInternalProcessingModeSettings(wxgdev_settings0);
 // Do not set here to "FromBox"
 // (it is done when the user has selected the box)
      break;
@@ -473,6 +535,9 @@ if(initialized != 1234) return;
      break;
  }
 
+// Update new settings 
+ jlp_gdev_wxwid1->GDevLoad_wxGDevSettings(wxgdev_settings0);
+
 // Update the popup menu:
  UpdatePopupMenu_ITT(update_display);
 
@@ -491,6 +556,11 @@ return;
 ************************************************************************/
 void JLP_wxGDev_Popup::OnSetInteractiveProcessing(wxCommandEvent& event)
 {
+wxGDev_SETTINGS wxgdev_settings0;
+
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
+
 // InternalProcessingMode
 // -1=None 0=Automatic thresholds 1=Statistics, 2=Astrometry 3=Photometry
 // 4=Add a label 5=Remove a label 6=Add the scale bar 7=Add the North-East
@@ -499,43 +569,46 @@ void JLP_wxGDev_Popup::OnSetInteractiveProcessing(wxCommandEvent& event)
   switch(event.GetId()) {
    case ID_STATISTICS:
 // Toggle processing mode if button pressed twice :
-     if(wxgdev_settings1.InternalProcessingMode == 1)
-       wxgdev_settings1.InternalProcessingMode = -1;
+     if(wxgdev_settings0.InternalProcessingMode == 1)
+       wxgdev_settings0.InternalProcessingMode = -1;
      else
-       wxgdev_settings1.InternalProcessingMode = 1;
+       wxgdev_settings0.InternalProcessingMode = 1;
      break;
    case ID_ASTROMETRY:
 // Toggle processing mode if button pressed twice :
-     if(wxgdev_settings1.InternalProcessingMode == 2)
-       wxgdev_settings1.InternalProcessingMode = -1;
+     if(wxgdev_settings0.InternalProcessingMode == 2)
+       wxgdev_settings0.InternalProcessingMode = -1;
      else
-       wxgdev_settings1.InternalProcessingMode = 2;
+       wxgdev_settings0.InternalProcessingMode = 2;
      break;
    case ID_PHOTOMETRY:
 // Toggle processing mode if button pressed twice :
-     if(wxgdev_settings1.InternalProcessingMode == 3)
-       wxgdev_settings1.InternalProcessingMode = -1;
+     if(wxgdev_settings0.InternalProcessingMode == 3)
+       wxgdev_settings0.InternalProcessingMode = -1;
      else
-       wxgdev_settings1.InternalProcessingMode = 3;
+       wxgdev_settings0.InternalProcessingMode = 3;
      break;
    case ID_SLICE:
 // Toggle processing mode if button pressed twice :
-     if(wxgdev_settings1.InternalProcessingMode == 8)
-       wxgdev_settings1.InternalProcessingMode = -1;
+     if(wxgdev_settings0.InternalProcessingMode == 8)
+       wxgdev_settings0.InternalProcessingMode = -1;
      else
-       wxgdev_settings1.InternalProcessingMode = 8;
+       wxgdev_settings0.InternalProcessingMode = 8;
      break;
    case ID_GET_COORDINATES:
 // Toggle processing mode if button pressed twice :
-     if(wxgdev_settings1.InternalProcessingMode == 19)
-       wxgdev_settings1.InternalProcessingMode = -1;
+     if(wxgdev_settings0.InternalProcessingMode == 19)
+       wxgdev_settings0.InternalProcessingMode = -1;
      else
-       wxgdev_settings1.InternalProcessingMode = 19;
+       wxgdev_settings0.InternalProcessingMode = 19;
      break;
   }
 
+// Update new settings 
+ jlp_gdev_wxwid1->GDevLoad_wxGDevSettings(wxgdev_settings0);
+
 // Update settings of JLP_GDev_wxWID:
- jlp_gdev_wxwid1->ApplyInternalProcessingModeSettings(wxgdev_settings1);
+ jlp_gdev_wxwid1->ApplyInternalProcessingModeSettings(wxgdev_settings0);
 
 return;
 }

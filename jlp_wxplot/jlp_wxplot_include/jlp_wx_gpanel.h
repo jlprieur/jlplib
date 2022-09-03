@@ -74,6 +74,7 @@ public:
   void JLP_ResizeGraphicPanel();
   void OnZoomButton(wxCommandEvent &event);
   void OnMoveButton(wxCommandEvent &event);
+  void OnSaveAsButton(wxCommandEvent &event);
   void OnShowVideoPlane(wxCommandEvent &event);
 
 // Add Panel for plot
@@ -81,16 +82,8 @@ public:
 
 // In "jlp_wx_gpanel_plot.cpp": 
   void wxGP_UpdateCursor(const int x_position);
+/***
   void wxGP_PlotToDrawingDisplay();
-  void wxGP_ClearDrawingDisplay();
-  int wxGP_LoadPlotDataToPrivateParameters0(double *xplot1, double *yplot1, 
-                        const int npts1, 
-                        const char *nchar_type, const char *pcolor, 
-                        const char *plot_fname, const int reset_first); 
-  int wxGP_LoadPlotDataToPrivateParameters(double *xplot1, double *yplot1, 
-                        double *errorx1, double *errory1,  const int npts1,
-                        const char *nchar_type, const char *pcolor, 
-                        const char *plot_fname, const int reset_first); 
   int wxGP_PlotMgoLabel(const char *s, int ixstart, int iystart, double angle,
                         double expand, int draw_it);
   int wxGP_PlotLabel1(const char *s, double xstart, double ystart, double angle,
@@ -99,13 +92,7 @@ public:
                        int yplot2, int lwidth, char *pcolor); 
   int wxGP_PlotLine1(double xplot1, double yplot1, double xplot2, 
                      double yplot2, int lwidth, char *pcolor); 
-  int wxGP_LoadPlotSettings(const char *xlabel, const char *ylabel,
-                       const char *title, const int xgrid_is_wanted,
-                       const int ygrid_is_wanted,
-                       const int jlp_axes_are_wanted,
-                       const int iplan, const double x1,
-                       const double x2, const double y1, const double y2);
-
+*/
   void wxGP_LoadNewWavelengthCalib(double wavel_start, double wavel_step) {
    wavel_start1 = wavel_start;
    wavel_step1 = wavel_step;
@@ -124,6 +111,9 @@ public:
    }
 ********/
 
+// Accessors:
+  JLP_GDev_wxWID* Get_JLP_GDev_wxWID() {return Drawing_wxgdev;};
+
 private:
   int initialized;
 
@@ -135,11 +125,11 @@ private:
   int m_width, m_height;
   double wavel_start1, wavel_step1;
 
-// Drawing Panel:
+// Drawing GDev pointer:
   JLP_GDev_wxWID *Drawing_wxgdev;
 
   wxStaticText *m_StaticCoord, *m_StaticHelp;
-  wxBitmapButton *m_ZoomInButton, *m_ZoomOutButton;
+  wxBitmapButton *m_ZoomInButton, *m_ZoomOutButton, *m_SaveAsButton;
   wxBitmapButton *m_MoveRightButton, *m_MoveLeftButton;
   wxBitmapButton *m_VideoPreviousButton, *m_VideoNextButton;
   wxBitmapButton *m_VideoPreviousFastButton, *m_VideoNextFastButton;

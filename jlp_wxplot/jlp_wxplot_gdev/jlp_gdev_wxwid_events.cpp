@@ -57,6 +57,7 @@ END_EVENT_TABLE()
 *************************************************************/
 void JLP_GDev_wxWID::ShowPopupMenu()
 {
+int update_display;
 /* Not used since not working...
 int width1, height1;
 wxDC *dc1 = new wxClientDC(this);
@@ -67,7 +68,8 @@ wxMenu *popmenu0;
 if(m_popup_menu1 == NULL) return;
 
 // Make menu items checked correctly, according to image parameters:
-  m_popup_menu1->UpdatePopupMenu(wxgdev_settings1);
+  update_display = 0; // Do not change display here (since should be already synchronized when creating Popup object) 
+  m_popup_menu1->UpdatePopupMenu(wxgdev_settings1, update_display);
 
   popmenu0 = m_popup_menu1->GetPopupMenu1();
 

@@ -28,7 +28,8 @@ enum{
   ID_DRAW_VIDEO_PREVIOUS,
   ID_DRAW_VIDEO_NEXT,
   ID_DRAW_VIDEO_PREVIOUS_FAST,
-  ID_DRAW_VIDEO_NEXT_FAST
+  ID_DRAW_VIDEO_NEXT_FAST,
+  ID_DRAW_SAVE_AS
 };
 
 BEGIN_EVENT_TABLE(JLP_wxGraphicPanel, wxPanel)
@@ -40,6 +41,7 @@ EVT_BUTTON  (ID_DRAW_VIDEO_PREVIOUS, JLP_wxGraphicPanel::OnShowVideoPlane)
 EVT_BUTTON  (ID_DRAW_VIDEO_NEXT, JLP_wxGraphicPanel::OnShowVideoPlane)
 EVT_BUTTON  (ID_DRAW_VIDEO_PREVIOUS_FAST, JLP_wxGraphicPanel::OnShowVideoPlane)
 EVT_BUTTON  (ID_DRAW_VIDEO_NEXT_FAST, JLP_wxGraphicPanel::OnShowVideoPlane)
+EVT_BUTTON  (ID_DRAW_SAVE_AS, JLP_wxGraphicPanel::OnSaveAsButton)
 // catch size events
 EVT_SIZE (JLP_wxGraphicPanel::OnResize)
 END_EVENT_TABLE()
@@ -121,6 +123,9 @@ void JLP_wxGraphicPanel::Setup_DrawingPanel(const int ID0)
 int status;
 wxString buffer;
 
+// Set background to white by default:
+ SetBackgroundColour(wxColour(* wxWHITE));
+
  wxBoxSizer *topsizer = new wxBoxSizer( wxVERTICAL );
  
  m_StaticHelp = new wxStaticText(this, -1, 
@@ -169,11 +174,15 @@ wxString buffer;
                                        wxBITMAP(move_left3));
  button_sizer->Add( m_MoveLeftButton, 0, wxLEFT, 10);
 
+ m_SaveAsButton = new wxBitmapButton(this, ID_DRAW_SAVE_AS,
+                                       wxBITMAP(save));
+ button_sizer->Add( m_SaveAsButton, 0, wxLEFT, 20);
+
 // Yellow buttons (like for "jlp_wx_video_panel.cpp")
  if(jlp_video_panel != NULL) {
    m_VideoNextFastButton = new wxBitmapButton(this, ID_DRAW_VIDEO_NEXT_FAST,
                                            wxBITMAP(move_right_fast1));
-   button_sizer->Add( m_VideoNextFastButton, 0, wxLEFT, 10);
+   button_sizer->Add( m_VideoNextFastButton, 0, wxLEFT, 20);
    m_VideoNextButton = new wxBitmapButton(this, ID_DRAW_VIDEO_NEXT,
                                            wxBITMAP(move_right1));
    button_sizer->Add( m_VideoNextButton, 0, wxLEFT, 10);
@@ -248,6 +257,54 @@ printf("JLP_wxGraphicPanel::GetClientSize/width,height = %d,%d\n",
 
 // Correct this size and update plot parameters
  Drawing_wxgdev->ResizePlot1(width0, height0);
+
+return;
+}
+/*********************************************************************
+* SaveAs button
+* Output curve as an ASCII file 
+*********************************************************************/
+void JLP_wxGraphicPanel::OnSaveAsButton(wxCommandEvent &event)
+{
+wxString save_filename, str0;
+char ascii_filename[128];
+int i, npts0, icurve, status;
+double *xplot0, *yplot0, *errorx0, *errory0;
+FILE *fp_out;
+bool save_to_file0;
+
+if(initialized != 1234) return;
+
+   wxFileDialog dialog(NULL, _T("save to ASCII file"), wxEmptyString,
+                       wxEmptyString, _T("files (*.txt)|*.txt"),
+                       wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+   if (dialog.ShowModal() != wxID_OK) return;
+
+   save_filename = dialog.GetPath();
+
+   if ( save_filename.empty() ) return;
+   strcpy(ascii_filename, (const char *)save_filename.mb_str());
+
+if((fp_out = fopen(ascii_filename,"w")) != NULL) {
+// GetCurveData
+// In "jlp_splot/jlp_gdev_curves_process.cpp"
+    icurve = 0;
+    status = Drawing_wxgdev->GetCurveData(&xplot0, &yplot0, &errorx0, &errory0,
+                                          &npts0, icurve);
+    for(i = 0; i < npts0; i++) {
+     fprintf(fp_out, "%f %f\n", xplot0[i], yplot0[i]);
+     }
+    fclose(fp_out);
+// Display/Save string to logbook
+    str0 = _T("Curve #0 saved to ") + save_filename + _T("\n");
+    save_to_file0 = false;
+    wxGP_WriteToLogbook(str0, save_to_file0);
+   } else {
+// Display/Save string to logbook
+    str0 = _T("Error saving curve #0 to ") + save_filename + _T("\n");
+    save_to_file0 = false;
+    wxGP_WriteToLogbook(str0, save_to_file0);
+   }
 
 return;
 }

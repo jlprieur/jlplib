@@ -28,7 +28,10 @@
 *               y1=y2=0 if automatic y scale
 *************************************************************/
 int JLP_GDev::Curves_LoadPlotSettings(const char *xlabel, const char *ylabel,
-                                      const char *title, 
+                                      const char *title,
+                                      const char *pen_colour, 
+                                      const char *pen_default_colour, 
+                                      const char *backgd_colour, 
                                       const int xgrid_is_wanted, 
                                       const int ygrid_is_wanted, 
                                       const int jlp_axes_are_wanted,
@@ -40,6 +43,10 @@ int JLP_GDev::Curves_LoadPlotSettings(const char *xlabel, const char *ylabel,
 strcpy(Jgc0.box_xlabel, xlabel);
 strcpy(Jgc0.box_ylabel, ylabel);
 strcpy(Jgc0.box_title, title);
+
+strcpy(Jgc0.pen_colour, pen_colour);
+strcpy(Jgc0.pen_default_colour, pen_default_colour);
+strcpy(Jgc0.backgd_colour, backgd_colour);
 
 // iplan: same scale in X and Y if iplan=1
 Jgc0.box_plan = iplan;
@@ -98,7 +105,7 @@ strcpy(comments,"Test comments");
 strcpy(xlabel0, Jgc0.box_xlabel);
 strcpy(ylabel0, Jgc0.box_ylabel);
 strcpy(title0, Jgc0.box_title);
-strcpy(axis_color, "Black");
+strcpy(axis_color, Jgc0.pen_default_colour);
 box_xmin0 = Jgc0.axis_limits[0];
 box_xmax0 = Jgc0.axis_limits[1];
 box_ymin0 = Jgc0.axis_limits[2];

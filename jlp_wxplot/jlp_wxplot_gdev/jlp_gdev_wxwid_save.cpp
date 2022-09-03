@@ -29,7 +29,7 @@
 #include "jlp_wx_pstcopy_dlg.h"  // JLP_PstCopy_Dlg()
 
 /************************************************************************
-* Save the current bitmap to file
+* Save the current bitmap to image-formatted file
 *
 ************************************************************************/
 void JLP_GDev_wxWID::SaveGraphicToFile()
@@ -240,6 +240,8 @@ if(status) {
     }
 // Load settings from Jgc0 structure
   Jwx->Curves_LoadPlotSettings(Jgc0.box_xlabel, Jgc0.box_ylabel, Jgc0.box_title,
+                               Jgc0.pen_colour, Jgc0.pen_default_colour,
+                               Jgc0.backgd_colour,
                                Jgc0.box_xgrid, Jgc0.box_ygrid, Jgc0.xaxis_type,
                                Jgc0.box_plan, Jgc0.axis_limits[0],
                                Jgc0.axis_limits[1], Jgc0.axis_limits[2],

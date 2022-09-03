@@ -69,7 +69,7 @@ wxString cursor_type;
 int ticks_in, box_type, xgrid, ygrid;
 char lut_type[32];
 int lut_reversed;
-// filter_type : 0= none
+// Filter_type : 0= none
 // 1=soft unsharp (UNSH1) 2=medium unsharp (UNSH2) 3=hard unsharp (UNSH3)
 // 4=high contrast1 (HC1) 5=high contrast2 (HC2) 6=Very high contrast (VHC)
 int filter;
@@ -80,7 +80,9 @@ int filter;
 */
 wxString itt_type;
 int itt_is_linear;
+// Box used on the displayed image to compute the ITT thresholds: low_itt_thresh, up_itt_thresh)
 int itt_x1_box, itt_y1_box, itt_x2_box, itt_y2_box;
+double low_itt_thresh, up_itt_thresh;
 //
 int zoom;
 /* InternalProcessingMode
@@ -91,7 +93,6 @@ int zoom;
 * 18=ZoomWithBox 19=GetCoordinates
 */
 int InternalProcessingMode;
-double low_itt_thresh, up_itt_thresh;
 }
 wxGDev_SETTINGS;
 //*********************************************************************//
@@ -175,7 +176,6 @@ public:
 // Wait for next event (mouse button for X11)
   int wait_for_events();
 
-
 // (virtual routines of JLP_GDev) contained in "jlp_wx_wxwid_images.cpp"
   void Update_JGC_from_GDProcSettings();
   void Update_GDProcSettings_from_JGC();
@@ -202,7 +202,8 @@ public:
   void MainInitForImages();
   void ResetAllPrivateParametersForCurves();
   void ResetAllPrivateParametersForImages();
-  void Load_wxGDevSettings(wxGDev_SETTINGS wxgdev_settings0);
+  void GDevGet_wxGDevSettings(wxGDev_SETTINGS *wxgdev_settings0);
+  void GDevLoad_wxGDevSettings(wxGDev_SETTINGS wxgdev_settings0);
   void SetNewSize(wxSize new_size);
   void MySetSize();
   void GetImageLabelOptions(bool *has_labels, bool *has_scale_bar,

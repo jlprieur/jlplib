@@ -119,7 +119,7 @@ void JLP_GDev_wxWID::ApplyZoomSettings(wxGDev_SETTINGS wxgdev_settings0,
 if(c_image1 == NULL || initialized != 1234) return;
 
 // Copy wxGDev_SETTINGS:
- Load_wxGDevSettings(wxgdev_settings0);
+ GDevLoad_wxGDevSettings(wxgdev_settings0);
 
  c_image1->SetZoom(wxgdev_settings1.zoom);
 
@@ -192,9 +192,7 @@ return;
 * 0=NONE
 * 1=soft unsharp (UNSH1) 2=medium unsharp (UNSH2) 3=hard unsharp (UNSH3)
 * 4=high contrast1 (VHC1) 5=high contrast2 (VHC2) 6=high contrast3 (VHC3)
-* 7=high contrast4 (VHC4) 8=medium gradient (GRAD1) 9=hard gradient (GRAD2)
-* 10=CPROF circ. profile 11=CIRC1 circ. gradient(rot 10 deg)
-* 12=CIRC2 circ. gradient(rot 20 deg)  13=CIRC3 circ. gradient(rot 30 deg)
+* 7=high contrast4 (VHC4) 
 **************************************************************************/
 void JLP_GDev_wxWID::GDevUpdatePopupMenu_SelectFilter(int filter0)
 {

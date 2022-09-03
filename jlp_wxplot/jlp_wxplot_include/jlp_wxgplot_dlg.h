@@ -48,15 +48,15 @@ public:
     void MyFreeMemory();
 
 // Handling events:
-     void OnOKButton( wxCommandEvent &event );
-     void OnCancelButton( wxCommandEvent &event );
+     void OnSaveButton( wxCommandEvent &event );
+     void OnCloseButton( wxCommandEvent &event );
 
 private:
   int initialized;
   wxString title1, xlabel1, ylabel1;
   wxStaticText *m_StaticText;
   JLP_wxGraphicPanel *m_GraphicPanel;
-  wxButton *m_OKButton, *m_CancelButton;
+  wxButton *m_CloseButton, *m_SaveButton;
   double *xplot1, *yplot1, *errorx1, *errory1;
   int nplot1;
 

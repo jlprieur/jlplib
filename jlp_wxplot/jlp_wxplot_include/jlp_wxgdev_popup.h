@@ -22,7 +22,6 @@ class JLP_wxGDev_Popup : public wxWindow
 public:
 
  JLP_wxGDev_Popup(JLP_GDev_wxWID *jlp_gdev_wxwid0, 
-                  wxGDev_SETTINGS wxgdev_settings0,
                   int gdev_graphic_type0); 
 
 /* Destructor:
@@ -52,8 +51,7 @@ public:
   void UpdatePopupMenu_BackgroundColour(const int update_display);
   void UpdatePopupMenu_BoxType(const int update_display);
   void UpdatePopupMenu_InternalProcessingMode();
-  void Load_wxGDevSettings(wxGDev_SETTINGS wxgdev_settings0);
-  void UpdatePopupMenu(wxGDev_SETTINGS wxgdev_settings0); 
+  void UpdatePopupMenu(wxGDev_SETTINGS wxgdev_settings0, int update_display); 
   void PopupMenuEraseProcessingCheckBoxes();
 
 // Defined in jlp_wxgdev_popup_onclick1.cpp:
@@ -103,9 +101,6 @@ private:
   wxMenu *menuProcess, *menuPen, *menuZoom, *menuLabel, *menuShape;
   wxMenu *menuBackgd, *menuBoxType, *menuBoxLimits;
   wxMenu *menuGsegraf;
-
-// Settings:
-  wxGDev_SETTINGS wxgdev_settings1;
 
   DECLARE_EVENT_TABLE()
 }; 

@@ -18,7 +18,7 @@
 */
 
 /* Maximum of DEV_MAX graphic devices opened simultaneously: */
-#define DEV_MAX 16 
+#define DEV_MAX 64 
 
 /* Declaring linkage specification to have "correct names"
 * that can be linked with C programs */

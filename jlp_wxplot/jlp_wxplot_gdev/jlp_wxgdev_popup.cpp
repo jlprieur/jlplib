@@ -13,12 +13,16 @@
 * Constructor
 *************************************************************************/
 JLP_wxGDev_Popup::JLP_wxGDev_Popup(JLP_GDev_wxWID *jlp_gdev_wxwid0,
-                                   wxGDev_SETTINGS wxgdev_settings0,
                                    int gdev_graphic_type0)
 {
+int update_display;
+
+// Settings:
+  wxGDev_SETTINGS wxgdev_settings0;
+
 // Save input parameters to private variables
  jlp_gdev_wxwid1 = jlp_gdev_wxwid0;
- Load_wxGDevSettings(wxgdev_settings0);
+
  gdev_graphic_type1 = gdev_graphic_type0;
 
  initialized = 0;
@@ -27,14 +31,19 @@ JLP_wxGDev_Popup::JLP_wxGDev_Popup(JLP_GDev_wxWID *jlp_gdev_wxwid0,
 // Create popup menu:
  CreatePopupMenu();
 
- UpdatePopupMenu(wxgdev_settings0);
+// Load settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
+
+// Configure this menu with those settings:
+ update_display = 1; // Change display here to synchronize it with settings
+ UpdatePopupMenu(wxgdev_settings0, update_display);
 
  initialized = 1234;
 
 return;
 }
 /*************************************************************************
-* Constructor
+* 
 *************************************************************************/
 void JLP_wxGDev_Popup::Main_Init()
 {

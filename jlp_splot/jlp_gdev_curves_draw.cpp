@@ -71,8 +71,8 @@ box_ymin0 = Jgc0_box_ymin();
 box_ymax0 = Jgc0_box_ymax();
 
 if (box_xmin0 == box_xmax0 || box_ymin0 == box_ymax0) {
-  fprintf(stderr," draw_curve/Fatal error range in x or y is null! \n");
-  fprintf(stderr,"xmin=%f xmax=%f ymin=%f ymax=%f \n", 
+  fprintf(stderr,"JLP_GDev::draw_curve/Fatal error range in x or y is null! \n");
+  fprintf(stderr,"box_xmin=%f box_xmax=%f box_ymin=%f box_ymax=%f \n", 
           box_xmin0, box_xmax0, box_ymin0, box_ymax0);
   return(-1);
 }

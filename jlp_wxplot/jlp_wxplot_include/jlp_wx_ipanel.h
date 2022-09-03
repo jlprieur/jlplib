@@ -68,21 +68,11 @@ public:
     int FilterUnsharp(int box_width);
     int FilterHighContrast(int filter_option);
     int FilterVeryHighContrast();
-    int FilterGradient(const int igrad);
-    int FilterCircularGradient(const int iangle);
-    int FilterCircularProfile(const int n_for_patches);
-    int BinaryMeasFromCircProfile(const int n_for_patches, 
-                                  double *xc, double *yc, double *radius,
-                                  double *rho10, double *theta10,
-                                  double *error_rho10, double *error_theta10);
     int SpeckleModelSubtraction();
     int LoadUnresolvedAutoc();
     int ComputeUnresolvedModsq();
     int OffsetCorrection(int positive);
     int FlatFieldCorrection(int sigma_level);
-    int AutoMeasureAutocBinary();
-    int AutoMeasureAutocBinaryWithParam(double *rho10, double *theta10,
-                                   double *error_rho10, double *error_theta10); 
     int AutoMeasureShackHartmann(double *pupil_mask0, int nx0, int ny0,
                                  int x_half_width, int y_half_width,
                                  double sigma_threshold,

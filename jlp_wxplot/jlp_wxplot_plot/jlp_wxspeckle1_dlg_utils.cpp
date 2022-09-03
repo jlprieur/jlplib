@@ -15,6 +15,7 @@
 
 #include "jlp_numeric.h"   // INT4, SQUARE, etc
 #include "jlp_fitsio.h"   // descrip_decode_date
+#include "jlp_string.h"   // jlp_cleanup_string 
 #include "jlp_wxspeckle1_dlg_utils.h"
 #include "ctype.h"  // toupper, isdigit, isalpha, etc
 
@@ -164,19 +165,21 @@ sig_90deg = 0.;
 while(fgets(buffer,80,fp_data) != 0) {
    nvalues = sscanf(buffer,"%%%% rho=%lf theta=%lf",&rho, &theta);
    if(nvalues == 2) {
-       rho_sum += rho;
-       rho_sumsq += rho*rho;
-       theta_sum += theta;
-       theta_sumsq += theta*theta;
-       if(theta > 0.) {
-         theta_90deg += theta;
-         sig_90deg += SQUARE(theta);
-       } else {
-         theta_90deg += (theta + 180.);
-         sig_90deg += SQUARE(theta + 180.);
-       }
-       (*nn)++;
-    }
+     if(rho > 0.01) {
+        rho_sum += rho;
+        rho_sumsq += rho*rho;
+        theta_sum += theta;
+        theta_sumsq += theta*theta;
+        if(theta > 0.) {
+          theta_90deg += theta;
+          sig_90deg += SQUARE(theta);
+        } else {
+          theta_90deg += (theta + 180.);
+          sig_90deg += SQUARE(theta + 180.);
+        }
+        (*nn)++;
+      } // if rho > 0.01
+    } // if nvalues == 2
 } // EOF while
 
 if(*nn >= 1) {
@@ -306,7 +309,7 @@ static int speckle_output_mean(FILE *fp_tex, FILE *fp_data,
                                const wxString data_fname)
 {
 double epoch, year;
-int eyepiece, fits_file_is_known, xbin = 1, ybin = 1, status;
+int eyepiece, orig_fits_file_is_avail, xbin = 1, ybin = 1, status;
 char processed_fits_fname[128], original_fits_fname[128], date[60], filter[20];
 char buffer[180], object_name[20], upper_object_name[40], comments[80];
 char epoch_string[20], bin_string[20], latex_fits_fname[128];
@@ -314,36 +317,40 @@ char dmag_string[30];
 
 strcpy(original_fits_fname, original_FITS_fname.mb_str());
 strcpy(processed_fits_fname, processed_FITS_fname.mb_str());
-fits_file_is_known = (*processed_fits_fname == '\0') ? 0 : 1;
+orig_fits_file_is_avail = jlp1_rdfits_is_ok(original_fits_fname);
 
 eyepiece = 0;
 year = 0.;
 strcpy(date, "");
 strcpy(filter, "");
 strcpy(object_name, "");
-strcpy(upper_object_name, "");
+// Defaut value for object name: 
+strncpy(upper_object_name, processed_fits_fname,40);
+// Filter for printable characters:
+jlp_cleanup_string(upper_object_name, 40);
 
 /**************************************************************************/
-if(fits_file_is_known){
+if(orig_fits_file_is_avail){
   status = decode_info_from_FITS_file(original_fits_fname, date, filter,
                                       object_name, &epoch, &year, &xbin, &ybin,
                                       comments);
-// Epoch as a fraction of Besselian year
-if(epoch >= year) {
-  sprintf(epoch_string, "EP=%.4f", epoch);
- } else {
-  epoch_string[0] = '\0';
- }
-
-if(xbin > 1 || ybin > 1)
-   sprintf(bin_string, "XYBIN=%d,%d", xbin, ybin);
- else
-   bin_string[0] = '\0';
-
 /**************************************************************************/
   if(status) {
-  fprintf(stderr, "decode_info_from_FITS_file/Error, status = %d\n", status);
+    fprintf(stderr, "decode_info_from_FITS_file/Error, status = %d\n", status);
   } else {
+
+// Epoch as a fraction of Besselian year
+  if(epoch >= year) {
+    sprintf(epoch_string, "EP=%.4f", epoch);
+   } else {
+    epoch_string[0] = '\0';
+   }
+
+  if(xbin > 1 || ybin > 1)
+     sprintf(bin_string, "XYBIN=%d,%d", xbin, ybin);
+   else
+     bin_string[0] = '\0';
+
 //******************************************
 // For PISCO in Merate files start with a digit (the date)
 // example: 220214_ads2390_Rd_8_a.fits
@@ -361,8 +368,8 @@ if(xbin > 1 || ybin > 1)
       eyepiece = xbin;
       decode_Nice_object_fits_fname(processed_fits_fname, latex_fits_fname,
                                     upper_object_name);
-   }
-  }
+   } // EOF gili syntax
+  } // EOF merate syntax
 #ifdef DEBUG
   printf("%%%% mean: rho = %.2f \\pm %.2f  theta = %.2f \\pm %.2f (n=%d)\n",
         mrho, drho, mtheta, dtheta, n_astrom);
@@ -371,6 +378,14 @@ if(xbin > 1 || ybin > 1)
         epoch_string, bin_string);
 #endif
 
+// EOF if orig_file_is_avail...
+} else {
+ strcpy(latex_fits_fname, processed_fits_fname);
+ strcpy(date, "");
+ strcpy(filter, "");
+ eyepiece = 0;
+ strcpy(epoch_string, "");
+ strcpy(bin_string, "");
 }
 
 /* Convert name to upper case:  ads2345Aa => ADS 2345 Aa
@@ -494,10 +509,11 @@ int i, status, ivalue, found;
 /* Descriptors are wanted */
 dflag = 1;
 strcpy(filename1, original_fits_fname);
+
 JLP_VM_RDFITS(&pntr_array, &nx, &ny, filename1, comments,
               jlp_descr, &dflag, &istatus);
-if(istatus) {
- fprintf(stderr,"speckle_astrom_output/Error reading file %s \n",
+if(istatus != 0) {
+ fprintf(stderr,"decode_info_from_FITS_file/Error reading file %s \n",
          filename1);
  return(-1);
  }
@@ -573,11 +589,11 @@ object=%s\ndescrip=%s\ndate=%s\ncounters=%s\n xbin=%d ybin=%d\n",
 */
     if(d_obs_date[0] != '\0') {
 // Bessel epoch from obs_date
-    status = descrip_bepoch_from_obs_date(d_obs_date, date, year,
+     status = descrip_bepoch_from_obs_date(d_obs_date, date, year,
                                      &time0, epoch);
     } else {
 // Bessel epoch from date
-    status = descrip_bepoch_from_date(d_date, d_counters, date, year,
+     status = descrip_bepoch_from_date(d_date, d_counters, date, year,
                                  &time0, epoch);
     }
 

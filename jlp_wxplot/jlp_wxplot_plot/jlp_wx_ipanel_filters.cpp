@@ -200,7 +200,7 @@ return(0);
 int HighContrastFilter2(double *modsq_centered, double *autoc, int nx2, int ny2)
 {
 double *tmp_r, *tmp_i, sum_yi_fi, sum_fi_fi, fi, a_coeff, b_coeff;
-int ixc, jxc, idirect, iwidth;
+int ixc, jxc, idirect, iwidth, version_2008 = 1;
 register int i, j;
 // Something strange with Windows/gcc: rad2 is not allowed as a variable!
 /* So I substitute with "rad22" ... */
@@ -216,9 +216,15 @@ tmp_i = new double[nx2 * ny2];
 
 for(i = 0; i < nx2 * ny2; i++) tmp_r[i] = modsq_centered[i];
 for(i = 0; i < nx2 * ny2; i++) tmp_i[i] = 0.;
-
 ixc = nx2/2;
 jxc = ny2/2;
+
+/************** VERSION 2015 *****************************/
+if(version_2008 == 1){
+//   printf("VERSION VHC2/2008 \n");
+/************** VERSION 2015 *****************************/
+} else {
+//   printf("VERSION VHC2/2015 \n");
 // 128/16 = 8
 sigma1_2 = SQUARE((double)nx2/16.);
 // 128/8 =16
@@ -256,19 +262,28 @@ b_coeff = sum_yi_fi / sum_fi_fi;
 printf("HighContrastFilter: a_coeff=%f b_coeff=%f\n", a_coeff, b_coeff);
 #endif
 
+// End of calculations for version 2015 
+}
+
+// Version similar to 2008:
+if(version_2008 == 1){
 for(j = 0; j < ny2; j++) {
   for(i = 0; i < nx2; i++) {
     rad22 = SQUARE(i - ixc) + SQUARE(j - jxc);
-// Version similar to 2008:
-if(true){
-// 128/16 = 8 in HighContrastFilter1, so I take somewhat larger:
+// 128/16 = 8 in HighContrastFilter1, so I take somewhat smaller:
   sigma1_2 = SQUARE((double)nx2/20);
 // 128/8 = 16 in HighContrastFilter1, so I take somewhat larger:
-  sigma2_2 = SQUARE((double)nx2/10.);
+//  sigma2_2 = SQUARE((double)nx2/10.);
+  sigma2_2 = SQUARE((double)nx2/6.);
   gaussian_filter = 4. * exp(-rad22/sigma1_2) + 1. * exp(-rad22/sigma2_2) + 0.2;
   tmp_r[i + j * nx2] /= gaussian_filter;
+   }
+ }
 } else {
 // Version of 2015:
+for(j = 0; j < ny2; j++) {
+  for(i = 0; i < nx2; i++) {
+    rad22 = SQUARE(i - ixc) + SQUARE(j - jxc);
     gaussian_filter = 0.6 * ( a_coeff * exp(-rad22/sigma1_2)
                             + b_coeff * exp(-rad22/sigma2_2));
     ww = tmp_r[i + j * nx2] - gaussian_filter;

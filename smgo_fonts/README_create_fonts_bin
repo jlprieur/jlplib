@@ -1,0 +1,12 @@
+###################################################################
+# How to create fonts.bin
+
+https://www.atnf.csiro.au/computing/software/smongo/sm_32.html
+
+These are a sub-set of the well-known Hershey fonts @footnote #{created by Dr. A. V. Hershey at the U. S. National Bureau of Standards and illustrated in National Bureau of Standards publication NBS SP-24. The format used in the hershey_oc.dat file was originally due to James Hurt at Cognition, Inc., 900 Technology Park Drive, Billerica, MA 01821. It may be converted to any format except the format distributed by the U. S. NTIS (whatever it may be). We have to tell you all this for copyright reasons, but as distributed the fonts are in the public domain.} and the available characters are listed in the following table, which were generated from within SM by saying load fonts 
+
+The programme read_fonts reads this file, an `index' file that specifies the characters to be put into the fonts, and a list of TeX definitions. The index file consists of character numbers, or ranges consisting of two numbers separated by a minus sign. Comments go from the character # to end of line. Each font consists of 96 characters in ascii order, and fonts appear in the index in the order rm, gr, sc, ti, oe, and pr. 
+###################################################################
+c++ read_fonts.cpp
+a.out hershey_oc.dat font_index fonts.bin
+cp fonts.bin $EXEC/

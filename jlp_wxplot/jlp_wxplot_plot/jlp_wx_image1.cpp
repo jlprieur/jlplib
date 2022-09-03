@@ -172,7 +172,7 @@ wxSize window_size0(500, 300);
  dble_image1 = NULL;
  orig_dble_image1 = NULL;
 
-  Init_PrivateParameters(nx0, ny0, window_size0, should_fit_inside0);
+ Init_PrivateParameters(nx0, ny0, window_size0, should_fit_inside0);
 
 // Create initial bitmap m_bitmap2 (from m_image1)
   UpdateBitmap();
@@ -195,6 +195,8 @@ JLP_wxImage1::JLP_wxImage1(double *dble_image, int nx, int ny,
  LUT_b = NULL;
  dble_image1 = NULL;
  orig_dble_image1 = NULL;
+
+ Init_PrivateParameters(nx, ny, window_size0, should_fit_inside0);
 
  JLP_SetupFromDouble(dble_image, nx, ny, window_size0, should_fit_inside0,
                      max_lut_level);

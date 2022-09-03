@@ -175,8 +175,7 @@ wxString buffer;
 
 // Create popup menu:
  m_popup_menu1 = NULL;
- m_popup_menu1 = new JLP_wxGDev_Popup(this, wxgdev_settings1,
-                                      Jgc0.gdev_graphic_type);
+ m_popup_menu1 = new JLP_wxGDev_Popup(this, Jgc0.gdev_graphic_type);
 
 // Connection of events to this window and to the scrolled window
 // m_popup_menu1->ConnectAllPopupMenuEvents();
@@ -254,9 +253,33 @@ void JLP_GDev_wxWID::ResetAllPrivateParametersForImages()
 return;
 }
 /***********************************************************************
-*
+* Read wxGDev_SETTINGS from JLP_GDev_wxWID
 ***********************************************************************/
-void JLP_GDev_wxWID::Load_wxGDevSettings(wxGDev_SETTINGS wxgdev_settings0)
+void JLP_GDev_wxWID::GDevGet_wxGDevSettings(wxGDev_SETTINGS *wxgdev_settings0)
+{
+  wxgdev_settings0->pen_colour = wxgdev_settings1.pen_colour;
+  wxgdev_settings0->pen_default_colour = wxgdev_settings1.pen_default_colour;
+  wxgdev_settings0->backgd_colour = wxgdev_settings1.backgd_colour;
+  wxgdev_settings0->cursor_type= wxgdev_settings1.cursor_type;
+  strcpy(wxgdev_settings0->lut_type, wxgdev_settings1.lut_type);
+  wxgdev_settings0->lut_reversed = wxgdev_settings1.lut_reversed;
+  wxgdev_settings0->itt_type = wxgdev_settings1.itt_type;
+  wxgdev_settings0->itt_is_linear = wxgdev_settings1.itt_is_linear;
+  wxgdev_settings0->zoom = wxgdev_settings1.zoom;
+  wxgdev_settings0->filter = wxgdev_settings1.filter;
+  wxgdev_settings0->low_itt_thresh = wxgdev_settings1.low_itt_thresh;
+  wxgdev_settings0->up_itt_thresh = wxgdev_settings1.up_itt_thresh;
+  wxgdev_settings0->InternalProcessingMode = wxgdev_settings1.InternalProcessingMode;
+  wxgdev_settings0->box_type = wxgdev_settings1.box_type;
+  wxgdev_settings0->ticks_in = wxgdev_settings1.ticks_in;
+  wxgdev_settings0->xgrid = wxgdev_settings1.xgrid;
+  wxgdev_settings0->ygrid = wxgdev_settings1.ygrid;
+return;
+}
+/***********************************************************************
+* Write wxGDev_SETTINGS to JLP_GDev_wxWID
+***********************************************************************/
+void JLP_GDev_wxWID::GDevLoad_wxGDevSettings(wxGDev_SETTINGS wxgdev_settings0)
 {
   wxgdev_settings1.pen_colour = wxgdev_settings0.pen_colour;
   wxgdev_settings1.pen_default_colour = wxgdev_settings0.pen_default_colour;
@@ -275,17 +298,34 @@ void JLP_GDev_wxWID::Load_wxGDevSettings(wxGDev_SETTINGS wxgdev_settings0)
   wxgdev_settings1.ticks_in = wxgdev_settings0.ticks_in;
   wxgdev_settings1.xgrid = wxgdev_settings0.xgrid;
   wxgdev_settings1.ygrid = wxgdev_settings0.ygrid;
+
+/********
+// Correspondance with popup menu:
+  Update_JGC_from_GDProcSettings();
+  Update_GDProcSettings_from_JGC();
+
+  Curves_LoadPlotSettings(const char *xlabel, const char *ylabel,
+                                      const char *title,
+                                      const int xgrid_is_wanted,
+                                      const int ygrid_is_wanted,
+                                      const int jlp_axes_are_wanted,
+                                      const int iplan,
+                                      const double x1, const double x2,
+                                      const double y1, const double y2)
+***/
+
 return;
 }
 /***********************************************************************
 * Update JGdev graphic context parameters with current private variables
-* displayed by the popup menu
+* displayed by the popup menu (i.e. wxgdev_settings1)
 *
 ***********************************************************************/
 void JLP_GDev_wxWID::Update_JGC_from_GDProcSettings()
 {
   init_JGC(Jgc0.fdv_pst_fname, Jgc0.offx, Jgc0.offy, Jgc0.axlen, Jgc0.aylen,
-           Jgc0.expand, Jgc0.axis_limits[0], Jgc0.axis_limits[1],
+           Jgc0.expand, Jgc0.pen_colour, Jgc0.pen_default_colour,
+           Jgc0.backgd_colour, Jgc0.axis_limits[0], Jgc0.axis_limits[1],
            Jgc0.axis_limits[2], Jgc0.axis_limits[3],
            Jgc0.axis_limits[4], Jgc0.axis_limits[5],
            wxgdev_settings1.box_type, Jgc0.box_plan,
@@ -312,6 +352,12 @@ void JLP_GDev_wxWID::Update_GDProcSettings_from_JGC()
   wxgdev_settings1.ticks_in = Jgc0.box_ticks_in;
   client_width1 = Jgc0.dev_width;
   client_height1 = Jgc0.dev_height;
+// Transfer of other parameters with 
+//     GDevLoad_wxGDevSettings(wxGDev_SETTINGS *wxgdev_settings0)
+// pen_colour, pen_default_colour, backgd_colour
+// cursor_type, lut_type, lut_reversed, filter, itt_type, itt_is_linear
+// itt_x1_box, itt_y1_box, itt_x2_box, it_y2_box
+// low_itt_thesh, up_itt_thresh, zoom, InternalProcessingMode
 return;
 }
 /**************************************************************************

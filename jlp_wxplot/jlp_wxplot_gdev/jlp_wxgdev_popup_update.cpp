@@ -28,33 +28,36 @@ void JLP_wxGDev_Popup::UpdatePopupMenu_Cursor()
 {
 wxCursor my_cursor;
 wxString cursor_type0; // Output from jlp_SetCursor: not used
+wxGDev_SETTINGS wxgdev_settings0;
 
 if(initialized != 1234) return;
 
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
+
 /* Cursor types: Arrow, DownArrow, Cross, CrossHair, CrossHair1
 */
- if(wxgdev_settings1.cursor_type.Cmp(wxT("CrossHair1")) == 0) {
+ if(wxgdev_settings0.cursor_type.Cmp(wxT("CrossHair1")) == 0) {
    menuCursor->Check(ID_CURSOR_CROSSHAIR1, true);
- } else if (wxgdev_settings1.cursor_type.Cmp(wxT("CrossHair")) == 0) {
+ } else if (wxgdev_settings0.cursor_type.Cmp(wxT("CrossHair")) == 0) {
    menuCursor->Check(ID_CURSOR_CROSSHAIR, true);
- } else if (!wxgdev_settings1.cursor_type.Cmp(wxT("DownArrow"))) {
+ } else if (!wxgdev_settings0.cursor_type.Cmp(wxT("DownArrow"))) {
    menuCursor->Check(ID_CURSOR_DOWN_ARROW, true);
- } else if (!wxgdev_settings1.cursor_type.Cmp(wxT("Arrow"))) {
+ } else if (!wxgdev_settings0.cursor_type.Cmp(wxT("Arrow"))) {
    menuCursor->Check(ID_CURSOR_ARROW, true);
- } else if (!wxgdev_settings1.cursor_type.Cmp(wxT("BigCross"))) {
+ } else if (!wxgdev_settings0.cursor_type.Cmp(wxT("BigCross"))) {
    menuCursor->Check(ID_CURSOR_BIG_CROSS, true);
 // Default (=Cross 32)
  } else {
    menuCursor->Check(ID_CURSOR_CROSS, true);
  }
 
-jlp_gdev_wxwid1->ApplyCursorSettings(wxgdev_settings1);
+jlp_gdev_wxwid1->ApplyCursorSettings(wxgdev_settings0);
 
 return;
 }
 /**************************************************************************
 * Update LUT from c_image1
-* and store it to wxgdev_settings1.lut_type and wxgdev_settings1.lut_reversed
 *
 * lut_type: 'l'=log rainbow1 'r'=rainbow2 's'=saw 'g'=gray 'c'=curves
 *           'p'=pisco
@@ -65,17 +68,22 @@ void JLP_wxGDev_Popup::UpdatePopupMenu_LUT(const int update_display)
 {
 int status, lut_reversed0;
 char lut_type0[64];
+wxGDev_SETTINGS wxgdev_settings0;
+
  if(NULL || initialized != 1234) return;
+
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
 
 // Inquire current LUT settings
  status = jlp_gdev_wxwid1->GetLUT_Settings(lut_type0, &lut_reversed0);
  if(status != 0) return;
 
-// Save them to private variables:
- strcpy(wxgdev_settings1.lut_type, lut_type0);
- wxgdev_settings1.lut_reversed = lut_reversed0;
+// Save them to local variables:
+ strcpy(wxgdev_settings0.lut_type, lut_type0);
+ wxgdev_settings0.lut_reversed = lut_reversed0;
 
- switch (wxgdev_settings1.lut_type[0]) {
+ switch (wxgdev_settings0.lut_type[0]) {
    case 'l':
     menuLUT->Check(ID_LUT_RAIN1, true);
     break;
@@ -99,41 +107,45 @@ char lut_type0[64];
    }
 
 // Reversed LUT:
- if(wxgdev_settings1.lut_reversed == 0) {
+ if(wxgdev_settings0.lut_reversed == 0) {
    menuLUT->Check(ID_LUT_REV, false);
    } else {
    menuLUT->Check(ID_LUT_REV, true);
    }
 
 // Update settings of JLP_GDev_wxWID:
-jlp_gdev_wxwid1->ApplyLUTSettings(wxgdev_settings1, update_display);
+jlp_gdev_wxwid1->ApplyLUTSettings(wxgdev_settings0, update_display);
 
 return;
 }
 /**************************************************************************
 * Update zoom choice from gamma1,gamma_d obtained from c_image1
-* and store it to wxgdev_settings1.zoom
+* and store it to wxgdev_settings0.zoom
 *
 **************************************************************************/
 void JLP_wxGDev_Popup::UpdatePopupMenu_Zoom()
 {
 int status, gamma1, gamma_d;
+wxGDev_SETTINGS wxgdev_settings0;
 
  if(initialized != 1234) return;
+
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
 
 // Inquire current gamma values
  status = jlp_gdev_wxwid1->GetZoomGammaValues(&gamma1, &gamma_d);
  if(status != 0) return;
 
   if(gamma_d > 1)
-    wxgdev_settings1.zoom = gamma_d;
+    wxgdev_settings0.zoom = gamma_d;
   else if(gamma1 > 1)
-    wxgdev_settings1.zoom = -gamma1;
+    wxgdev_settings0.zoom = -gamma1;
   else
-    wxgdev_settings1.zoom = 1;
+    wxgdev_settings0.zoom = 1;
 
 /************* It is better to leave all items accessible ....
-if(wxgdev_settings1.zoom >= 1) {
+if(wxgdev_settings0.zoom >= 1) {
   menuZoom->Enable(ID_ZOOM40, true);
   menuZoom->Enable(ID_ZOOM20, true);
   menuZoom->Enable(ID_ZOOM15, true);
@@ -172,7 +184,7 @@ if(wxgdev_settings1.zoom >= 1) {
 }
 */
 
-  switch (wxgdev_settings1.zoom) {
+  switch (wxgdev_settings0.zoom) {
     case 40:
       menuZoom->Check(ID_ZOOM40, true);
       break;
@@ -231,18 +243,22 @@ if(wxgdev_settings1.zoom >= 1) {
   }
 
 // Update settings of JLP_GDev_wxWID:
-jlp_gdev_wxwid1->Load_wxGDevSettings(wxgdev_settings1);
+jlp_gdev_wxwid1->GDevLoad_wxGDevSettings(wxgdev_settings0);
 
 return;
 }
 /**************************************************************************
-* Update filter choice according to the value of wxgdev_settings1.filter
+* Update filter choice according to the value of wxgdev_settings0.filter
 *
 **************************************************************************/
 void JLP_wxGDev_Popup::UpdatePopupMenu_Filter()
 {
+wxGDev_SETTINGS wxgdev_settings0;
 
 if(initialized != 1234 || menuFilter == NULL) return;
+
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
 
 // First uncheck all options
 /* NOT needed
@@ -253,10 +269,12 @@ if(initialized != 1234 || menuFilter == NULL) return;
   menuFilter->Check(ID_FILTER_4, false);
   menuFilter->Check(ID_FILTER_5, false);
   menuFilter->Check(ID_FILTER_6, false);
+  menuFilter->Check(ID_FILTER_7, false);
 */
 
 // Then select good one:
-  switch (wxgdev_settings1.filter) {
+  switch (wxgdev_settings0.filter) {
+    default:
     case 0:
       if(menuFilter->FindItem(ID_FILTER_0) != NULL)
         menuFilter->Check(ID_FILTER_0, true);
@@ -289,60 +307,36 @@ if(initialized != 1234 || menuFilter == NULL) return;
       if(menuFilter->FindItem(ID_FILTER_7) != NULL)
         menuFilter->Check(ID_FILTER_7, true);
       break;
-    case 8:
-      if(menuFilter->FindItem(ID_FILTER_8) != NULL)
-        menuFilter->Check(ID_FILTER_8, true);
-      break;
-    case 9:
-      if(menuFilter->FindItem(ID_FILTER_9) != NULL)
-        menuFilter->Check(ID_FILTER_9, true);
-      break;
-    case 10:
-      if(menuFilter->FindItem(ID_FILTER_10) != NULL)
-        menuFilter->Check(ID_FILTER_10, true);
-      break;
-    case 11:
-      if(menuFilter->FindItem(ID_FILTER_11) != NULL)
-        menuFilter->Check(ID_FILTER_11, true);
-      break;
-    case 12:
-      if(menuFilter->FindItem(ID_FILTER_12) != NULL)
-        menuFilter->Check(ID_FILTER_12, true);
-      break;
-    case 13:
-      if(menuFilter->FindItem(ID_FILTER_13) != NULL)
-        menuFilter->Check(ID_FILTER_13, true);
-      break;
-    case 14:
-      if(menuFilter->FindItem(ID_FILTER_14) != NULL)
-        menuFilter->Check(ID_FILTER_14, true);
-      break;
   }
 
 // Update settings of JLP_GDev_wxWID:
-jlp_gdev_wxwid1->Load_wxGDevSettings(wxgdev_settings1);
+jlp_gdev_wxwid1->GDevLoad_wxGDevSettings(wxgdev_settings0);
 
 return;
 }
 /**************************************************************************
 * Update gsegraf choice according to the values of
-* wxgdev_settings1.gseg_phi
-* wxgdev_settings1.gseg_theta, ...
+* wxgdev_settings0.gseg_phi
+* wxgdev_settings0.gseg_theta, ...
 *
 **************************************************************************/
 void JLP_wxGDev_Popup::UpdatePopupMenu_Gsegraf(const int update_display)
 {
+wxGDev_SETTINGS wxgdev_settings0;
 
 if(initialized != 1234 || menuGsegraf == NULL) return;
 
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
+
 // Update settings of JLP_GDev_wxWID:
-jlp_gdev_wxwid1->ApplyGsegrafSettings(wxgdev_settings1, update_display);
+jlp_gdev_wxwid1->ApplyGsegrafSettings(wxgdev_settings0, update_display);
 
 return;
 }
 /**************************************************************************
 * Update ITT choice from value obtained from c_image1
-* and store it to wxgdev_settings1.itt_type
+* and store it to wxgdev_settings0.itt_type
 *
 * ITT_thresh: Threshold determination
 * "FromBox" "DirectInput" "MinMax" "Median" "HC" (high contrast)
@@ -351,12 +345,16 @@ return;
 **************************************************************************/
 void JLP_wxGDev_Popup::UpdatePopupMenu_ITT(const int update_display)
 {
+wxGDev_SETTINGS wxgdev_settings0;
 double low_threshold0, upper_threshold0;
 int status, itt_is_linear0, box_x10, box_x20, box_y10, box_y20;
 wxString itt_type0;
 int wc2, wc3;
 
  if(initialized != 1234) return;
+
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
 
 // Inquire current ITT thresholds
  status = jlp_gdev_wxwid1->GDevGet_ITT_Thresh(&itt_type0, &itt_is_linear0,
@@ -365,14 +363,14 @@ int wc2, wc3;
  if(status != 0) return;
 
 // Save them to private variables:
- wxgdev_settings1.itt_type = itt_type0;
- wxgdev_settings1.itt_is_linear = itt_is_linear0;
- wxgdev_settings1.low_itt_thresh = low_threshold0;
- wxgdev_settings1.up_itt_thresh = upper_threshold0;
+ wxgdev_settings0.itt_type = itt_type0;
+ wxgdev_settings0.itt_is_linear = itt_is_linear0;
+ wxgdev_settings0.low_itt_thresh = low_threshold0;
+ wxgdev_settings0.up_itt_thresh = upper_threshold0;
 
- wc2 = (int)wxgdev_settings1.itt_type[0];
- wc3 = (int)wxgdev_settings1.itt_type[1];
- if(wxgdev_settings1.InternalProcessingMode == 0) wc2 = (int)'I';
+ wc2 = (int)wxgdev_settings0.itt_type[0];
+ wc3 = (int)wxgdev_settings0.itt_type[1];
+ if(wxgdev_settings0.InternalProcessingMode == 0) wc2 = (int)'I';
 
 // To avoid loose of processing selection (statistics, photometry, etc.)
  software_event1 = 1;
@@ -408,7 +406,7 @@ int wc2, wc3;
  software_event1 = 0;
 
 // Update settings of JLP_GDev_wxWID:
-jlp_gdev_wxwid1->ApplyITTSettings(wxgdev_settings1, update_display);
+jlp_gdev_wxwid1->ApplyITTSettings(wxgdev_settings0, update_display);
 
 return;
 }
@@ -418,27 +416,31 @@ return;
 **************************************************************************/
 void JLP_wxGDev_Popup::UpdatePopupMenu_PenColour(const int update_display)
 {
+wxGDev_SETTINGS wxgdev_settings0;
 UINT32 canvas_fg_color0;
 
 if(initialized != 1234 || menuPen == NULL) return;
 
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
+
 // Pen colour:
-wxgdev_settings1.pen_colour = wxgdev_settings1.pen_default_colour;
- if(wxgdev_settings1.pen_colour == *wxWHITE){
+wxgdev_settings0.pen_colour = wxgdev_settings0.pen_default_colour;
+ if(wxgdev_settings0.pen_colour == *wxWHITE){
    canvas_fg_color0 = 0xFFFFFFFF;
    if(menuPen->FindItem(ID_WHITE_PEN_COLOUR) != NULL)
       menuPen->Check(ID_WHITE_PEN_COLOUR, true);
- } else if(wxgdev_settings1.pen_colour == *wxRED){
+ } else if(wxgdev_settings0.pen_colour == *wxRED){
 // NB: DF instead of FF for a darker color...
    canvas_fg_color0 = 0xDF0000FF;
    if(menuPen->FindItem(ID_RED_PEN_COLOUR) != NULL)
       menuPen->Check(ID_RED_PEN_COLOUR, true);
- } else if(wxgdev_settings1.pen_colour == *wxGREEN){
+ } else if(wxgdev_settings0.pen_colour == *wxGREEN){
 // NB: DF instead of FF for a darker color...
    canvas_fg_color0 = 0x00DF00FF;
    if(menuPen->FindItem(ID_GREEN_PEN_COLOUR) != NULL)
       menuPen->Check(ID_GREEN_PEN_COLOUR, true);
- } else if(wxgdev_settings1.pen_colour == *wxBLUE){
+ } else if(wxgdev_settings0.pen_colour == *wxBLUE){
 // NB: DF instead of FF for a darker color...
    canvas_fg_color0 = 0x0000DFFF;
    if(menuPen->FindItem(ID_BLUE_PEN_COLOUR) != NULL)
@@ -448,7 +450,7 @@ wxgdev_settings1.pen_colour = wxgdev_settings1.pen_default_colour;
    canvas_fg_color0 = 0x000000FF;
    if(menuPen->FindItem(ID_BLACK_PEN_COLOUR) != NULL)
       menuPen->Check(ID_BLACK_PEN_COLOUR, true);
-   wxgdev_settings1.pen_colour = *wxBLACK;
+   wxgdev_settings0.pen_colour = *wxBLACK;
  }
 
 // Update cursor (since there may be some possible change
@@ -456,9 +458,8 @@ wxgdev_settings1.pen_colour = wxgdev_settings1.pen_default_colour;
  UpdatePopupMenu_Cursor();
 
 // Update settings of JLP_GDev_wxWID:
- jlp_gdev_wxwid1->ApplyPenColourSettings(wxgdev_settings1,
-                                                canvas_fg_color0,
-                                                update_display);
+ jlp_gdev_wxwid1->ApplyPenColourSettings(wxgdev_settings0, canvas_fg_color0, 
+                                         update_display);
 
 return;
 }
@@ -468,20 +469,24 @@ return;
 **************************************************************************/
 void JLP_wxGDev_Popup::UpdatePopupMenu_BackgroundColour(const int update_display)
 {
+wxGDev_SETTINGS wxgdev_settings0;
 UINT32 canvas_bg_color0;
 
 if(initialized != 1234 || menuBackgd == NULL) return;
 
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
+
 // Background colour:
- if(wxgdev_settings1.backgd_colour == *wxBLACK){
+ if(wxgdev_settings0.backgd_colour == *wxBLACK){
    canvas_bg_color0 = 0x000000FF;
    if(menuBackgd->FindItem(ID_BLACK_BACK_COLOUR) != NULL)
       menuBackgd->Check(ID_BLACK_BACK_COLOUR, true);
- } else if(wxgdev_settings1.backgd_colour == *wxYELLOW){
+ } else if(wxgdev_settings0.backgd_colour == *wxYELLOW){
    canvas_bg_color0 = 0xFFFF00FF;
    if(menuBackgd->FindItem(ID_YELLOW_BACK_COLOUR) != NULL)
       menuBackgd->Check(ID_YELLOW_BACK_COLOUR, true);
- } else if(wxgdev_settings1.backgd_colour == *wxLIGHT_GREY){
+ } else if(wxgdev_settings0.backgd_colour == *wxLIGHT_GREY){
    canvas_bg_color0 = 0xDDDDDDFF;
    if(menuBackgd->FindItem(ID_GREY_BACK_COLOUR) != NULL)
       menuBackgd->Check(ID_GREY_BACK_COLOUR, true);
@@ -490,11 +495,11 @@ if(initialized != 1234 || menuBackgd == NULL) return;
    canvas_bg_color0 = 0xFFFFFFFF;
    if(menuBackgd->FindItem(ID_WHITE_BACK_COLOUR) != NULL)
       menuBackgd->Check(ID_WHITE_BACK_COLOUR, true);
-   wxgdev_settings1.backgd_colour = *wxWHITE;
+   wxgdev_settings0.backgd_colour = *wxWHITE;
  }
 
 // Update settings of JLP_GDev_wxWID:
- jlp_gdev_wxwid1->ApplyBackgroundColourSettings(wxgdev_settings1,
+ jlp_gdev_wxwid1->ApplyBackgroundColourSettings(wxgdev_settings0,
                                                 canvas_bg_color0,
                                                 update_display);
 
@@ -506,18 +511,23 @@ return;
 **************************************************************************/
 void JLP_wxGDev_Popup::UpdatePopupMenu_BoxType(const int update_display)
 {
+wxGDev_SETTINGS wxgdev_settings0;
+
 if((initialized != 1234) || (menuBackgd == NULL)
    || (menuBoxType == NULL) || (menuBoxLimits == NULL)) return;
 
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
+
  if(menuBoxLimits->FindItem(ID_BOX_LIMITS_WITH_BOX) != NULL) {
-    if(wxgdev_settings1.InternalProcessingMode == 0)
+    if(wxgdev_settings0.InternalProcessingMode == 0)
       menuBoxLimits->Check(ID_BOX_LIMITS_WITH_BOX, true);
     else
       menuBoxLimits->Check(ID_BOX_LIMITS_WITH_BOX, false);
     }
 
 // Box type:
- switch(wxgdev_settings1.box_type){
+ switch(wxgdev_settings0.box_type){
   default:
   case 0:
    if(menuBoxType->FindItem(ID_BOX_TYPE0) != NULL)
@@ -535,7 +545,7 @@ if((initialized != 1234) || (menuBackgd == NULL)
 
 // Ticks in
  if(menuBoxType->FindItem(ID_BOX_TICKS_IN) != NULL) {
-   if(wxgdev_settings1.ticks_in == 1)
+   if(wxgdev_settings0.ticks_in == 1)
       menuBoxType->Check(ID_BOX_TICKS_IN, true);
    else
       menuBoxType->Check(ID_BOX_TICKS_IN, false);
@@ -543,7 +553,7 @@ if((initialized != 1234) || (menuBackgd == NULL)
 
 // X grid
  if(menuBoxType->FindItem(ID_BOX_XGRID) != NULL) {
-   if(wxgdev_settings1.xgrid == 1)
+   if(wxgdev_settings0.xgrid == 1)
       menuBoxType->Check(ID_BOX_XGRID, true);
    else
       menuBoxType->Check(ID_BOX_XGRID, false);
@@ -551,7 +561,7 @@ if((initialized != 1234) || (menuBackgd == NULL)
 
 // Y grid
  if(menuBoxType->FindItem(ID_BOX_YGRID) != NULL) {
-   if(wxgdev_settings1.ygrid == 1)
+   if(wxgdev_settings0.ygrid == 1)
       menuBoxType->Check(ID_BOX_YGRID, true);
    else
       menuBoxType->Check(ID_BOX_YGRID, false);
@@ -559,7 +569,7 @@ if((initialized != 1234) || (menuBackgd == NULL)
 
 // Apply those changes (box_type, box_xgrid, etc...)
 // Update settings of JLP_GDev_wxWID:
- jlp_gdev_wxwid1->ApplyBoxTypeSettings(wxgdev_settings1, update_display);
+ jlp_gdev_wxwid1->ApplyBoxTypeSettings(wxgdev_settings0, update_display);
 
 return;
 }
@@ -577,12 +587,17 @@ return;
 **************************************************************************/
 void JLP_wxGDev_Popup::UpdatePopupMenu_InternalProcessingMode()
 {
+wxGDev_SETTINGS wxgdev_settings0;
 int pmode;
+
 if(initialized != 1234) return;
+
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
 
 // Update current value from JLP_GDev_WXWID object:
    jlp_gdev_wxwid1->GetInternalProcessingMode(&pmode);
-   wxgdev_settings1.InternalProcessingMode = pmode;
+   wxgdev_settings0.InternalProcessingMode = pmode;
 
 // First set process options to false:
   if(menuProcess->FindItem(ID_STATISTICS) != NULL)
@@ -602,7 +617,7 @@ if(initialized != 1234) return;
      }
 
 // Uncheck Box threshold option and set it to MinMax
-  if(wxgdev_settings1.InternalProcessingMode != 0) {
+  if(wxgdev_settings0.InternalProcessingMode != 0) {
 // Problem here!
 // May generate an event to ChangeITT_threshold, so I create a wayout:
       software_event1 = 1;
@@ -621,7 +636,7 @@ if(initialized != 1234) return;
       }
 
 // Then select the good one:
-  switch(wxgdev_settings1.InternalProcessingMode){
+  switch(wxgdev_settings0.InternalProcessingMode){
     case 0:
 // For jlp_splot/images: ITT selection with rectangular box
    if((gdev_graphic_type1 == 2) || (gdev_graphic_type1 == 3)) {
@@ -664,32 +679,8 @@ if(initialized != 1234) return;
   }
 
 // Apply settings to JLP_GDev_wxWID:
- jlp_gdev_wxwid1->ApplyInternalProcessingModeSettings(wxgdev_settings1);
+ jlp_gdev_wxwid1->ApplyInternalProcessingModeSettings(wxgdev_settings0);
 
-return;
-}
-/***********************************************************************
-*
-***********************************************************************/
-void JLP_wxGDev_Popup::Load_wxGDevSettings(wxGDev_SETTINGS wxgdev_settings0)
-{
-  wxgdev_settings1.pen_colour = wxgdev_settings0.pen_colour;
-  wxgdev_settings1.pen_default_colour = wxgdev_settings0.pen_default_colour;
-  wxgdev_settings1.backgd_colour = wxgdev_settings0.backgd_colour;
-  wxgdev_settings1.cursor_type= wxgdev_settings0.cursor_type;
-  strcpy(wxgdev_settings1.lut_type, wxgdev_settings0.lut_type);
-  wxgdev_settings1.lut_reversed = wxgdev_settings0.lut_reversed;
-  wxgdev_settings1.itt_type = wxgdev_settings0.itt_type;
-  wxgdev_settings1.itt_is_linear = wxgdev_settings0.itt_is_linear;
-  wxgdev_settings1.zoom = wxgdev_settings0.zoom;
-  wxgdev_settings1.filter = wxgdev_settings0.filter;
-  wxgdev_settings1.low_itt_thresh = wxgdev_settings0.low_itt_thresh;
-  wxgdev_settings1.up_itt_thresh = wxgdev_settings0.up_itt_thresh;
-  wxgdev_settings1.InternalProcessingMode = wxgdev_settings0.InternalProcessingMode;
-  wxgdev_settings1.box_type = wxgdev_settings0.box_type;
-  wxgdev_settings1.ticks_in = wxgdev_settings0.ticks_in;
-  wxgdev_settings1.xgrid = wxgdev_settings0.xgrid;
-  wxgdev_settings1.ygrid = wxgdev_settings0.ygrid;
 return;
 }
 
@@ -707,19 +698,19 @@ But the exception applies only to the menus themselves and not
 to any submenus of popup menus which are still destroyed by wxWidgets
 as usual and so must be heap-allocated.
 ****************************************************************************/
-void JLP_wxGDev_Popup::UpdatePopupMenu(wxGDev_SETTINGS wxgdev_settings0)
+void JLP_wxGDev_Popup::UpdatePopupMenu(wxGDev_SETTINGS wxgdev_settings0,
+                                       int update_display)
 {
 double low_threshold0, upper_threshold0;
 int status, itt_is_linear0, box_x10, box_y10, box_x20, box_y20;
 wxString itt_type0;
-int update_display = 0;
 wxString str2;
 bool has_shapes, has_labels, has_scale_bar, has_north_east;
 
 if(initialized != 1234 || PopupMenu1 == NULL) return;
 
-// Load wxgdev_settings0
- Load_wxGDevSettings(wxgdev_settings0);
+// Load input settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevLoad_wxGDevSettings(wxgdev_settings0);
 
 // Erase all check boxes:
  PopupMenuEraseProcessingCheckBoxes();
@@ -765,11 +756,11 @@ if(initialized != 1234 || PopupMenu1 == NULL) return;
 // Default function is selection of thresholds within a rectangular box:
  if(status == 0) {
 // Save them to private variables:
-  wxgdev_settings1.itt_type = itt_type0;
-  wxgdev_settings1.itt_is_linear = itt_is_linear0;
-  wxgdev_settings1.low_itt_thresh = low_threshold0;
-  wxgdev_settings1.up_itt_thresh = upper_threshold0;
-  if(wxgdev_settings1.itt_is_linear == 1) {
+  wxgdev_settings0.itt_type = itt_type0;
+  wxgdev_settings0.itt_is_linear = itt_is_linear0;
+  wxgdev_settings0.low_itt_thresh = low_threshold0;
+  wxgdev_settings0.up_itt_thresh = upper_threshold0;
+  if(wxgdev_settings0.itt_is_linear == 1) {
     menuITT1->Check(ID_ITT_LIN, true);
    } else {
     menuITT1->Check(ID_ITT_LOG, true);
@@ -822,7 +813,7 @@ if(initialized != 1234 || PopupMenu1 == NULL) return;
    }
 
 // Update settings of JLP_GDev_wxWID:
-jlp_gdev_wxwid1->ApplyITTSettings(wxgdev_settings1, update_display);
+jlp_gdev_wxwid1->ApplyITTSettings(wxgdev_settings0, update_display);
 
 return;
 }

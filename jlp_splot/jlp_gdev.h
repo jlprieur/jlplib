@@ -229,7 +229,9 @@ public:
   int close_backup_file();
   int init_JGC(const char *out_fname0, const int offx0,
                        const int offy0, const int axlen0, const int aylen0,
-                       const double expand0,
+                       const double expand0, const char *pen_colour, 
+                       const char *pen_default_colour,
+                       const char *backgd_colour, 
                        const double box_xmin0, const double box_xmax0,
                        const double box_ymin0, const double box_ymax0,
                        const double box_zmin0, const double box_zmax0,
@@ -333,11 +335,12 @@ int jlp_sciplot_DrawGrid(SciPlotAxis Axis, int xorigin, int yorigin,
 // Contained in "jlp_gdev_curves.cpp"
   int PlotAllCurves_splot();
   int Curves_LoadPlotSettings(const char *xlabel, const char *ylabel,
-                       const char *title, const int xgrid_is_wanted,
-                       const int ygrid_is_wanted,
-                       const int jlp_axes_are_wanted, const int iplan,
-                       const double x1, const double x2,
-                       const double y1, const double y2);
+                      const char *title, const char *pen_colour,
+                      const char *pen_default_colour, const char *backgd_colour,
+                      const int xgrid_is_wanted, const int ygrid_is_wanted,
+                      const int jlp_axes_are_wanted, const int iplan,
+                      const double x1, const double x2,
+                      const double y1, const double y2);
   void UpdateCursor(const double x_position);
 
 // Contained in "jlp_gdev_gsegraf.cpp"
@@ -417,61 +420,44 @@ int jlp_sciplot_DrawGrid(SciPlotAxis Axis, int xorigin, int yorigin,
   void Mouse_EraseLeftUpPoints();
 
 /************************************************************************
-* Accessors to Jgc0 :
+* Accessors to Jgc0 in jlp_gdev.cpp (not defined in this abstract virtual class:
 *************************************************************************/
-  int GetMaxLevelForLUT(){return(MaxColorLevelForLUT);};
-  int Jgc0_ncolors() {return Jgc0.gclr.ncolors;};
-  int Jgc0_lut(const int i) {
-     if((i < 0) || (i >= Jgc0.gclr.ncolors)){ 
-     fprintf(stderr, "jlp_gdev.h/lut/Fatal error: i=%d (ncolors=%d)\n", 
-             i, Jgc0.gclr.ncolors);
-     exit(-1);
-     }
-     return Jgc0.gclr.lut[i];
-    };
-  int Jgc0_TeX_flag() {return Jgc0.TeX_flag;};
-  int Jgc0_dev_type() {return Jgc0.dev_type;};
-  int Jgc0_dev_width() {return Jgc0.dev_width;};
-  int Jgc0_dev_height() {return Jgc0.dev_height;};
-  int Jgc0_dev_yorigin_is_on_top() {return Jgc0.dev_yorigin_is_on_top;};
-  int Jgc0_dev_idv() {return Jgc0.dev_idv;};
-  int Jgc0_offx() {return Jgc0.offx;};
-  int Jgc0_offy() {return Jgc0.offy;};
-  int Jgc0_axlen() {return Jgc0.axlen;};
-  int Jgc0_aylen() {return Jgc0.aylen;};
-  int Jgc0_pdef() {return Mgc0.pdef;};
-  int Jgc0_ldef() {return Mgc0.ldef;};
-  int Jgc0_ltype() {return Mgc0.lltype;};
-  int Jgc0_lwidth() {return Mgc0.lwidth;};
-  int Jgc0_box_plan() {return Jgc0.box_plan;};
-  double Jgc0_box_xmin() {return Jgc0.axis_limits[0];};
-  double Jgc0_box_xmax() {return Jgc0.axis_limits[1];};
-  double Jgc0_box_ymin() {return Jgc0.axis_limits[2];};
-  double Jgc0_box_ymax() {return Jgc0.axis_limits[3];};
-  double Jgc0_box_zmin() {return Jgc0.axis_limits[4];};
-  double Jgc0_box_zmax() {return Jgc0.axis_limits[5];};
-  double Jgc0_xmin_user() {return Jgc0.xmin_user;};
-  double Jgc0_xmax_user() {return Jgc0.xmax_user;};
-  double Jgc0_ymin_user() {return Jgc0.ymin_user;};
-  double Jgc0_ymax_user() {return Jgc0.ymax_user;};
-  double Jgc0_zmin_user() {return Jgc0.zmin_user;};
-  double Jgc0_zmax_user() {return Jgc0.zmax_user;};
-  double Jgc0_fsx() {return Mgc0.fsx;};
-  double Jgc0_fsy() {return Mgc0.fsy;};
-  double Jgc0_cheight() {return Jgc0.cheight;};
-  double Jgc0_cwidth() {return Jgc0.cwidth;};
-  FILE *Jgc0_fp_backup() {return Jgc0.fp_backup;};
-/* GDevGraphicType:
-* 1 = jlp_splot_curves
-* 2 = jlp_splot_images
-* 3 = wx_scrolled/jlp_splot_images
-* 4 = gsegraf_2d_curves
-* 5 = gsegraf_2d_images
-* 6 = gsegraf_3d_curves
-* 7 = gsegraf_3d_images
-* 8 = gsegraf_polar_curve
-*/
-  int GDevGraphicType(){return(Jgc0.gdev_graphic_type);}
+  int GetMaxLevelForLUT();
+  int Jgc0_ncolors();
+  int Jgc0_lut(const int i);
+  int Jgc0_TeX_flag();
+  int Jgc0_dev_type();
+  int Jgc0_dev_width();
+  int Jgc0_dev_height();
+  int Jgc0_dev_yorigin_is_on_top();
+  int Jgc0_dev_idv();
+  int Jgc0_offx();
+  int Jgc0_offy();
+  int Jgc0_axlen();
+  int Jgc0_aylen();
+  int Jgc0_pdef();
+  int Jgc0_ldef();
+  int Jgc0_ltype();
+  int Jgc0_lwidth();
+  int Jgc0_box_plan();
+  double Jgc0_box_xmin();
+  double Jgc0_box_xmax();
+  double Jgc0_box_ymin();
+  double Jgc0_box_ymax();
+  double Jgc0_box_zmin();
+  double Jgc0_box_zmax();
+  double Jgc0_xmin_user();
+  double Jgc0_xmax_user();
+  double Jgc0_ymin_user();
+  double Jgc0_ymax_user();
+  double Jgc0_zmin_user();
+  double Jgc0_zmax_user();
+  double Jgc0_fsx();
+  double Jgc0_fsy();
+  double Jgc0_cheight();
+  double Jgc0_cwidth();
+  FILE *Jgc0_fp_backup();
+  int GDevGraphicType();
 
 protected:
 
@@ -517,7 +503,6 @@ protected:
   int nx_1, ny_1, nz_1, iplane_1;
   char fits_filename_1[128];
 
-// ZZZ
   bool first_time_curves_are_plotted;
 
 }; 

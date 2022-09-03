@@ -14,6 +14,83 @@
 #include "jlp_gdev_idv.h" // GDev_alloc_idv()
 
 /**************************************************************************
+* Accessors :
+**************************************************************************/
+  int JLP_GDev::GetMaxLevelForLUT(){int i0 = MaxColorLevelForLUT; return(i0);};
+  // Not possible: char* Jgc0_backgd_colour()
+  // Not possible: char* Jgc0_pen_colour()
+  // Not possible: char* Jgc0_pen_default_colour()
+  int JLP_GDev::Jgc0_ncolors() {int i0 = Jgc0.gclr.ncolors; return(i0);};
+  int JLP_GDev::Jgc0_lut(const int i) {
+     int i0 = -1;
+     if((i < 0) || (i >= Jgc0.gclr.ncolors)){
+     fprintf(stderr, "jlp_gdev.h/lut/Fatal error: i=%d (ncolors=%d)\n",
+             i, Jgc0.gclr.ncolors);
+     } else {
+     i0 = Jgc0.gclr.lut[i];
+     }
+    return(i0);
+    };
+  int JLP_GDev::Jgc0_TeX_flag() {int i0 = Jgc0.TeX_flag; return(i0);};
+  int JLP_GDev::Jgc0_dev_type() {int i0 = Jgc0.dev_type; return(i0);};
+  int JLP_GDev::Jgc0_dev_width() {int i0 = Jgc0.dev_width; return(i0);};
+  int JLP_GDev::Jgc0_dev_height() {int i0 = Jgc0.dev_height; return(i0);};
+  int JLP_GDev::Jgc0_dev_yorigin_is_on_top() {
+    int i0 = Jgc0.dev_yorigin_is_on_top; return(i0);
+    };
+  int JLP_GDev::Jgc0_dev_idv() {int i0 = Jgc0.dev_idv; return(i0);};
+  int JLP_GDev::Jgc0_offx() {int i0 = Jgc0.offx; return(i0);};
+  int JLP_GDev::Jgc0_offy() {int i0 = Jgc0.offy; return(i0);};
+  int JLP_GDev::Jgc0_axlen() {int i0 = Jgc0.axlen; return(i0);};
+  int JLP_GDev::Jgc0_aylen() {int i0 = Jgc0.aylen; return(i0);};
+  int JLP_GDev::Jgc0_pdef() {int i0 = Mgc0.pdef; return(i0);};
+  int JLP_GDev::Jgc0_ldef() {int i0 = Mgc0.ldef; return(i0);};
+  int JLP_GDev::Jgc0_ltype() {int i0 = Mgc0.lltype; return(i0);};
+  int JLP_GDev::Jgc0_lwidth() {int i0 = Mgc0.lwidth; return(i0);};
+  int JLP_GDev::Jgc0_box_plan() {int i0 = Jgc0.box_plan; return(i0);};
+  double JLP_GDev::Jgc0_box_xmin() {
+    double d0 = Jgc0.axis_limits[0];
+    return(d0);
+    }
+  double JLP_GDev::Jgc0_box_xmax() {
+    double d0 = Jgc0.axis_limits[1]; return(d0);
+    }
+  double JLP_GDev::Jgc0_box_ymin() {
+    double d0 = Jgc0.axis_limits[2]; return(d0);
+    }
+  double JLP_GDev::Jgc0_box_ymax() {
+    double d0 = Jgc0.axis_limits[3]; return(d0);
+    }
+  double JLP_GDev::Jgc0_box_zmin() {
+    double d0 = Jgc0.axis_limits[4]; return(d0);
+    }
+  double JLP_GDev::Jgc0_box_zmax() {
+    double d0 = Jgc0.axis_limits[5]; return(d0);
+    }
+  double JLP_GDev::Jgc0_xmin_user() {double d0 = Jgc0.xmin_user; return(d0);};
+  double JLP_GDev::Jgc0_xmax_user() {double d0 = Jgc0.xmax_user; return(d0);};
+  double JLP_GDev::Jgc0_ymin_user() {double d0 = Jgc0.ymin_user; return(d0);};
+  double JLP_GDev::Jgc0_ymax_user() {double d0 = Jgc0.ymax_user; return(d0);};
+  double JLP_GDev::Jgc0_zmin_user() {double d0 = Jgc0.zmin_user; return(d0);};
+  double JLP_GDev::Jgc0_zmax_user() {double d0 = Jgc0.zmax_user; return(d0);};
+  double JLP_GDev::Jgc0_fsx() {double d0 = Mgc0.fsx; return(d0);};
+  double JLP_GDev::Jgc0_fsy() {double d0 = Mgc0.fsy; return(d0);};
+  double JLP_GDev::Jgc0_cheight() {double d0 = Jgc0.cheight; return(d0);};
+  double JLP_GDev::Jgc0_cwidth() {double d0 = Jgc0.cwidth; return(d0);};
+  FILE* JLP_GDev::Jgc0_fp_backup() {FILE *f0 = Jgc0.fp_backup; return(f0);};
+/* GDevGraphicType:
+* 1 = jlp_splot_curves
+* 2 = jlp_splot_images
+* 3 = wx_scrolled/jlp_splot_images
+* 4 = gsegraf_2d_curves
+* 5 = gsegraf_2d_images
+* 6 = gsegraf_3d_curves
+* 7 = gsegraf_3d_images
+* 8 = gsegraf_polar_curve
+*/
+  int JLP_GDev::GDevGraphicType(){int i0 = Jgc0.gdev_graphic_type; return(i0);}
+
+/**************************************************************************
 * General setup in case of curves
 *
 * Example of call:
@@ -30,6 +107,11 @@ int jgc_dev_width, jgc_dev_height, dev_yorigin_is_on_top;
 int offx, offy, axlen, aylen, ix, iy, iwidth, iheight, idv0;
 double box_xmin, box_xmax, box_ymin, box_ymax, expand;
 char xlabel0[64], ylabel0[64], zlabel0[64];
+char pen_colour[64], pen_default_colour[64], backgd_colour[64];
+
+strcpy(pen_colour, "Black");
+strcpy(pen_default_colour, "Black");
+strcpy(backgd_colour, "White");
 
 // Store pointer to idv static variables and get an identifier (idv0):
 status = GDev_alloc_idv(cJgd, &idv0, err_messg);
@@ -41,9 +123,9 @@ if(status) {
  }
 
 // Create private plot arrays:
-// nmaxi=4096 at least is needed for Spea1
+// nmaxi=5120 at least is needed for Spea1
 // CreatePlotDataArrays(int nmaxi, int ncurves_maxi, int nout_maxi)
-  CreatePlotDataArrays(4096, 128, 256);
+ CreatePlotDataArrays(5120, 128, 256);
  Curves_ResetAllPrivateParameters();
 
 // Old values for screen : 3500,  3500, 28000, 28000 (but problems for curves)
@@ -101,7 +183,8 @@ if(TeX_flag) MyText = new JLP_GText(status);
   strcpy(xlabel0, "");
   strcpy(ylabel0, "");
   strcpy(zlabel0, "");
-  init_JGC(out_fname, offx, offy, axlen, aylen, expand, box_xmin, box_xmax, 
+  init_JGC(out_fname, offx, offy, axlen, aylen, expand, 
+           pen_colour, pen_default_colour, backgd_colour, box_xmin, box_xmax, 
            box_ymin, box_ymax, 0., 1., box_type, box_plan, 0, 0, 1,  
            xlabel0, ylabel0, zlabel0, title0, 0, 0, 0, 
            dev_type,  dev_width, dev_height, TeX_flag, 
@@ -184,7 +267,12 @@ int JLP_GDev::SetupForImage(JLP_GDev* iJgd, const char *plotdev,
 {
 double box_xmin, box_xmax, box_ymin, box_ymax, expand;
 char xlabel0[64], ylabel0[64], zlabel0[64];
+char pen_colour[64], pen_default_colour[64], backgd_colour[64];
 int idv0;
+
+strcpy(pen_colour, "White");
+strcpy(pen_default_colour, "White");
+strcpy(backgd_colour, "Black");
 
 /* To be changed later:
 *  (the image is reduced by a factor of gamma1 if nx1 or ny1 > max_size)
@@ -289,7 +377,8 @@ printf("JLP_GDev::SetupForImage//idv0=%d cJgd=%ld\n", idv0, (long int)cJgd);
   strcpy(xlabel0, "");
   strcpy(ylabel0, "");
   strcpy(zlabel0, "");
-  init_JGC(out_fname, offx, offy, axlen, aylen, expand, box_xmin, box_xmax, 
+  init_JGC(out_fname, offx, offy, axlen, aylen, expand, 
+           pen_colour, pen_default_colour, backgd_colour, box_xmin, box_xmax, 
            box_ymin, box_ymax, 0., 1., box_type, box_plan, 0, 0, 1,  
            xlabel0, ylabel0, zlabel0, title0, 0, 0, 0, 
            dev_type,  dev_width, dev_height, TeX_flag, 
@@ -381,7 +470,9 @@ return(status);
 **********************************************************************/
 int JLP_GDev::init_JGC(const char *out_fname0, const int offx0, 
                        const int offy0, const int axlen0, const int aylen0, 
-                       const double expand0, 
+                       const double expand0, const char *pen_colour, 
+                       const char *pen_default_colour, 
+                       const char *backgd_colour, 
                        const double box_xmin0, const double box_xmax0, 
                        const double box_ymin0, const double box_ymax0, 
                        const double box_zmin0, const double box_zmax0, 
@@ -408,6 +499,10 @@ int JLP_GDev::init_JGC(const char *out_fname0, const int offx0,
  Jgc0.axlen = axlen0;
  Jgc0.aylen = aylen0;
  Jgc0.expand = expand0;
+
+ strcpy(Jgc0.pen_colour, pen_colour);
+ strcpy(Jgc0.pen_default_colour, pen_default_colour);
+ strcpy(Jgc0.backgd_colour, backgd_colour);
 
 // Box parameters:
  Jgc0.axis_limits[0] = box_xmin0; 

@@ -14,13 +14,13 @@
 //*************************************************************************
 enum
 {
-   ID_PLOT_OK = 3920,
-   ID_PLOT_CANCEL     = 3921
+   ID_PLOT_SAVE = 3920,
+   ID_PLOT_CLOSE = 3921
 };
 
 BEGIN_EVENT_TABLE(JLP_wxGPlot_Dlg, wxDialog)
-EVT_BUTTON  (ID_PLOT_OK, JLP_wxGPlot_Dlg::OnOKButton)
-EVT_BUTTON  (ID_PLOT_CANCEL, JLP_wxGPlot_Dlg::OnCancelButton)
+EVT_BUTTON  (ID_PLOT_SAVE, JLP_wxGPlot_Dlg::OnSaveButton)
+EVT_BUTTON  (ID_PLOT_CLOSE, JLP_wxGPlot_Dlg::OnCloseButton)
 END_EVENT_TABLE()
 
 /**************************************************************************
@@ -35,16 +35,16 @@ END_EVENT_TABLE()
 **************************************************************************/
 JLP_wxGPlot_Dlg::JLP_wxGPlot_Dlg(double *xplot0, double *yplot0, 
                                  double *errorx0, double *errory0, int nplot0, 
-                               const wxString title0, const wxString xlabel0,
-                               const wxString ylabel0)
+                                 const wxString title0, const wxString xlabel0,
+                                 const wxString ylabel0)
                   : wxDialog(NULL, -1, title0, wxDefaultPosition, 
                    wxSize(800,600), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
 {
 int i;
 
 m_GraphicPanel = NULL;
-m_OKButton = NULL; 
-m_CancelButton = NULL; 
+m_SaveButton = NULL; 
+m_CloseButton = NULL; 
 m_StaticText = NULL;
 xplot1 = NULL; 
 yplot1 = NULL; 
@@ -103,12 +103,12 @@ int iwidth, iheight;
 
 // Create two buttons that are horizontally unstretchable, 
 // with an all-around border with a width of 10 and implicit top alignment
- m_OKButton = new wxButton(this, ID_PLOT_OK, _T("OK") ); 
+ m_SaveButton = new wxButton(this, ID_PLOT_SAVE, _T("Save to JPEG, PNG, etc") ); 
 
- button_sizer->Add( m_OKButton, 0, wxALL, 10);
+ button_sizer->Add( m_SaveButton, 0, wxALL, 10);
 
- m_CancelButton = new wxButton(this, ID_PLOT_CANCEL, _T("Cancel") ); 
- button_sizer->Add( m_CancelButton, 0, wxALL, 10);
+ m_CloseButton = new wxButton(this, ID_PLOT_CLOSE, _T("Close") ); 
+ button_sizer->Add( m_CloseButton, 0, wxALL, 10);
 
 // Coordinates at the end:
  button_sizer->Add( m_StaticText, 0, wxALL, 10);
@@ -130,10 +130,10 @@ void JLP_wxGPlot_Dlg::MyFreeMemory()
 
  if(m_GraphicPanel != NULL) m_GraphicPanel->Destroy();
  m_GraphicPanel = NULL;
- if(m_OKButton != NULL) delete m_OKButton; 
- m_OKButton = NULL;
- if(m_CancelButton != NULL) delete m_CancelButton; 
- m_CancelButton = NULL;
+ if(m_SaveButton != NULL) delete m_SaveButton; 
+ m_SaveButton = NULL;
+ if(m_CloseButton != NULL) delete m_CloseButton; 
+ m_CloseButton = NULL;
  if(m_StaticText != NULL) delete m_StaticText;
  m_StaticText = NULL;
  if(xplot1 != NULL) delete[] xplot1; 
@@ -153,19 +153,22 @@ return;
 **************************************************************************/
 void JLP_wxGPlot_Dlg::InitPlot()
 {
-char nchar_type[40], pcolor[32], plot_fname[128];
+char nchar_type[40], plot_fname[128];
 char xlabel[40], ylabel[40], title[80];
+char pen_colour[64], pen_default_colour[64], backgd_colour[64];
 int xgrid_is_wanted, ygrid_is_wanted, jlp_axes_are_wanted;
 int reset_first;
+JLP_GDev_wxWID *m_GDev = m_GraphicPanel->Get_JLP_GDev_wxWID();
 
-
-  strcpy(pcolor, "Black");
+  strcpy(pen_colour, "Black");
+  strcpy(pen_default_colour, "Black");
+  strcpy(backgd_colour, "White");
   strcpy(nchar_type, "L");
   strcpy(plot_fname, "");
   reset_first = 0;
-  m_GraphicPanel->wxGP_LoadPlotDataToPrivateParameters(xplot1, yplot1, 
+  m_GDev->Curves_LoadPlotDataToPrivateParameters(xplot1, yplot1, 
                                     errorx1, errory1, nplot1, nchar_type, 
-                                    pcolor, plot_fname, reset_first);
+                                    pen_colour, plot_fname, reset_first);
 
   strcpy(title, (const char*)title1.mb_str());
   strcpy(xlabel, (const char*)xlabel1.mb_str());
@@ -179,38 +182,47 @@ int reset_first;
   jlp_axes_are_wanted = 0;
 
 // iplan=0 x1=0 x2=0 y1=0 y2=0
-  m_GraphicPanel->wxGP_LoadPlotSettings(xlabel, ylabel, title, xgrid_is_wanted,
-                                        ygrid_is_wanted, jlp_axes_are_wanted,
-                                        0, 0, 0, 0, 0);
+  m_GDev->Curves_LoadPlotSettings(xlabel, ylabel, title, pen_colour, 
+                                  pen_default_colour, backgd_colour, 
+                                  xgrid_is_wanted, ygrid_is_wanted, 
+                                  jlp_axes_are_wanted, 0, 0, 0, 0, 0);
 
 // Call Newplot():
-  m_GraphicPanel->wxGP_PlotToDrawingDisplay();
+  m_GDev->PlotToDrawingDisplay();
 
 return;
 }
 /**************************************************************************
-* Handle "OK"/"Process" button:
+* Handle "SAVE"/"Process" button:
 * This routine is called twice: once for selecting old/new file,
 * and a second time for saving confirmation when processing has been done)
 **************************************************************************/
-void JLP_wxGPlot_Dlg::OnOKButton( wxCommandEvent& event )
+void JLP_wxGPlot_Dlg::OnSaveButton( wxCommandEvent& event )
 {
+JLP_GDev_wxWID *m_GDev = m_GraphicPanel->Get_JLP_GDev_wxWID();
+
   if(initialized != 1234) return;
 
+// Save current bitmap to file in format JPEG, etc
+  m_GDev->SaveGraphicToFile();
 // Close dialog and return status = wxID_OK:
-  EndModal(wxID_OK); 
+  EndModal(wxID_OK);
+  MyFreeMemory();
 
 return;
 }
 /**************************************************************************
-* Handle "Cancel" button:
+* Handle "Close" button:
 **************************************************************************/
-void JLP_wxGPlot_Dlg::OnCancelButton( wxCommandEvent& WXUNUSED(event) )
+void JLP_wxGPlot_Dlg::OnCloseButton( wxCommandEvent& WXUNUSED(event) )
 {
   if(initialized != 1234) return;
 
-// Close dialog and return status = 1:
-  EndModal(1); 
+// Close dialog and return status = 1 (for CANCEL):
+//  EndModal(1); 
+// Close dialog and return status = wxID_OK:
+  EndModal(wxID_OK); 
+  MyFreeMemory();
 
 return;
 }

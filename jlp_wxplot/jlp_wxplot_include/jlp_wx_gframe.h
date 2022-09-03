@@ -52,21 +52,23 @@ public:
   void MyFreeMemory();
 
 // Interface with JLP_wxGraphicPanel:
-  int LoadPlotDataToPrivateParameters0(double *xplot0, double *yplot0, 
+  int wxGF_LoadPlotDataToPrivateParameters0(double *xplot0, double *yplot0, 
                    const int npts0, const char *nchar_type, const char *pcolor, 
                    const char *plot_fname, const int reset_first);
-  int LoadPlotDataToPrivateParameters(double *xplot0, double *yplot0, 
+  int wxGF_LoadPlotDataToPrivateParameters(double *xplot0, double *yplot0, 
                    double *errorx0, double *errory0, const int npts0, 
                    const char *nchar_type, const char *pcolor, 
                    const char *plot_fname, const int reset_first);
-  int LoadPlotSettings(const char *xlabel, const char *ylabel,
-                       const char *title, const int xgrid_is_wanted,
-                       const int ygrid_is_wanted,
+  int wxGF_LoadPlotSettings(const char *xlabel, const char *ylabel,
+                       const char *title, const char *pen_colour, 
+                       const char *pen_default_colour,
+                       const char *backgd_colour,
+                       const int xgrid_is_wanted, const int ygrid_is_wanted,
                        const int jlp_axes_are_wanted, const int iplan,
                        const double x1, const double x2,
                        const double y1, const double y2);
-  void ClearDrawingDisplay();
-  void PlotToDrawingDisplay();
+  void wxGF_ClearDrawingDisplay();
+  void wxGF_PlotToDrawingDisplay();
 
   void LoadNewWavelengthCalib(double wavel_start, double wavel_step) {
    if((initialized == 1234) && (m_GraphicPanel != NULL)) {

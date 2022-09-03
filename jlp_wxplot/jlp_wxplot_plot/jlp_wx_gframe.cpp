@@ -98,6 +98,9 @@ void JLP_wxGraphicFrame::PanelSetup()
 {
 int iwidth, iheight;
 
+// Set background to white by default:
+ SetBackgroundColour(wxColour(* wxWHITE));
+
  wxBoxSizer *topsizer = new wxBoxSizer( wxVERTICAL );
 
 // Create the display panel: 
@@ -133,19 +136,23 @@ int JLP_wxGraphicFrame::LoadNewPlot(double *xplot0, double *yplot0,
                                     double *errorx0, double *errory0, 
                                     int nplot0, const int reset_first0)
 {
-char nchar_type[40], pcolor[32];
+char nchar_type[40];
 char xlabel[40], ylabel[40], title[80], plot_fname[128];
+char pen_colour[64], pen_default_colour[64], backgd_colour[64];
 int xgrid_is_wanted, ygrid_is_wanted, jlp_axes_are_wanted;
-
+JLP_GDev_wxWID *m_GDev = m_GraphicPanel->Get_JLP_GDev_wxWID();
 
 if((initialized != 1234) || (m_GraphicPanel == NULL)) return(-1); 
 
-  strcpy(pcolor, "Black");
+  strcpy(pen_colour, "Black");
+  strcpy(pen_default_colour, "Black");
+  strcpy(backgd_colour, "White");
+
   strcpy(nchar_type, "L");
   strcpy(plot_fname, "");
-  m_GraphicPanel->wxGP_LoadPlotDataToPrivateParameters(xplot0, yplot0, 
+  m_GDev->Curves_LoadPlotDataToPrivateParameters(xplot0, yplot0, 
                                        errorx0, errory0, nplot0, 
-                                       nchar_type, pcolor, plot_fname, 
+                                       nchar_type, pen_colour, plot_fname, 
                                        reset_first0);
 
   strcpy(title, (const char*)title1.mb_str());
@@ -160,28 +167,31 @@ if((initialized != 1234) || (m_GraphicPanel == NULL)) return(-1);
   jlp_axes_are_wanted = 0;
 
 // iplan=0 x1=0 x2=0 y1=0 y2=0
-  m_GraphicPanel->wxGP_LoadPlotSettings(xlabel, ylabel, title, xgrid_is_wanted,
-                                   ygrid_is_wanted, jlp_axes_are_wanted,
-                                   0, 0, 0, 0, 0);
+  m_GDev->Curves_LoadPlotSettings(xlabel, ylabel, title, 
+                                   pen_colour, pen_default_colour,
+                                   backgd_colour,
+                                   xgrid_is_wanted, ygrid_is_wanted, 
+                                   jlp_axes_are_wanted, 0, 0, 0, 0, 0);
 
 // Call Newplot():
-  m_GraphicPanel->wxGP_PlotToDrawingDisplay();
+  m_GDev->PlotToDrawingDisplay();
 
 return(0);
 }
 /*********************************************************************
 * Interface with JLP_wxGraphicPanel
 *********************************************************************/
-int JLP_wxGraphicFrame::LoadPlotDataToPrivateParameters0(double *xplot0, 
+int JLP_wxGraphicFrame::wxGF_LoadPlotDataToPrivateParameters0(double *xplot0, 
                                     double *yplot0, 
                                     const int npts0, const char *nchar_type, 
                                     const char *pcolor, const char *plot_fname,
                                     const int reset_first)
 {
 int status = -1;
+JLP_GDev_wxWID *m_GDev = m_GraphicPanel->Get_JLP_GDev_wxWID();
 
 if(m_GraphicPanel != NULL) 
- status = m_GraphicPanel->wxGP_LoadPlotDataToPrivateParameters0(xplot0, yplot0, 
+ status = m_GDev->Curves_LoadPlotDataToPrivateParameters0(xplot0, yplot0, 
                                             npts0, nchar_type, pcolor, 
                                             plot_fname, reset_first);
 
@@ -190,7 +200,7 @@ return(status);
 /*********************************************************************
 * Interface with JLP_wxGraphicPanel
 *********************************************************************/
-int JLP_wxGraphicFrame::LoadPlotDataToPrivateParameters(double *xplot0, 
+int JLP_wxGraphicFrame::wxGF_LoadPlotDataToPrivateParameters(double *xplot0, 
                                     double *yplot0, 
                                     double *errorx0, double *errory0, 
                                     const int npts0, const char *nchar_type, 
@@ -198,9 +208,10 @@ int JLP_wxGraphicFrame::LoadPlotDataToPrivateParameters(double *xplot0,
                                     const int reset_first)
 {
 int status = -1;
+JLP_GDev_wxWID *m_GDev = m_GraphicPanel->Get_JLP_GDev_wxWID();
 
 if(m_GraphicPanel != NULL) 
- status = m_GraphicPanel->wxGP_LoadPlotDataToPrivateParameters(xplot0, yplot0, 
+ status = m_GDev->Curves_LoadPlotDataToPrivateParameters(xplot0, yplot0, 
                                             errorx0, errory0,
                                             npts0, nchar_type, pcolor, 
                                             plot_fname, reset_first);
@@ -210,17 +221,23 @@ return(status);
 /*********************************************************************
 * Interface with JLP_wxGraphicPanel
 *********************************************************************/
-int JLP_wxGraphicFrame::LoadPlotSettings(const char *xlabel, const char *ylabel,
-                                 const char *title, const int xgrid_is_wanted,
-                                 const int ygrid_is_wanted,
-                                 const int jlp_axes_are_wanted, const int iplan,
-                                 const double x1, const double x2,
-                                 const double y1, const double y2)
+int JLP_wxGraphicFrame::wxGF_LoadPlotSettings(const char *xlabel, 
+                           const char *ylabel, const char *title, 
+                           const char *pen_colour, 
+                           const char *pen_default_colour, 
+                           const char *backgd_colour, 
+                           const int xgrid_is_wanted, const int ygrid_is_wanted,
+                           const int jlp_axes_are_wanted, const int iplan,
+                           const double x1, const double x2,
+                           const double y1, const double y2)
 {
 int status = -1;
+JLP_GDev_wxWID *m_GDev = m_GraphicPanel->Get_JLP_GDev_wxWID();
 
 if(m_GraphicPanel != NULL) 
- status = m_GraphicPanel->wxGP_LoadPlotSettings(xlabel, ylabel, title, 
+ status = m_GDev->Curves_LoadPlotSettings(xlabel, ylabel, title, 
+                                           pen_colour, pen_default_colour,
+                                           backgd_colour,
                                            xgrid_is_wanted, ygrid_is_wanted,
                                            jlp_axes_are_wanted, iplan, 
                                            x1, x2, y1, y2);
@@ -230,20 +247,22 @@ return(status);
 /*********************************************************************
 * Interface with JLP_wxGraphicPanel
 *********************************************************************/
-void JLP_wxGraphicFrame::ClearDrawingDisplay()
+void JLP_wxGraphicFrame::wxGF_ClearDrawingDisplay()
 {
+JLP_GDev_wxWID *m_GDev = m_GraphicPanel->Get_JLP_GDev_wxWID();
 
-if(m_GraphicPanel != NULL) m_GraphicPanel->wxGP_ClearDrawingDisplay();
+if(m_GraphicPanel != NULL) m_GDev->ClearDrawingDisplay();
 
 return; 
 }
 /*********************************************************************
 * Interface with JLP_wxGraphicPanel
 *********************************************************************/
-void JLP_wxGraphicFrame::PlotToDrawingDisplay()
+void JLP_wxGraphicFrame::wxGF_PlotToDrawingDisplay()
 {
+JLP_GDev_wxWID *m_GDev = m_GraphicPanel->Get_JLP_GDev_wxWID();
 
-if(m_GraphicPanel != NULL) m_GraphicPanel->wxGP_PlotToDrawingDisplay();
+if(m_GraphicPanel != NULL) m_GDev->PlotToDrawingDisplay();
 
 return; 
 }

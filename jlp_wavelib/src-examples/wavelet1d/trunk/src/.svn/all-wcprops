@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 27
+/svn/!svn/ver/101/trunk/src
+END
+wavelet.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/!svn/ver/100/trunk/src/wavelet.cpp
+END
+wave1d.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 36
+/svn/!svn/ver/3/trunk/src/wave1d.cpp
+END
+signal.txt
+K 25
+svn:wc:ra_dav:version-url
+V 36
+/svn/!svn/ver/6/trunk/src/signal.txt
+END
+wavelet.h
+K 25
+svn:wc:ra_dav:version-url
+V 36
+/svn/!svn/ver/24/trunk/src/wavelet.h
+END
+changelog-05-27.txt
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/101/trunk/src/changelog-05-27.txt
+END
+wave1d.h
+K 25
+svn:wc:ra_dav:version-url
+V 34
+/svn/!svn/ver/2/trunk/src/wave1d.h
+END
+license.txt
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/svn/!svn/ver/87/trunk/src/license.txt
+END

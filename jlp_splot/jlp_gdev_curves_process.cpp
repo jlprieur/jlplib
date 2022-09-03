@@ -360,7 +360,7 @@ return;
 *   reset_first: flag used to reset all private arrays
 *                (if 1: erase all old data; if 0: add this data to old data)
 *
-* double *xplot, *yplot;
+* double *xplot, *yplot: arrays of the user coordinates of the points to be plotted
 * int *npts, nmaxi,  ncurves, ncurves_maxi;
 * char nchar_type*4, pcolor*32;
 * char filename_1;

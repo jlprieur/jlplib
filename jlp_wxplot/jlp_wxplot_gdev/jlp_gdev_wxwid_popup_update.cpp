@@ -30,8 +30,8 @@ wxString cursor_type0; // Output from jlp_SetCursor: not used
 // to erase the crosshair)
 wxGdev_Refresh();
 
-// Copy wxGDev_SETTINGS:
- Load_wxGDevSettings(wxgdev_settings0);
+// Copy wxGDev_SETTINGS to private settings (i.e., wxgdev_seetings1):
+ GDevLoad_wxGDevSettings(wxgdev_settings0);
 
 /* Cursor types: Arrow, DownArrow, Cross, CrossHair, CrossHair1
 */
@@ -72,7 +72,7 @@ void JLP_GDev_wxWID::ApplyLUTSettings(wxGDev_SETTINGS wxgdev_settings0,
  if(c_image1 == NULL || initialized != 1234) return;
 
 // Copy wxGDev_SETTINGS:
- Load_wxGDevSettings(wxgdev_settings0);
+ GDevLoad_wxGDevSettings(wxgdev_settings0);
 
 if(update_display == 1) {
 // Apply current settings (LUT, ITT, etc) to c_image1
@@ -95,7 +95,7 @@ void JLP_GDev_wxWID::ApplyGsegrafSettings(wxGDev_SETTINGS wxgdev_settings0,
 if(initialized != 1234) return;
 
 // Copy wxGDev_SETTINGS:
- Load_wxGDevSettings(wxgdev_settings0);
+ GDevLoad_wxGDevSettings(wxgdev_settings0);
 
 // Apply those changes if needed
   if(update_display == 1) {
@@ -123,7 +123,7 @@ int ix1, ix2, iy1, iy2, status;
  if(c_image1 == NULL || initialized != 1234) return;
 
 // Copy wxGDev_SETTINGS:
- Load_wxGDevSettings(wxgdev_settings0);
+ GDevLoad_wxGDevSettings(wxgdev_settings0);
 
   itt_mode_str = wxgdev_settings1.itt_type;
   lower_itt = wxgdev_settings1.low_itt_thresh;
@@ -158,7 +158,7 @@ UINT32 canvas_bg_color0;
 if(initialized != 1234) return;
 
 // Copy wxGDev_SETTINGS:
- Load_wxGDevSettings(wxgdev_settings0);
+ GDevLoad_wxGDevSettings(wxgdev_settings0);
 
 // For jlp_splot/curves and jlp_splot/images:
   if((Jgc0.gdev_graphic_type >= 1) && (Jgc0.gdev_graphic_type <= 3)) {
@@ -192,8 +192,8 @@ UINT32 canvas_fg_color0;
 
 if(initialized != 1234) return;
 
-// Copy wxGDev_SETTINGS:
- Load_wxGDevSettings(wxgdev_settings0);
+// Copy settings to wxGDev_SETTINGS (i.e. to wxgdev_settings1):
+ GDevLoad_wxGDevSettings(wxgdev_settings0);
 
 // Make this change to all plots (even for gsegraf):
     SetBackgdColour_dc(wxgdev_settings1.backgd_colour);
@@ -222,7 +222,7 @@ void JLP_GDev_wxWID::ApplyBoxTypeSettings(wxGDev_SETTINGS wxgdev_settings0,
 if(initialized != 1234) return;
 
 // Copy wxGDev_SETTINGS:
- Load_wxGDevSettings(wxgdev_settings0);
+ GDevLoad_wxGDevSettings(wxgdev_settings0);
 
 // Apply changes (box_type, box_xgrid, etc...)
  Update_JGC_from_GDProcSettings();
@@ -251,7 +251,7 @@ void JLP_GDev_wxWID::ApplyInternalProcessingModeSettings(wxGDev_SETTINGS wxgdev_
 if(initialized != 1234) return;
 
 // Copy wxGDev_SETTINGS:
- Load_wxGDevSettings(wxgdev_settings0);
+ GDevLoad_wxGDevSettings(wxgdev_settings0);
 
 // Apply settings:
  SetInternalProcessingMode(wxgdev_settings1.InternalProcessingMode);

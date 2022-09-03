@@ -1,0 +1,121 @@
+##############################################################
+# Makefile for jlp_wavelib.a 
+# WINDOWS/Linux version 
+#
+# JLP
+# Version: 20-11-2020
+#############################################################
+
+# To check it, type "echo %OS%" on Windows command terminal
+ifeq ($(OS),Windows_NT)
+JLP_SYSTEM=Windows
+else
+JLP_SYSTEM=Linux
+endif 
+
+JLPLIB_DIR = ..
+CFITSIO_INCL_DIR=$(JLPLIB_DIR)/jlp_cfitsio/incl
+SRC1 = ./src
+
+##############################################################
+ifeq ($(JLP_SYSTEM),Linux)
+
+LOCAL_FLAGS=-Dunix -DSYSTEM_FIVE -D$(JLP_SYSTEM) -I$(SRC1) \
+	-I$(JLPLIB_DIR)/jlp_numeric \
+	-I$(JLPLIB_DIR)/jlp_fits \
+	-I$(JLPLIB_DIR)/jlp_gsegraf/jlp_gsegraf_include \
+	-I$(JLPLIB_DIR)/jlp_splot -I$(JLPLIB_DIR)/jlp_splot_idv \
+	-I$(CFITSIO_INCL_DIR) -I/dev/include/malloc 
+#
+# Not used: -DJLP_USE_WXWID -I../jlp_wxplot_src 
+#
+
+mylib=$(JLPLIB)/jlp
+
+CPP = g++
+
+PATHSEP1=/
+RM=rm -f 
+
+else
+##############################################################
+# Windows operating system:
+##############################################################
+
+CPP = g++
+
+# Need two back slashes for Linux compatibility:
+PATHSEP1=\\
+
+PATHSEP=$(strip $(PATHSEP1))
+mylib=c:$(PATHSEP)EXEC$(PATHSEP)MyLib
+
+#In fact "rm -f" is known by "GNU make":
+# RM=del /F
+RM=rm -f
+
+LOCAL_FLAGS=-D$(JLP_SYSTEM) -I$(SRC1) \
+	-I../jlp_numeric -I$(JLPLIB_DIR)/jlp_fits \
+	-I$(JLPLIB_DIR)/jlp_splot -I$(JLPLIB_DIR)/jlp_splot_idv \
+	-I$(JLPLIB_DIR)/jlp_gsegraf/jlp_gsegraf_include \
+	-I$(CFITSIO_INCL_DIR)
+
+endif
+
+#Remove extra blank before $(PATHSEP1):
+PATHSEP=$(strip $(PATHSEP1))
+EXEC_DIR = $(EXEC)$(PATHSEP)
+JLP_WAVELIB = $(mylib)$(PATHSEP)jlp_wavelib.a
+
+##############################################################
+
+MY_DEPENDENCIES = conv.h  hsfft.h  real.h \
+	 wavefilt.h  wavelib.h  wtmath.h
+
+SRCC= $(wildcard *.cpp)
+OBJJ= $(SRC:.cpp=.o)
+
+OBJ = conv.o  hsfft.o  real.o  wavefilt.o  wavelib.o  wtmath.o 
+
+SRCE=$(OBJ:.o=.c)
+
+.SUFFIXES:
+.SUFFIXES: .for .c .cpp .o $(SUFFIXES) 
+
+# For all c files: 
+.c.o:
+	$(CPP) -c -g $(CFLAGS) $(LOCAL_FLAGS) $*.c
+	ar r $(JLP_WAVELIB) $*.o
+
+# For all cpp files: 
+.cpp.o:
+	$(CPP) -c -g $(CFLAGS) $(LOCAL_FLAGS) $*.cpp
+	ar r $(JLP_WAVELIB) $*.o
+
+all: $(OBJ) 
+	@echo "OK: JLP_SYSTEM=$(JLP_SYSTEM)"
+	ranlib $(JLP_WAVELIB)
+
+conv.o : conv.c  $(MY_DEPENDENCIES)
+
+jlp_box_sciplot.exe : jlp_box_sciplot.cpp
+	$(CPP) -c $(CFLAGS) -DMAIN_PROG jlp_box_sciplot.cpp
+	$(CPP) $(CFLAGS) -o $(EXEC_DIR)jlp_box_sciplot.exe jlp_box_sciplot.o \
+	     $(JLIB) $(MIDLIB) $(XLIB) $(F77LIB) -lm
+
+pstcp0.exe: $(JLP_WAVELIB) pstcp0.cpp 
+	$(CPP) -c $(CFLAGS) pstcp0.cpp
+	$(CPP) $(CFLAGS) -o $(EXEC_DIR)pstcp0.exe pstcp0.o \
+	     $(JLIB) $(MIDLIB) $(XLIB) $(F77LIB) -lm
+
+jlp_test_splot.exe: $(JLP_WAVELIB) jlp_test_splot.cpp 
+	$(CPP) -c $(CFLAGS) jlp_test_splot.cpp
+	$(CPP) $(CFLAGS) -o $(EXEC_DIR/jlp_test_splot.exe jlp_test_splot.o \
+	     $(JLIB) $(MIDLIB) $(XLIB) -lc $(F77LIB) -lm
+
+clear: 
+	$(RM) $(OBJ) 
+	$(RM) $(JLP_WAVELIB)
+
+clean:
+	$(RM) $(OBJ) 

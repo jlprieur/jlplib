@@ -423,8 +423,7 @@ if(gseg_is_activated == 1) {
 
 // Create a new popup menu corresponding to Jgc0.gdev_graphic_type:
  if(m_popup_menu1 != NULL) delete m_popup_menu1;
- m_popup_menu1 = new JLP_wxGDev_Popup(this, wxgdev_settings1,
-                                      Jgc0.gdev_graphic_type);
+ m_popup_menu1 = new JLP_wxGDev_Popup(this, Jgc0.gdev_graphic_type);
 // Connection of events to this window and to the scrolled window
 // m_popup_menu1->ConnectAllPopupMenuEvents();
 

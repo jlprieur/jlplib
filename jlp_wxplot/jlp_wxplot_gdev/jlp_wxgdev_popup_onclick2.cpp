@@ -92,9 +92,13 @@ return;
 **************************************************************************/
 void JLP_wxGDev_Popup::OnSelectFilter(wxCommandEvent& event)
 {
+wxGDev_SETTINGS wxgdev_settings0;
 int filter0;
 
 if(initialized != 1234) return;
+
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
 
  switch(event.GetId()){
    default:
@@ -122,31 +126,13 @@ if(initialized != 1234) return;
    case ID_FILTER_7:
     filter0 = 7;
     break;
-   case ID_FILTER_8:
-    filter0 = 8;
-    break;
-   case ID_FILTER_9:
-    filter0 = 9;
-    break;
-   case ID_FILTER_10:
-    filter0 = 10;
-    break;
-   case ID_FILTER_11:
-    filter0 = 11;
-    break;
-   case ID_FILTER_12:
-    filter0 = 12;
-    break;
-   case ID_FILTER_13:
-    filter0 = 13;
-    break;
-   case ID_FILTER_14:
-    filter0 = 14;
-    break;
   }
 
 // Store input value to wxgdev SETTINGS:
-  wxgdev_settings1.filter = filter0;
+  wxgdev_settings0.filter = filter0;
+
+// Update new settings
+ jlp_gdev_wxwid1->GDevLoad_wxGDevSettings(wxgdev_settings0);
 
 // Update settings of JLP_GDev_wxWID:
  jlp_gdev_wxwid1->GDevUpdatePopupMenu_SelectFilter(filter0);
@@ -160,8 +146,12 @@ return;
 **********************************************************************/
 void JLP_wxGDev_Popup::OnAddShape(wxCommandEvent& event)
 {
+wxGDev_SETTINGS wxgdev_settings0;
 
 if(initialized != 1234) return;
+
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
 
 // InternalProcessingMode
 // -1=None 0=Automatic thresholds 1=Statistics, 2=Astrometry 3=Photometry
@@ -170,24 +160,24 @@ if(initialized != 1234) return;
 // 13=Add a ring 14=Remove a shape 15=Rotate a shape 16=Magnify a shape
  switch(event.GetId()) {
    case ID_ADD_LINE:
-    wxgdev_settings1.InternalProcessingMode = 9;
+    wxgdev_settings0.InternalProcessingMode = 9;
     break;
    case ID_ADD_RECTANGLE:
-    wxgdev_settings1.InternalProcessingMode = 10;
+    wxgdev_settings0.InternalProcessingMode = 10;
     break;
    case ID_ADD_CIRCLE:
-    wxgdev_settings1.InternalProcessingMode = 11;
+    wxgdev_settings0.InternalProcessingMode = 11;
     break;
    case ID_ADD_ELLIPSE:
-    wxgdev_settings1.InternalProcessingMode = 12;
+    wxgdev_settings0.InternalProcessingMode = 12;
     break;
    case ID_ADD_RING:
-    wxgdev_settings1.InternalProcessingMode = 13;
+    wxgdev_settings0.InternalProcessingMode = 13;
     break;
   }
 
 // Update settings of JLP_GDev_wxWID:
- jlp_gdev_wxwid1->Load_wxGDevSettings(wxgdev_settings1);
+ jlp_gdev_wxwid1->GDevLoad_wxGDevSettings(wxgdev_settings0);
 
 // Update popup menu and apply new processing mode to jlp_gdev_wxwid1
  UpdatePopupMenu_InternalProcessingMode();
@@ -199,8 +189,12 @@ return;
 **********************************************************************/
 void JLP_wxGDev_Popup::OnChangeShape(wxCommandEvent& event)
 {
+wxGDev_SETTINGS wxgdev_settings0;
 
 if(initialized != 1234) return;
+
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
 
 /* InternalProcessingMode
 * -1=None 0=Automatic thresholds 1=Statistics, 2=Astrometry 3=Photometry
@@ -212,19 +206,19 @@ if(initialized != 1234) return;
  switch(event.GetId()) {
 // Remove a shape
   case ID_REM_SHAPE:
-    wxgdev_settings1.InternalProcessingMode = 14;
+    wxgdev_settings0.InternalProcessingMode = 14;
     break;
 // Rotate a shape
   case ID_ROTATE_SHAPE:
-    wxgdev_settings1.InternalProcessingMode = 15;
+    wxgdev_settings0.InternalProcessingMode = 15;
     break;
 // Magnify a shape
   case ID_MAGNIFY_SHAPE:
-    wxgdev_settings1.InternalProcessingMode = 16;
+    wxgdev_settings0.InternalProcessingMode = 16;
     break;
 // Move a shape
   case ID_MOVE_SHAPE:
-    wxgdev_settings1.InternalProcessingMode = 17;
+    wxgdev_settings0.InternalProcessingMode = 17;
     break;
 // Remove the last shape
   case ID_CANCEL_SHAPE:
@@ -237,7 +231,7 @@ if(initialized != 1234) return;
   }
 
 // Update settings of JLP_wxGDev_Popup:
- jlp_gdev_wxwid1->Load_wxGDevSettings(wxgdev_settings1);
+ jlp_gdev_wxwid1->GDevLoad_wxGDevSettings(wxgdev_settings0);
 
 // Update popup menu and apply new processing mode to jlp_gdev_wxwid1
  UpdatePopupMenu_InternalProcessingMode();
@@ -258,18 +252,22 @@ void JLP_wxGDev_Popup::OnAddLabel(wxCommandEvent& WXUNUSED(event))
 **********************************************************************/
 void JLP_wxGDev_Popup::OnRemoveLabel(wxCommandEvent& WXUNUSED(event))
 {
+wxGDev_SETTINGS wxgdev_settings0;
 
 if(initialized != 1234) return;
+
+// Get all current GDev settings (pen color, pen width, background color, etc):
+ jlp_gdev_wxwid1->GDevGet_wxGDevSettings(&wxgdev_settings0);
 
 // InternalProcessingMode
 // -1=None 0=Automatic thresholds 1=Statistics, 2=Astrometry 3=Photometry
 // 4=Add a label 5=Remove a label 6=Add the scale bar 7=Add the North-East
 // 8=Slice 9=Add a line 10=Add a rectangle 11=Add a circle 12=Add an ellipse
 // 13=Add a ring 14=Remove a shape
- wxgdev_settings1.InternalProcessingMode = 5;
+ wxgdev_settings0.InternalProcessingMode = 5;
 
 // Update settings of JLP_GDev_wxWID:
- jlp_gdev_wxwid1->Load_wxGDevSettings(wxgdev_settings1);
+ jlp_gdev_wxwid1->GDevLoad_wxGDevSettings(wxgdev_settings0);
 
 // Update popup menu and apply new processing mode to jlp_gdev_wxwid1
  UpdatePopupMenu_InternalProcessingMode();

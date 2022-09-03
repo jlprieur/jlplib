@@ -101,7 +101,7 @@ int JLP_VM_RDFITS_3D(INT_PNTR *pntr_array, int *nx1, int *ny1, int *nz1,
 int jlp0_rdfits_2d_flt(INT_PNTR *pntr_array, float *array, int *nx1,
                        int *ny1, int *nz1, int *iplane, int *idim,
                        char *infile, char *comments, char *jlp_descr,
-                       int *dflag, int *istatus, int vm_flag);
+                       int dflag, int *istatus, int vm_flag);
 int jlp0_3dxfits_rd_2d_dble(double **array1, int *nx1, int*ny1, int *nz1,
                          int iplane, const int ihdu, char *infile,
                          char *comments, char *err_mess);
@@ -118,6 +118,8 @@ int jlp0_3dxfits_rd_header(char *infile, char *header_fname, char *err_mess);
 int jlp0_3dxfits_rd_keywd(char *infile, char *keywd_name, const int ihdu,
                           char *keywd_value, char *keywd_comments,
                           char *err_mess);
+
+int jlp1_rdfits_is_ok(char *infile);
 
 int jlp0_dble_rdfits(double **array1, int *nx1, int *ny1, int *nz1,
                      int iplane, char *infile, char *comments,

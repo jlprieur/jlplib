@@ -29,6 +29,9 @@
 #include "bitmaps/move_left3_xpm.xpm"
 #include "bitmaps/move_right3_xpm.xpm"
 
+// Save (blue)
+#include "bitmaps/save.xpm"
+
 // Go to first frame (yellow)
 #include "bitmaps/move_left_start1_xpm.xpm"
 

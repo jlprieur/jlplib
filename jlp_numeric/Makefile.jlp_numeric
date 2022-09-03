@@ -13,14 +13,22 @@ else
 JLP_SYSTEM=Linux
 endif
 
+CFLAGS=-g -Wcomment -Wformat -Wall
+
+JLPLIB_DIR = ..
+CFITSIO_INCL_DIR=$(JLPLIB_DIR)/jlp_cfitsio/incl
+
 ##############################################################
 ifeq ($(JLP_SYSTEM),Linux)
 
-CC=cc
+CPP = g++
+
 # Check if /* is in comments:
 # Check correct format in "printf" "scanf", ...
 # malloc needed for Macintosh
-CFLAGS=-g -Wcomment -Wformat -Wall -I. -I/dev/include/malloc 
+
+LOCAL_FLAGS=-Dunix -DSYSTEM_FIVE -DLINUX -D$(JLP_SYSTEM) \
+        -I. -I$(CFITSIO_INCL_DIR) -I/usr/include/malloc
 
 F77=gfortran
 # For SUSE 6.4: -fno_globals to avoid pb with MADRID() ...
@@ -31,16 +39,14 @@ mylib=$(JLPLIB)/jlp
 
 PATHSEP1=/
 
-OBJ = $(OBJ_C) $(OBJ_CPP) $(OBJ_F)
-
 else
-
 ##############################################################
 # Windows operating system:
 ##############################################################
 
-CC=gcc
-CFLAGS=-g -Wcomment -Wformat -Wall -I. 
+CPP=c++
+
+LOCAL_FLAGS= -D$(JLP_SYSTEM) -I. -I$(CFITSIO_INCL_DIR)
 
 F77=gfortran
 FFLAGS=-g -Wall
@@ -50,11 +56,8 @@ mylib=c:\\EXEC\\MyLib
 # Need two back slashes for Linux compatibility:
 PATHSEP1=\\
 
-OBJ = $(OBJ_C) $(OBJ_CPP) 
-
 endif
-
-INCL=
+##############################################################
 
 #Remove extra blank before $(PATHSEP1):
 PATHSEP=$(strip $(PATHSEP1))
@@ -63,17 +66,23 @@ FFT_DIR=.$(PATHSEP)fft_num$(PATHSEP)
 EXEC_DIR = $(EXEC)$(PATHSEP)
 JLP_NUM_LIB = $(mylib)$(PATHSEP)jlp_numeric.a
 
-OBJ_CPP = jlp_median.o rotate_set.o 
+SRC_CPP_NUM_DIR = ./
+SRC_FOR_NUM_DIR = ./fft_num/
+OBJ_NUM_DIR = ../obj/jlp_numeric
 
-OBJ_C = conju_grad.o jlp_sort.o fit_gauss.o \
-	fftw_set.o fourn.o recent_fft.o \
-	jlp_minimize.o jlp_random.o jlp_linear_regression.o \
-	matrix_set.o polyfit_utils.o
+NUM_CPP_SRC = jlp_median.cpp rotate_set.cpp conju_grad.cpp jlp_sort.cpp \
+	fit_gauss.cpp fftw_set.cpp fourn.cpp recent_fft.cpp \
+	jlp_minimize.cpp jlp_random.cpp jlp_linear_regression.cpp \
+	matrix_set.cpp polyfit_utils.cpp
 
-OBJ_F = fft_fourn.o fft1_jlp.o fft2.o
+NUM_FOR_SRC = fft_fourn.for fft1_jlp.for fft2.for
+
+NUM_CPP_OBJ=$(addprefix $(OBJ_NUM_DIR)/, $(NUM_CPP_SRC:.cpp=.o))
+NUM_FOR_OBJ=$(addprefix $(OBJ_NUM_DIR)/, $(NUM_FOR_SRC:.for=.o))
+
 
 .SUFFIXES:
-.SUFFIXES: .for .o .c.cpp .exe $(SUFFIXES) 
+.SUFFIXES: .for .o .cpp $(SUFFIXES) 
 
 .for.o:
 	runs esoext1 -f $*.for
@@ -82,25 +91,22 @@ OBJ_F = fft_fourn.o fft1_jlp.o fft2.o
 	rm $*.f
 
 .cpp.o:
-	$(CC) -c $(CFLAGS) $*.cpp
+	$(CPP) -c $(CFLAGS) $(LOCAL_FLAGS) $*.cpp
 	ar r $(JLP_NUM_LIB) $*.o
 
-.c.o:
-	$(CC) -c $(CFLAGS) $*.c
-	ar r $(JLP_NUM_LIB) $*.o
-
-.o.exe:
-	$(CC) -g -o $(EXEC_DIR)$*.exe $*.o $(JLIB) -lm
-	ar r $(JLP_NUM_LIB) $*.o
-
-.c.exe:
-	$(CC) -c $(CFLAGS) $*.c
-	$(CC) -g -o $(EXEC_DIR)$*.exe $*.o $(JLIB) -lm
-
-all: $(OBJ) 
+all: $(NUM_CPP_OBJ) $(NUM_FOR_OBJ) 
 	ranlib $(JLP_NUM_LIB) 
 
-########
+########################################################################
+$(OBJ_NUM_DIR)/%.o: $(SRC_CPP_NUM_DIR)/%.cpp $(MY_DEPENDENCIES)
+	$(CPP) -c $(CFLAGS) $(LOCAL_FLAGS) $(CPP_WXFLAGS) $< -o $@
+# -o $(OBJ_FITS_DIR)/$(@F)
+# $(@F) : filename of the target without directory:
+	ar r $(JLP_NUM_LIB) $@
+$(OBJ_NUM_DIR)/%.o: $(SRC_FOR_NUM_DIR)/%.for $(MY_DEPENDENCIES)
+	$(F77) -c $(FFLAGS) $< -o $@
+	ar r $(JLP_NUM_LIB) $@
+########################################################################
 
 conju_grad.o : conju_grad.c 
 
@@ -161,7 +167,7 @@ mat1.exe: mat1.c
 #####################################################################
 
 clean:
-	rm -f $(OBJ)
+	rm -f $(NUM_CPP_OBJ) $(NUM_FOR_OBJ)
 
 clear: clean 
-	rm -f $(JLP_NUM_LIB)
+	rm -f $(JLP_NUM_LIB) 

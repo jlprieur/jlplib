@@ -436,7 +436,7 @@ INT_PNTR pntr_array;
 vm_flag = 0;
 iplane = 1;
 istat = jlp0_rdfits_2d_flt(&pntr_array,array,nx1,ny1,&nz1,&iplane,idim1,
-                           infile,comments,jlp_descr,dflag,istatus,vm_flag);
+                           infile,comments,jlp_descr,*dflag,istatus,vm_flag);
 
 return(istat);
 }
@@ -463,7 +463,7 @@ vm_flag = 1;
 iplane = 1;
 array = NULL;
 istat = jlp0_rdfits_2d_flt(pntr_array,array,nx1,ny1,&nz1,&iplane,&idim,
-                        infile,comments,jlp_descr,dflag,istatus,vm_flag);
+                        infile,comments,jlp_descr,*dflag,istatus,vm_flag);
 
 return(istat);
 }
@@ -476,7 +476,7 @@ int dflag, istatus;
 /* Set dflag to 0, since descriptors are wanted */
 dflag = 0;
 JLP_VM_RDFITS(pntr_array, nx1, ny1, infile, comments,
-              jlp_descr, &dflag, &istatus);
+              jlp_descr, dflag, &istatus);
 return(0);
 }
 #endif
@@ -505,7 +505,7 @@ vm_flag = 1;
 idim = 0;
 array = NULL;
 istat = jlp0_rdfits_2d_flt(pntr_array,array,nx1,ny1,nz1,iplane,&idim,
-                           infile,comments,jlp_descr,dflag,istatus,vm_flag);
+                           infile,comments,jlp_descr,*dflag,istatus,vm_flag);
 
 return(istat);
 }

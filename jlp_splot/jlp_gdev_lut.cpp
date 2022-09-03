@@ -267,7 +267,6 @@ int JLP_GDev::jlp_change_lut(char *lut_type, int reversed, int *ioff,
    status = jlp_load_lut(r, g, b, ncolors);
    } else {
    fprintf(stderr,"jlp_change_lut/Error status=%d\n", status);
-   exit(-1);
    }
 /* JLP99, problem with read-only color cells (return -2 in that case) */
 
@@ -297,6 +296,7 @@ int jlp_change_lut_full(char *lut_type, const int reversed, int *ioff,
                         int *islope, int *r, int *g, int *b, 
                         const int ncolors, const int max_lut_level)
 {
+int status = 0;
 register int i;
 
 /* Erase LUT arrays : */
@@ -375,16 +375,15 @@ switch (lut_type[0])
 /***************************************************
  pisco: color LUT initially designed for ICCD images of PISCO
 */
+    default:
+        fprintf(stderr,"jlp_change_lut_full/Error: option lut_type=%s< is unknown\n",
+                       lut_type);
+        status = 1;
+        break;
     case 'p':
         {
         rgb_lut_pisco(r, g, b, ncolors, max_lut_level);
 	break;
-        }
-     default:
-        {
-        fprintf(stderr,"jlp_change_lut_full/Error: option %s is unknown!\n",
-                       lut_type);
-        exit(-1);
         }
 /* EOF switch: */
      }
@@ -400,7 +399,7 @@ switch (lut_type[0])
         }
       } 
 
- return(0);
+ return(status);
 }
 /******************************************************************
 * To display a key (LUT correspondance)

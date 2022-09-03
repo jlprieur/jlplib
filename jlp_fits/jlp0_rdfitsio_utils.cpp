@@ -287,7 +287,7 @@ i4_array2 = NULL;
     f_array2 = (float *) malloc(nelements * sizeof(float));
  } else if(bitpix == 8){
 // JLP2015: Allocate more space than needed:
-   i1_array2 = (INT1 *) malloc(nelements * sizeof(INT4));
+    i1_array2 = (INT1 *) malloc(nelements * sizeof(INT4));
  } else if(bitpix == 16){
 // JLP2009: Allocate more space than needed:
     i2_array2 = (INT2 *) malloc(nelements * sizeof(INT4));
@@ -299,9 +299,14 @@ i4_array2 = NULL;
   return(-1);
   }
 
- if(f_array2 == NULL || i1_array2 == NULL || i2_array2 == NULL 
-    || i4_array2 == NULL) {
-   fprintf(stderr, "jlp0_rdfits/fatal error allocating memory, nel=%ld\n",nelements);
+ if(f_array2 == NULL && i1_array2 == NULL && i2_array2 == NULL 
+    && i4_array2 == NULL) {
+   fprintf(stderr, "jlp0_rdfits_3dbox_data_dble/jlp0_rdfitsio_utils/Error allocating memory, bitpix=%d nx2=nel=%ld\n",
+           bitpix, nelements);
+   fprintf(stderr, " nx2=%d number of elements to be extracted from each plane(starting from ix2=%d,iy2=%d)\n",
+           nx2, ix2, iy2);
+   fprintf(stderr, " nx1=%d, ny1=%d size of an image plane, and nz1=%d image planes\n",
+           nx1, ny1, nz1);
    *istatus = -2;  fits_close_file(fptr,&istat); return(-2);
   }
 
@@ -396,10 +401,14 @@ int jlp1_rdfits_header(char *infile, int *nx1, int *ny1, int *nz1,
  *nx1 = 0;
  *ny1 = 0;
  *nz1 = 0;
-
+ *naxis = 0;
+ *bitpix = 0;
+ strcpy(jlp_descr, "");
+ strcpy(comments, "");
+ strcpy(err_message, "");
  status = jlp1_open_fits_file0(infile, &fptr, err_message);
-// No need to write error message since this is done in jlp1_open_fits_file0...
  if(status != 0) {
+  fprintf(stderr, "jlp1_rdfits_header/Error opening %s : %s\n", infile, err_message);
   return(status);
   }
 

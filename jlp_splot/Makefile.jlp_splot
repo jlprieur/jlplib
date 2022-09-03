@@ -65,11 +65,15 @@ LOCAL_FLAGS=-D$(JLP_SYSTEM) -I../jlp_numeric -I$(JLPLIB_DIR)/jlp_fits \
 	-I$(CFITSIO_INCL_DIR)
 
 endif
+##########################################################
 
 #Remove extra blank before $(PATHSEP1):
 PATHSEP=$(strip $(PATHSEP1))
 EXEC_DIR = $(EXEC)$(PATHSEP)
 JLP_SPLOT_LIB = $(mylib)$(PATHSEP)jlp_splot.a
+
+SRC_SPLOT_DIR = ./
+OBJ_SPLOT_DIR = ../obj/jlp_splot
 
 ##############################################################
 
@@ -82,22 +86,21 @@ MY_DEPENDENCIES = jlp_gdev.h jlp_gtext.h \
 SRCC= $(wildcard *.cpp)
 OBJJ= $(SRC:.cpp=.o)
 
-OBJ =   jlp_random.o \
-        jlp_gdev.o jlp_gdev_utils.o jlp_gdev_mouse.o \
-	jlp_gdev_curves.o jlp_gdev_curves_draw.o jlp_gdev_curves_process.o \
-	jlp_gdev_images.o jlp_gdev_symbol.o \
-	jlp_gtext.o jlp_gdev_box.o jlp_gdev_box_sciplot.o \
-	jlp_gdev_idv.o jlp_gdev_pst.o \
-	jlp_gdev_pstcopy.o jlp_process_curves.o jlp_process_images.o \
-	jlp_patch_set1.o jlp_read_ascii_data.o jlp_read_latex_tables.o \
-	jlp_read_keywd.o jlp_plot1.o \
-	jlp_plot1_utils.o jlp_plot1_gsegraf.o jlp_gdev_gsegraf.o \
-	pst_set.o \
-	jlp_auto_scale1.o jlp_gdev_lut.o jlp_itt1.o
+SPLOT_SRC =   jlp_random.cpp jlp_gdev.cpp jlp_gdev_utils.cpp \
+	jlp_gdev_mouse.cpp jlp_gdev_curves.cpp \
+	jlp_gdev_curves_draw.cpp jlp_gdev_curves_process.cpp \
+	jlp_gdev_images.cpp jlp_gdev_symbol.cpp \
+	jlp_gtext.cpp jlp_gdev_box.cpp jlp_gdev_box_sciplot.cpp \
+	jlp_gdev_idv.cpp jlp_gdev_pst.cpp \
+	jlp_gdev_pstcopy.cpp jlp_process_curves.cpp jlp_process_images.cpp \
+	jlp_patch_set1.cpp jlp_read_ascii_data.cpp jlp_read_latex_tables.cpp \
+	jlp_read_keywd.cpp jlp_plot1.cpp \
+	jlp_plot1_utils.cpp jlp_plot1_gsegraf.cpp jlp_gdev_gsegraf.cpp \
+	pst_set.cpp \
+	jlp_auto_scale1.cpp jlp_gdev_lut.cpp jlp_itt1.cpp
 
 
-SRCE=$(OBJ:.o=.cpp)
-
+SPLOT_OBJ=$(addprefix $(OBJ_SPLOT_DIR)/, $(SPLOT_SRC:.cpp=.o))
 
 .SUFFIXES:
 .SUFFIXES: .for .c .cpp .o $(SUFFIXES) 
@@ -107,9 +110,16 @@ SRCE=$(OBJ:.o=.cpp)
 	$(CPP) -c -g $(CFLAGS) $(LOCAL_FLAGS) $*.cpp
 	ar r $(JLP_SPLOT_LIB) $*.o
 
-all: $(OBJ) 
-	@echo "OK: JLP_SYSTEM=$(JLP_SYSTEM)"
+all: $(SPLOT_OBJ) 
 	ranlib $(JLP_SPLOT_LIB)
+
+########################################################################
+$(OBJ_SPLOT_DIR)/%.o: $(SRC_SPLOT_DIR)/%.cpp $(MY_DEPENDENCIES)
+	$(CPP) -c $(CFLAGS) $(LOCAL_FLAGS) $(CPP_WXFLAGS) $< -o $@
+# -o $(OBJ_SPLOT_DIR)/$(@F)
+# $(@F) : filename of the target without directory:
+	ar r $(JLP_SPLOT_LIB) $@
+########################################################################
 
 jlp_gdev.o : jlp_gdev.cpp  $(MY_DEPENDENCIES)
 
@@ -162,8 +172,8 @@ jlp_test_newplot.exe: $(JLP_SPLOT_LIB) jlp_test_newplot.cpp
 #	$(JLIB) $(MIDLIB) $(XLIB) -lm
 
 clear: 
-	$(RM) $(OBJ) 
+	$(RM) $(SPLOT_OBJ) 
 	$(RM) $(JLP_SPLOT_LIB)
 
 clean:
-	$(RM) $(OBJ) 
+	$(RM) $(SPLOT_OBJ) 

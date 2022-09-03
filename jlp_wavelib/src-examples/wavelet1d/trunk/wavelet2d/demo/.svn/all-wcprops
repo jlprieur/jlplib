@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/svn/!svn/ver/218/trunk/wavelet2d/demo
+END
+swtdemo.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/160/trunk/wavelet2d/demo/swtdemo.cpp
+END
+swt2Ddemo.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/218/trunk/wavelet2d/demo/swt2Ddemo.cpp
+END
+wavedemo1.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/152/trunk/wavelet2d/demo/wavedemo1.cpp
+END
+imagedemo1.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/172/trunk/wavelet2d/demo/imagedemo1.cpp
+END
+imagedemo2.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/180/trunk/wavelet2d/demo/imagedemo2.cpp
+END
+wavedemo2.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/155/trunk/wavelet2d/demo/wavedemo2.cpp
+END
+README.txt
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/212/trunk/wavelet2d/demo/README.txt
+END
+signal.txt
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/210/trunk/wavelet2d/demo/signal.txt
+END

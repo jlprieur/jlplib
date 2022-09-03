@@ -13,6 +13,11 @@ else
 JLP_SYSTEM=Linux
 endif
 
+CFLAGS=-g -Wcomment -Wformat -Wall 
+
+JLPLIB_DIR = ..
+CFITSIO_INCL_DIR=$(JLPLIB_DIR)/jlp_cfitsio/incl
+
 ##############################################################
 ifeq ($(JLP_SYSTEM),Linux)
 
@@ -21,8 +26,9 @@ CPP = g++
 # Check if /* is in comments:
 # Check correct format in "printf" "scanf", ...
 # malloc is needed for Macintosh
-CPPFLAGS=-g -Dunix -Wcomment -Wformat -Wall -DLINUX \
--I. -I$(CFITSIO_INCL_DIR) -I/usr/include/malloc
+
+LOCAL_FLAGS=-Dunix -DSYSTEM_FIVE -DLINUX -D$(JLP_SYSTEM) \
+	-I. -I$(CFITSIO_INCL_DIR) -I/usr/include/malloc
 
 mylib=$(JLPLIB)/jlp
 
@@ -34,41 +40,54 @@ else
 ##############################################################
 
 CPP=c++
-CPPFLAGS=-g -Wcomment -Wformat -Wall -I. -I$(CFITSIO_INCL_DIR)
 
 mylib=c:\\EXEC\\Mylib
 
 # Need two back slashes for Linux compatibility:
 PATHSEP1=\\
 
+LOCAL_FLAGS= -D$(JLP_SYSTEM) -I. -I$(CFITSIO_INCL_DIR) 
+
 endif
+#######################################################################
 
 #Remove extra blank before $(PATHSEP1):
 PATHSEP=$(strip $(PATHSEP1))
 
 EXEC_DIR = $(EXEC)$(PATHSEP)
 JLP_FITS_LIB = $(mylib)$(PATHSEP)jlp_fits.a
-CFITSIO_INCL_DIR=..$(PATHSEP)jlp_cfitsio$(PATHSEP)incl
+
+SRC_FITS_DIR = ./
+OBJ_FITS_DIR = ../obj/jlp_fits
 
 # jlp0_spectra_fitsio not working now ...
-#	jlp0_fits_utils.o jlp0_spectra_fitsio.o jlp_string.o
-OBJ =   jlp0_rdfitsio.o jlp0_rdfitsio_utils.o jlp_fitsio.o \
-	jlp_rdfitsio.o jlp_wrfitsio.o \
-	jlp0_wrfitsio.o jlp0_fits_utils.o jlp0_spectra_fitsio.o jlp_string.o \
-	jlp0_fits_utils.o jlp_time0.o
+#	jlp0_fits_utils.cpp jlp0_spectra_fitsio.cpp jlp_string.cpp
+FITS_SRC =   jlp0_rdfitsio.cpp jlp0_rdfitsio_utils.cpp jlp_fitsio.cpp \
+	jlp_rdfitsio.cpp jlp_wrfitsio.cpp \
+	jlp0_wrfitsio.cpp jlp0_fits_utils.cpp jlp0_spectra_fitsio.cpp \
+	jlp_string.cpp jlp0_fits_utils.cpp jlp_time0.cpp
 
-SRCE=$(OBJ:.o=.cpp)
+FITS_OBJ=$(addprefix $(OBJ_FITS_DIR)/, $(FITS_SRC:.cpp=.o))
+
 
 .SUFFIXES:
 .SUFFIXES: .c .cpp .o $(SUFFIXES) 
 
 # For all cpp files: 
 .cpp.o:
-	$(CPP) -c $(CPPFLAGS) $*.cpp
+	$(CPP) -c $(CFLAGS) $(LOCAL_FLAGS) $*.cpp
 	ar r $(JLP_FITS_LIB) $*.o
 
-all: $(OBJ) 
+all: $(FITS_OBJ) 
 	ranlib $(JLP_FITS_LIB)
+
+########################################################################
+$(OBJ_FITS_DIR)/%.o: $(SRC_FITS_DIR)/%.cpp $(MY_DEPENDENCIES)
+	$(CPP) -c $(CFLAGS) $(LOCAL_FLAGS) $(CPP_WXFLAGS) $< -o $@
+# -o $(OBJ_FITS_DIR)/$(@F)
+# $(@F) : filename of the target without directory:
+	ar r $(JLP_FITS_LIB) $@
+########################################################################
 
 jlp_time0.o : jlp_time0.cpp jlp_time0.h
 
@@ -97,4 +116,4 @@ clear: clean
 	rm -f $(JLP_FITS_LIB)
 
 clean:
-	rm -f $(OBJ) 
+	rm -f $(FITS_OBJ) 

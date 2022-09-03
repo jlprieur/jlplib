@@ -35,7 +35,16 @@ public:
 // building the library...)
  int GetActiveProcessingMode(int *processing_mode0, int *limits_box_type0,
                              int *n_points_required0);
- wxString Get_HelpText(){return help_text1;};
+// JLP2020: Error here "failed in FromWChar(): trying to encode undefined
+// Unicode character"
+// JLP2022: error solved by returning my_help_text
+ wxString Get_HelpText() {
+   wxString my_help_text(" ");
+//   printf("Get HelpText/ZZZ/DEBUG: ");
+//   printf("text=%s\n", (const char *)help_text1.mb_str());
+// return help_text1;
+ return my_help_text;
+ };
 
 // Common parameters (should not be declared as private in an abstract class!)
 protected:

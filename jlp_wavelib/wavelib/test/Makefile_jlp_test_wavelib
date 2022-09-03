@@ -1,0 +1,106 @@
+##############################################################
+# Makefile for jlp_test_wavelib.a 
+# WINDOWS/Linux version 
+#
+# JLP
+# Version: 20-11-2020
+#############################################################
+
+# To check it, type "echo %OS%" on Windows command terminal
+ifeq ($(OS),Windows_NT)
+JLP_SYSTEM=Windows
+else
+JLP_SYSTEM=Linux
+endif 
+
+JLPLIB_DIR = ..
+CFITSIO_INCL_DIR=$(JLPLIB_DIR)/jlp_cfitsio/incl
+SRC1 = ./src
+
+##############################################################
+ifeq ($(JLP_SYSTEM),Linux)
+
+LOCAL_FLAGS=-Dunix -DSYSTEM_FIVE -D$(JLP_SYSTEM) -I$(SRC1) \
+	-I$(JLPLIB_DIR)/jlp_numeric \
+	-I$(JLPLIB_DIR)/jlp_fits \
+	-I$(JLPLIB_DIR)/jlp_gsegraf/jlp_gsegraf_include \
+	-I$(JLPLIB_DIR)/jlp_splot -I$(JLPLIB_DIR)/jlp_splot_idv \
+	-I$(CFITSIO_INCL_DIR) -I/dev/include/malloc 
+#
+# Not used: -DJLP_USE_WXWID -I../jlp_wxplot_src 
+#
+
+mylib=$(JLPLIB)/jlp
+
+CPP = g++
+
+PATHSEP1=/
+RM=rm -f 
+
+else
+##############################################################
+# Windows operating system:
+##############################################################
+
+CPP = g++
+
+# Need two back slashes for Linux compatibility:
+PATHSEP1=\\
+
+PATHSEP=$(strip $(PATHSEP1))
+mylib=c:$(PATHSEP)EXEC$(PATHSEP)MyLib
+
+#In fact "rm -f" is known by "GNU make":
+# RM=del /F
+RM=rm -f
+
+LOCAL_FLAGS=-D$(JLP_SYSTEM) -I$(SRC1) \
+	-I../jlp_numeric -I$(JLPLIB_DIR)/jlp_fits \
+	-I$(JLPLIB_DIR)/jlp_splot -I$(JLPLIB_DIR)/jlp_splot_idv \
+	-I$(JLPLIB_DIR)/jlp_gsegraf/jlp_gsegraf_include \
+	-I$(CFITSIO_INCL_DIR)
+
+endif
+
+#Remove extra blank before $(PATHSEP1):
+PATHSEP=$(strip $(PATHSEP1))
+EXEC_DIR = $(EXEC)$(PATHSEP)
+JLP_WAVELIB = $(mylib)$(PATHSEP)jlp_wavelib.a
+
+##############################################################
+
+MY_DEPENDENCIES = conv.h  hsfft.h  real.h \
+	 wavefilt.h  wavelib.h  wtmath.h
+
+SRCC= $(wildcard *.cpp)
+
+SRCE=$(OBJ:.o=.c)
+
+TEST_EXEC = dwpttest.exe dwttest.exe modwttest.exe swttest.exe wreetest.exe
+
+.SUFFIXES:
+.SUFFIXES: .exe .c .cpp .o $(SUFFIXES) 
+
+# For all c files: 
+.c.exe:
+	$(CPP) -g $(CFLAGS) $(LOCAL_FLAGS) $*.c -o $(EXEC_DIR)/$*.exe \
+	$(JLP_WAVELIB)
+
+# For all cpp files: 
+.cpp.exe:
+	$(CPP) -g $(CFLAGS) $(LOCAL_FLAGS) $*.cpp -o $(EXEC_DIR)/$*.exe \
+	$(JLP_WAVELIB)
+	
+
+all: $(TEST_EXE)
+
+dwpttest.exe : dwpttest.c
+	$(CPP) $(CFLAGS) dwpttest.c -o $(EXEC_DIR)dwpttest.exe \
+	     $(JLP_WAVELIB) $(JLIB) $(MIDLIB) $(XLIB) -lm
+
+
+clear: 
+	rm -f *.o 
+
+clean:
+	rm -f *.o 

@@ -44,19 +44,23 @@ CPP = g++
 
 JLP_WXGSEG_LIB = c:\\EXEC\\MyLib\\jlp_gseg_wxwid.a
 endif
+###############################################################
+SRC_WXGSEG_DIR = ./
+OBJ_WXGSEG_DIR = ../obj/jlp_wxgseg
 
 DEP_WXGSEG = jlp_gseg_wxwid.h \
 	jlp_gseg_param_panel.h jlp_gseg_param_panel_id.h \
 	jlp_gseg_weight_dlg.h jlp_gsegset_defs.h jlp_gsegset_params.h \
 	jlp_gsegset_rw_ascii.h 
-SRC_WXGSEG = jlp_gseg_wxwid.cpp jlp_wxgseg_utils.cpp \
+WXGSEG_SRC = jlp_gseg_wxwid.cpp jlp_wxgseg_utils.cpp \
 	jlp_gseg_wxwid_draw.cpp jlp_gseg_wxwid_labels.cpp \
 	jlp_gseg_wxwid_image.cpp \
 	jlp_gseg_param_panel.cpp jlp_gseg_param_panel_menu.cpp \
 	jlp_gseg_param_panel_onclick.cpp jlp_gseg_weight_dlg.cpp \
 	jlp_gsegset_params.cpp jlp_gsegset_rw_ascii.cpp \
 	jlp_wxgseg_utils.cpp 
-OBJ_WXGSEG=$(SRC_WXGSEG:.cpp=.o)
+
+WXGSEG_OBJ=$(addprefix $(OBJ_WXGSEG_DIR)/, $(WXGSEG_SRC:.cpp=.o))
 
 WX_INCL = -I. 
 
@@ -68,14 +72,24 @@ WX_INCL = -I.
 	$(CPP) -c $(CFLAGS) $(LOCAL_FLAGS)  $(CPP_WXFLAGS) $*.cpp
 	ar r $(JLP_WXGSEG_LIB) $*.o
 
-all: $(OBJ_WXGSEG)
+all: $(WXGSEG_OBJ)
 	ranlib $(JLP_WXGSEG_LIB)
+
+########################################################################
+
+$(OBJ_WXGSEG_DIR)/%.o: $(SRC_WXGSEG_DIR)/%.cpp $(DEP_WXGSEG)
+	$(CPP) -c $(CFLAGS) $(LOCAL_FLAGS) $(CPP_WXFLAGS) $< -o $@
+# -o $(OBJ_SPLOT_DIR)/$(@F)
+# $(@F) : filename of the target without directory:
+	ar r $(JLP_WXGSEG_LIB) $@
+
+########################################################################
 
 jlp_gseg_wxwid.o : jlp_gseg_wxwid.cpp $(DEP_WXGSEG) 
 
 clean: 
-	rm -f $(OBJ_WXGSEG)
+	rm -f $(WXGSEG_OBJ)
 
 clear:
-	rm -f $(OBJ_WXGSEG)
+	rm -f $(WXGSEG_OBJ)
 	rm -f $(JLP_WXGSEG_LIB)

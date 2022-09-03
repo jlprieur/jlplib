@@ -6,7 +6,7 @@
 ***************************************************************************/
 #include "jlp_wxlogbook.h"        // JLP_wxLogbook
 
-#include "jlp_wx_gpanel.h"        // jlp_wx_spanel files:
+#include "jlp_wx_gpanel.h"        // jlp_wx_gpanel files:
 #include "jlp_gdev_wxwid.h"       // JLP_GDev_wxWID class
 #include "jlp_gsegraf.h"          // JLP_Gsegraf class
 #include "jlp_read_ascii_data.h"  // jlp_ascii_get_ncolumns 

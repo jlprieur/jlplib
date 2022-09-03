@@ -474,12 +474,6 @@ void JLP_wxGDev_Popup::CreateImageMenuFilterForSplot()
 * 5 = VHC2: high contrast version 2015 without unresolved modsq
 * 6 = VHC3: median profile version 2008 without unresolved modsq
 * 7 = VHC4: median profile version 2015 without unresolved modsq
-* 8 = GRAD1 medium gradient 
-* 9 = GRAD2 hard gradient 
-* 10 = CPROF circ. profile
-* 11 = CIRC1 circ. gradient(rot 10 deg)
-* 12 = CIRC2 circ. gradient(rot 20 deg) 
-* 13 = CIRC3 circ. gradient(rot 30 deg)
 ****/
   menuFilter->Append( ID_FILTER_4, _T("High contrast for autoc. (VHC1)"),
                       wxT("High contrast without unres. modsq: version 2008"),
@@ -492,24 +486,6 @@ void JLP_wxGDev_Popup::CreateImageMenuFilterForSplot()
                       wxITEM_RADIO);
   menuFilter->Append( ID_FILTER_7, _T("High contrast for autoc. (VHC4)"),
                       wxT("Median profile without unres. modsq: version 2015"),
-                      wxITEM_RADIO);
-  menuFilter->Append( ID_FILTER_8, _T("Laplacian gradient, medium (GRAD1)"),
-                      wxT("Medium Laplacian gradient version 2020"),
-                      wxITEM_RADIO);
-  menuFilter->Append( ID_FILTER_9, _T("Laplacian gradient, hard (GRAD2)"),
-                      wxT("Hard Laplacian gradient version 2020"),
-                      wxITEM_RADIO);
-  menuFilter->Append( ID_FILTER_10, _T("Circular profile (CPROF)"),
-                      wxT("Circular profile removal, version 2020"),
-                      wxITEM_RADIO);
-  menuFilter->Append( ID_FILTER_11, _T("Circular gradient, 10deg (CIRC1)"),
-                      wxT("Circular gradient, 10deg, version 2020"),
-                      wxITEM_RADIO);
-  menuFilter->Append( ID_FILTER_12, _T("Circular gradient, 20deg (CIRC2)"),
-                      wxT("Circular gradient, 20deg, version 2020"),
-                      wxITEM_RADIO);
-  menuFilter->Append( ID_FILTER_13, _T("Circular gradient, 30deg (CIRC3)"),
-                      wxT("Circular gradient, 30deg, version 2020"),
                       wxITEM_RADIO);
 
  PopupMenu1->Append(wxID_ANY, _T("Filter"), menuFilter);

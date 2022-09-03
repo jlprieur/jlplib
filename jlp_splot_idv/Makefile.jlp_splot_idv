@@ -48,7 +48,6 @@ else
 
 CPP = g++
 
-
 # Need two back slashes for Linux compatibility:
 PATHSEP1=\\
 
@@ -66,6 +65,9 @@ LOCAL_FLAGS=-D$(JLP_SYSTEM) -I../jlp_numeric -I$(JLPLIB_DIR)/jlp_fits \
 
 endif
 
+SRC_SPLOT_IDV_DIR = ./
+OBJ_SPLOT_IDV_DIR = ../obj/jlp_splot_idv
+
 #Remove extra blank before $(PATHSEP1):
 PATHSEP=$(strip $(PATHSEP1))
 EXEC_DIR = $(EXEC)$(PATHSEP)
@@ -76,14 +78,14 @@ JLP_SPLOT_IDV_LIB = $(mylib)$(PATHSEP)jlp_splot_idv.a
 MY_DEPENDENCIES = jlp_splot_idv.h jlp_splot_idv_prototypes.h 
 
 SRCC= $(wildcard *.cpp)
-OBJJ= $(SRC:.cpp=.o)
+OBJ= $(SRC:.cpp=.o)
 
-OBJ =   splot_for.o jlp_splot.o jlp_splot1.o jlp_splot2.o \
-	jlp_splot_box.o jlp_splot_symbol.o jlp_splot_image.o \
-	jlp_newplot.o jlp_display1.o jlp_display2.o jlp_newplot100.o \
-	jlp_splot_lut1.o jlp_gdev_access.o jlp_graphfile.o 
+SPLOT_IDV_SRC = splot_for.cpp jlp_splot.cpp jlp_splot1.cpp jlp_splot2.cpp \
+	jlp_splot_box.cpp jlp_splot_symbol.cpp jlp_splot_image.cpp \
+	jlp_newplot.cpp jlp_display1.cpp jlp_display2.cpp jlp_newplot100.cpp \
+	jlp_splot_lut1.cpp jlp_gdev_access.cpp jlp_graphfile.cpp 
 
-SRCE=$(OBJ:.o=.cpp)
+SPLOT_IDV_OBJ=$(addprefix $(OBJ_SPLOT_IDV_DIR)/, $(SPLOT_IDV_SRC:.cpp=.o))
 
 
 .SUFFIXES:
@@ -94,9 +96,18 @@ SRCE=$(OBJ:.o=.cpp)
 	$(CPP) -c $(CFLAGS) $(LOCAL_FLAGS) $(CPP_WXFLAGS) $*.cpp
 	ar r $(JLP_SPLOT_IDV_LIB) $*.o
 
-all: $(OBJ) 
-	@echo "OK: JLP_SYSTEM=$(JLP_SYSTEM)"
+all: $(SPLOT_IDV_OBJ) 
 	ranlib $(JLP_SPLOT_IDV_LIB)
+
+########################################################################
+
+$(OBJ_SPLOT_IDV_DIR)/%.o: $(SRC_SPLOT_IDV_DIR)/%.cpp $(MY_DEPENDENCIES)
+	$(CPP) -c $(CFLAGS) $(LOCAL_FLAGS) $(CPP_WXFLAGS) $< -o $@
+# -o $(OBJ_SPLOT_IDV_DIR)/$(@F)
+# $(@F) : filename of the target without directory:
+	ar r $(JLP_SPLOT_IDV_LIB) $@
+
+########################################################################
 
 jlp_display1.o : jlp_display1.cpp $(MY_DEPENDENCIES)
 
@@ -136,8 +147,8 @@ jlp_test_newplot.exe: $(JLP_SPLOT_IDV_LIB) jlp_test_newplot.cpp
 #	$(JLIB) $(MIDLIB) $(XLIB) -lm
 
 clear: 
-	$(RM) $(OBJ) 
+	$(RM) $(SPLOT_IDV_OBJ) 
 	$(RM) $(JLP_SPLOT_IDV_LIB)
 
 clean:
-	$(RM) $(OBJ) 
+	$(RM) $(SPLOT_IDV_OBJ) 

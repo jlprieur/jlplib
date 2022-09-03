@@ -109,6 +109,8 @@ double   cheight, cwidth; // cheight,cwidth: canonical height and width of chara
 int xp,yp;                // Present plot position (in mgo coordinates)
 
 GCOLOR   gclr;            // GCOLOR structure 
+// pen_color: White, Black, Red, Green, Blue, etc
+char pen_colour[64], pen_default_colour[64], backgd_colour[64];
 
 /* Device type:
   1 = X11

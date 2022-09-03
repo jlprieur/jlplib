@@ -44,34 +44,51 @@ typedef unsigned char INT1;
 int jlp0_rdfits_2d_flt(INT_PNTR *pntr_array, float *array, int *nx1,
                        int *ny1, int *nz1, int *iplane, int *idim,
                        char *infile, char *comments, char *jlp_descr,
-                       int *dflag, int *istatus, int vm_flag)
+                       int dflag, int *istatus, int vm_flag)
 {
-char  err_message[81];
-int   status, istat, naxis, bitpix;
+char  err_message[128];
+int   status, istat, naxis, bitpix, is_ok;
 float *array1;
 fitsfile *fptr;
 
-*istatus = 0;
+*istatus = -1;
 
 #ifdef DEBUG
-printf("jlp0_flt_rdfits/DEBUG/infile=%s\n", infile);
+printf("jlp0_rdfits_2d_flt/DEBUG/infile=%s\n", infile);
 #endif
 
+strcpy(err_message, "");
+strcpy(comments, "");
+strcpy(jlp_descr, "");
+*nx1 = 0;
+*ny1 = 0;
+*nz1 = 0;
+*iplane = 1;
+*idim = 0;
+*pntr_array = (INT_PNTR)NULL;
+is_ok = jlp1_rdfits_is_ok(infile);
+
+if(is_ok != 1) return(-1);
 
 // decode header
  status = jlp1_rdfits_header(infile, nx1, ny1, nz1, &naxis, &bitpix,
-                    comments, jlp_descr, *dflag, err_message);
- if(istatus != 0) return(status);
-
+                    comments, jlp_descr, dflag, err_message);
+ if(status != 0) {
+   fprintf(stderr, "jlp0_flt_rdfits/Error reading header from infile=%s \n", infile);
+   return(-1);
+   }
 
 #ifdef DEBUG
-printf("jlp0_flt_rdfits/DEBUG: nx1=%d ny1=%d idim=%d dflag=%d\n",
-        *nx1, *ny1, *idim, *dflag);
+printf("jlp0_rdfits_2d_flt/DEBUG: nx1=%d ny1=%d idim=%d dflag=%d\n",
+        *nx1, *ny1, *idim, dflag);
 printf("jlp0_flt_rdfits/DEBUG/comments=%s\n jlp_descr: \n%s\n", comments, jlp_descr);
 #endif
 
  status = jlp1_open_fits_file0(infile, &fptr, err_message);
- if(status != 0) return(status);
+ if(status != 0) {
+   fprintf(stderr, "jlp0_flt_rdfits/Error opening infile=%s \n", infile);
+   return(status);
+   }
 
 /* If no allocation of virtual memory, check
 * if buffer and image sizes are consistent
@@ -91,7 +108,7 @@ printf("jlp0_flt_rdfits/DEBUG/comments=%s\n jlp_descr: \n%s\n", comments, jlp_de
      array1 = (float *)malloc((*nx1) * (*ny1) * sizeof(float));
      *idim = *nx1;
      if(array1 == NULL) {
-      fprintf(stderr, "jlp0_flt_rdfits/Fatal error allocating memory: nx1=%d ny1=%d\n",
+      fprintf(stderr, "jlp0_flt_rdfits_2d_flt/Fatal error allocating memory: nx1=%d ny1=%d\n",
               *nx1, *ny1);
       istat = 0; fits_close_file(fptr,&istat);
       exit(-1);
@@ -102,11 +119,13 @@ printf("jlp0_flt_rdfits/DEBUG/comments=%s\n jlp_descr: \n%s\n", comments, jlp_de
    jlp0_rdfits_2d_data_flt(infile, fptr, array1, *nx1, *ny1, *nz1,
                            naxis, bitpix, *iplane, *idim, istatus);
 
+   if(*istatus == 0) {
 /* Close fits file: */
     istat = 0; fits_close_file(fptr,&istat);
 
 /* Copy pointer array (for FORTRAN): */
-*pntr_array = (INT_PNTR)array1;
+   *pntr_array = (INT_PNTR)array1;
+   }
 
 return(*istatus);
 }
@@ -138,6 +157,8 @@ fitsfile *fptr;
 #ifdef DEBUG
 printf("jlp0_dble_rdfits/DEBUG/infile=%s\n", infile);
 #endif
+
+strcpy(jlp_descr, "");
 
 // Decode header
  istat = jlp1_rdfits_header(infile, nx1, ny1, nz1, &naxis, &bitpix,
@@ -502,15 +523,15 @@ printf("jlp0_3dxfits_rd_2d_dble/DEBUG/infile=%s\n", infile);
 return(istat);
 }
 /**********************************************************************
+* jlp1_open_fits_file0
 *
 **********************************************************************/
 int jlp1_open_fits_file0(char *infile, fitsfile **fptr, char *err_mess)
 {
 int istat;
-char  filename[100], *pcc, err_message[81];
+char  filename[256], *pcc, err_message[81];
 
-   strncpy(filename,infile,100);
-   filename[99]='\0';
+   strcpy(filename,infile);
 /* Check input characters strings (pb if fortran...) */
    pcc = filename;
    while(*pcc && *pcc != ' ') pcc++;
@@ -523,12 +544,44 @@ char  filename[100], *pcc, err_message[81];
 
    istat = 0;
    fits_open_file(fptr, filename, READONLY, &istat);
+// Error status codes in fitsio.h
    if (istat != 0) {
+     switch (istat) {
+       case 104:
+       default:
+         fprintf(stderr," 104: FILE_NOT_OPENED\n");
+        break;
+       case 108:
+         fprintf(stderr," 108: READ_ERROR\n");
+        break;
+     }
      fits_read_errmsg(err_message);
      sprintf(err_mess,"jlp1_open_fits_file0/ Cannot open input file : >%s< istat=%d\n %s \n",
             filename, istat, err_message);
    }
 return(istat);
+}
+/**********************************************************************
+* jlp1_rdfits_is_ok
+*
+* Return: 1 if ok for reading, 0 ik no_ok
+**********************************************************************/
+int jlp1_rdfits_is_ok(char *infile)
+{
+int istat;
+fitsfile *fptr;
+
+if(infile[0] == '\0') return(0);
+
+ istat = 0;
+ fits_open_file(&fptr, infile, READONLY, &istat);
+ if (istat != 0) {
+  fprintf(stderr, "jlp0_rdfits_is_ok/Error opening infile=%s \n", infile);
+  return(0);
+ }
+ fits_close_file(fptr,&istat);
+
+return(1);
 }
 /************************************************************************
 *

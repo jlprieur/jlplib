@@ -194,18 +194,23 @@ return;
 **************************************************************************/
 void JLP_wxPlot_Frame::InitPlotForSlice()
 {
-char nchar_type[40], pcolor[32], plot_fname[128];
+char nchar_type[40], plot_fname[128];
 char xlabel[40], ylabel[40], title[80];
+char pen_colour[64], pen_default_colour[64], backgd_colour[64];
 int xgrid_is_wanted, ygrid_is_wanted, jlp_axes_are_wanted;
 int reset_first;
+JLP_GDev_wxWID *m_GDev = m_GraphicPanel->Get_JLP_GDev_wxWID();
 
-  strcpy(pcolor, "Black");
+  strcpy(pen_colour, "Black");
+  strcpy(pen_default_colour, "Black");
+  strcpy(backgd_colour, "White");
+
   strcpy(nchar_type, "L");
   strcpy(plot_fname, "");
   reset_first = 0;
-  m_GraphicPanel->wxGP_LoadPlotDataToPrivateParameters(xplot1, yplot1, errorx1,
+  m_GDev->Curves_LoadPlotDataToPrivateParameters(xplot1, yplot1, errorx1,
                                              errory1, nplot1, nchar_type, 
-                                             pcolor, plot_fname, reset_first);
+                                             pen_colour, plot_fname, reset_first);
 
   strcpy(title, (const char*)title1.mb_str());
   strcpy(xlabel, (const char*)xlabel1.mb_str());
@@ -219,12 +224,13 @@ int reset_first;
   jlp_axes_are_wanted = 0;
 
 // iplan=0 x1=0 x2=0 y1=0 y2=0
-  m_GraphicPanel->wxGP_LoadPlotSettings(xlabel, ylabel, title, xgrid_is_wanted,
-                                        ygrid_is_wanted, jlp_axes_are_wanted,
-                                        0, 0, 0, 0, 0);
+  m_GDev->Curves_LoadPlotSettings(xlabel, ylabel, title, pen_colour,
+                                  pen_default_colour, backgd_colour,
+                                  xgrid_is_wanted, ygrid_is_wanted, 
+                                  jlp_axes_are_wanted, 0, 0, 0, 0, 0);
 
 // Call Newplot():
-  m_GraphicPanel->wxGP_PlotToDrawingDisplay();
+  m_GDev->PlotToDrawingDisplay();
 
 return;
 }
