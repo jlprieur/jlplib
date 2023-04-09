@@ -111,6 +111,7 @@ jlp_video_panel = NULL;
 // Setup drawing panel
 Setup_DrawingPanel(my_wxID);
 
+ 
 initialized = 1234;
 
 return;

@@ -155,6 +155,7 @@
    EVT_MENU (ID_FILTER_5, JLP_wxGDev_Popup::OnSelectFilter)
    EVT_MENU (ID_FILTER_6, JLP_wxGDev_Popup::OnSelectFilter)
    EVT_MENU (ID_FILTER_7, JLP_wxGDev_Popup::OnSelectFilter)
+   EVT_MENU (ID_FILTER_8, JLP_wxGDev_Popup::OnSelectFilter)
 
 // Gsegraf
    EVT_MENU (ID_GSEG_AXIS_ROTATE, JLP_wxGDev_Popup::OnViewAxisRotate)

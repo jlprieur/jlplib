@@ -70,6 +70,7 @@ JLP_wxPlot_Frame::JLP_wxPlot_Frame(double *xplot0, double *yplot0,
 {
 int i;
 
+
 m_GraphicPanel = NULL;
 xplot1 = NULL;
 yplot1 = NULL; 
@@ -100,6 +101,9 @@ PanelSetup();
 
 InitPlotForSlice();
 
+// JP2023: to try to solve problem of black frames in Calern:
+  m_GraphicPanel->SetBackgroundColour(wxColour(*wxWHITE));
+
 initialized = 1234;
 
 return;
@@ -122,6 +126,7 @@ int iwidth, iheight;
 // Here, use frames without a status bar:
  m_GraphicPanel = new JLP_wxGraphicPanel((wxFrame *)this, wxID_ANY, 
                                           NULL, 20, 20, iwidth, iheight);
+
  topsizer->Add(m_GraphicPanel, 1, wxEXPAND);
 
  SetSizer(topsizer);      // use the sizer for layout

@@ -468,23 +468,25 @@ void JLP_wxGDev_Popup::CreateImageMenuFilterForSplot()
                        wxT("With medium sized square box"), wxITEM_RADIO);
   menuFilter->Append( ID_FILTER_3, _T("Hard unsharp masking"),
                        wxT("With small square box"), wxITEM_RADIO);
+  menuFilter->Append( ID_FILTER_4, _T("Very hard unsharp masking"),
+                       wxT("With very small square box"), wxITEM_RADIO);
 /***
 * For popup menu (without unresolved modsq):
-* 4 = VHC1: high contrast version 2008 without unresolved modsq
-* 5 = VHC2: high contrast version 2015 without unresolved modsq
-* 6 = VHC3: median profile version 2008 without unresolved modsq
-* 7 = VHC4: median profile version 2015 without unresolved modsq
+* 5 = VHC1: high contrast version 2008 without unresolved modsq
+* 6 = VHC2: high contrast version 2015 without unresolved modsq
+* 7 = VHC3: median profile version 2008 without unresolved modsq
+* 8 = VHC4: median profile version 2015 without unresolved modsq
 ****/
-  menuFilter->Append( ID_FILTER_4, _T("High contrast for autoc. (VHC1)"),
+  menuFilter->Append( ID_FILTER_5, _T("High contrast for autoc. (VHC1)"),
                       wxT("High contrast without unres. modsq: version 2008"),
                       wxITEM_RADIO);
-  menuFilter->Append( ID_FILTER_5, _T("High contrast for autoc. (VHC2)"),
+  menuFilter->Append( ID_FILTER_6, _T("High contrast for autoc. (VHC2)"),
                       wxT("High contrast without unres. modsq: version 2015"), 
                       wxITEM_RADIO);
-  menuFilter->Append( ID_FILTER_6, _T("High contrast for autoc. (VHC3)"),
+  menuFilter->Append( ID_FILTER_7, _T("High contrast for autoc. (VHC3)"),
                       wxT("Median profile without unres. modsq: version 2008"),
                       wxITEM_RADIO);
-  menuFilter->Append( ID_FILTER_7, _T("High contrast for autoc. (VHC4)"),
+  menuFilter->Append( ID_FILTER_8, _T("High contrast for autoc. (VHC4)"),
                       wxT("Median profile without unres. modsq: version 2015"),
                       wxITEM_RADIO);
 

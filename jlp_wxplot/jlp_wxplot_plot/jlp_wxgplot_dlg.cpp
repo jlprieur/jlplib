@@ -71,6 +71,9 @@ PanelSetup();
 
 InitPlot();
 
+//To try to solve black frames in Calern:
+m_GraphicPanel->SetBackgroundColour(wxColour(*wxLIGHT_GREY));
+
 initialized = 1234;
 
 return;

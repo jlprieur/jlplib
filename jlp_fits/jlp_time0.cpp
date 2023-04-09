@@ -25,6 +25,7 @@
 #endif
 
 #include "jlp_time0.h"
+#include "jlp_string.h"
 
 static int convert_to_utime(int *hh, int *mm, int *ss, int ut_offset);
 
@@ -115,8 +116,8 @@ int jlp_time_microsec(char *full_date, int *istat)
   gettimeofday(&tt, NULL);
   JLP_CTIME(str, istat);
 // Sun Sep 30 15:58:20 2018
-// Truncate the date at 24 characters:
-  str[24] = '\0';
+// Trim trailing blanks:
+  jlp_trim_string(str, 80);
   sprintf(full_date, "%s [%ld:%06ld]", str, tt.tv_sec, tt.tv_usec);
 // WIN32 API
 #else
@@ -124,9 +125,9 @@ int jlp_time_microsec(char *full_date, int *istat)
   GetSystemTime(&st);
   jlp_local_time(str);
 // Sun Sep 30 15:58:20 2018
-// Truncate the date at 24 characters:
-  str[24] = '\0';
-  sprintf(full_date, "%s [%02d.%03d sec]", str, st.wSecond, st.wMilliseconds);
+// Trim trailing blanks:
+  jlp_trim_string(str, 80);
+  sprintf(full_date, "%s [%02d.%03d]", str, st.wSecond, st.wMilliseconds);
   *istat = 0;
 #endif
 

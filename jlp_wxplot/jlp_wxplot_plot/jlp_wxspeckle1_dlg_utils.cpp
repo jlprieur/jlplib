@@ -144,16 +144,14 @@ static int speckle_astrom_mean(FILE *fp_data, double *mrho, double *drho,
 {
 double rho, theta;
 double rho_sum, rho_sumsq, theta_sum, theta_sumsq;
-double theta_90deg, sig_90deg, theta0, sig0;
+double theta0, sig0;
 char buffer[80];
-int nvalues, status;
+int nvalues, status, isign, isign_is_set;
 
 rho_sum = 0.;
 rho_sumsq = 0.;
 theta_sum = 0.;
 theta_sumsq = 0.;
-theta_90deg = 0.;
-sig_90deg = 0.;
 *nn = 0;
 
 /* Speckle or DVA:
@@ -162,64 +160,64 @@ sig_90deg = 0.;
 /* Lucky imaging:
 %% rho=1.04 theta=-34.45 theta180=145.55 Dm=1.12
 */
+isign_is_set = 0;
+isign = 1;
+// JLP2022: now theta meas. in [-180,+180] and corrected for quadrant by atan2
 while(fgets(buffer,80,fp_data) != 0) {
    nvalues = sscanf(buffer,"%%%% rho=%lf theta=%lf",&rho, &theta);
    if(nvalues == 2) {
      if(rho > 0.01) {
         rho_sum += rho;
         rho_sumsq += rho*rho;
+// theta is in [-180,+180]
+//        printf("ZZZZ: isign_is_set=%d input: theta=%.2f\n", isign_is_set, theta);
+        if (theta > 90.) theta -=180.;
+        if (theta < -90.) theta +=180.;
+// JLP2022: put theta in [-90,90]:
+        if(isign_is_set == 0) {
+          if(theta > 0.) isign = 1;
+            else isign = -1;
+          isign_is_set = 1;
+          }
+//        printf("ZZZZ: isign_is_set=%d isign=%d, output: theta=%.2f\n", isign_is_set, isign, theta);
+        if((isign > 0) && (theta < -10.)) theta += 180.;
+        if((isign < 0) && (theta > 10.)) theta -= 180.;
+//        printf("ZZZZ: output2: theta=%.2f\n", theta);
         theta_sum += theta;
         theta_sumsq += theta*theta;
-        if(theta > 0.) {
-          theta_90deg += theta;
-          sig_90deg += SQUARE(theta);
-        } else {
-          theta_90deg += (theta + 180.);
-          sig_90deg += SQUARE(theta + 180.);
-        }
         (*nn)++;
-      } // if rho > 0.01
-    } // if nvalues == 2
+     } // if rho > 0.01
+   } // if nvalues == 2
 } // EOF while
 
 if(*nn >= 1) {
 
-/* JLP2007: handle the case of theta close to 90 degrees: */
-theta_90deg = theta_90deg / (double)(*nn);
-if(*nn > 2) {
-  sig_90deg = sig_90deg / (double)(*nn) - SQUARE(theta_90deg);
-  sig_90deg = sqrt((double)sig_90deg);
-} else {
-  sig_90deg = 0.;
-}
-
-theta0 = theta_sum / (double)(*nn);
-if(*nn > 2) {
-  sig0 = theta_sumsq / (double)(*nn) - SQUARE(theta0);
-  sig0 = sqrt((double)sig0);
-} else {
-  sig0 = 0.;
-}
-
-  if(sig0 < 30.) {
-    *mtheta = theta0;
-    *dtheta = sig0;
+  theta0 = theta_sum / (double)(*nn);
+  if(*nn > 2) {
+    sig0 = theta_sumsq / (double)(*nn) - SQUARE(theta0);
+    sig0 = sqrt((double)sig0);
   } else {
-    *mtheta = theta_90deg;
-    *dtheta = sig_90deg;
+    sig0 = 0.;
   }
 
+  *mtheta = theta0;
+  *dtheta = sig0;
+
   *mrho = rho_sum / (double)(*nn);
-if(*nn > 2) {
-  *drho = rho_sumsq / (double)(*nn) - SQUARE(*mrho);
-  *drho = sqrt((double)*drho);
-} else {
-  *drho = 0.;
-}
+  if(*nn > 2) {
+    *drho = rho_sumsq / (double)(*nn) - SQUARE(*mrho);
+    *drho = sqrt((double)*drho);
+  } else {
+    *drho = 0.;
+  }
   status = 0;
 } else { // EOF *nn >= 1
   status = -1;
 }
+
+// JLP2022: put mtheta in [-90,90]:
+if (*mtheta < -90.) *mtheta +=180.;
+if (*mtheta > 90.) *mtheta -=180.;
 
 return(status);
 }
@@ -308,11 +306,11 @@ static int speckle_output_mean(FILE *fp_tex, FILE *fp_data,
                                int n_astrom, int n_photom,
                                const wxString data_fname)
 {
-double epoch, year;
+double epoch_bessel, epoch_julian, year;
 int eyepiece, orig_fits_file_is_avail, xbin = 1, ybin = 1, status;
 char processed_fits_fname[128], original_fits_fname[128], date[60], filter[20];
 char buffer[180], object_name[20], upper_object_name[40], comments[80];
-char epoch_string[20], bin_string[20], latex_fits_fname[128];
+char epoch_string[32], bin_string[20], latex_fits_fname[128];
 char dmag_string[30];
 
 strcpy(original_fits_fname, original_FITS_fname.mb_str());
@@ -332,16 +330,17 @@ jlp_cleanup_string(upper_object_name, 40);
 /**************************************************************************/
 if(orig_fits_file_is_avail){
   status = decode_info_from_FITS_file(original_fits_fname, date, filter,
-                                      object_name, &epoch, &year, &xbin, &ybin,
-                                      comments);
+                                      object_name, &epoch_bessel, &year, 
+                                      &xbin, &ybin, comments);
 /**************************************************************************/
   if(status) {
     fprintf(stderr, "decode_info_from_FITS_file/Error, status = %d\n", status);
   } else {
 
 // Epoch as a fraction of Besselian year
-  if(epoch >= year) {
-    sprintf(epoch_string, "EP=%.4f", epoch);
+  if(epoch_bessel >= year) {
+    JLP_besselian_to_julian_epoch(epoch_bessel, &epoch_julian);
+    sprintf(epoch_string, "EP=%.4f EJUL=%.4f", epoch_bessel, epoch_julian);
    } else {
     epoch_string[0] = '\0';
    }
@@ -483,10 +482,11 @@ return(0);
 * original_fits_fname: name of original FITS file
 *
 * OUTPUT:
-* epoch: Besselian epoch of observation as a fraction of year (e.g. 2006.2543)
+* epoch_bessel: Besselian epoch of observation as a fraction of year (e.g. 2006.2543)
 ************************************************************************/
 int decode_info_from_FITS_file(const char *original_fits_fname, char *date, 
-                               char *filter, char *object_name, double *epoch, 
+                               char *filter, char *object_name, 
+                               double *epoch_bessel, 
                                double *year, int *xbin, int *ybin, 
                                char *comments)
 {
@@ -501,7 +501,7 @@ INT4 nx, ny, dflag, istatus;
 INT_PNTR pntr_array;
 int i, status, ivalue, found;
 
-*epoch = 0.;
+*epoch_bessel = 0.;
 *year = 0.;
 *date = '\0';
 
@@ -590,16 +590,16 @@ object=%s\ndescrip=%s\ndate=%s\ncounters=%s\n xbin=%d ybin=%d\n",
     if(d_obs_date[0] != '\0') {
 // Bessel epoch from obs_date
      status = descrip_bepoch_from_obs_date(d_obs_date, date, year,
-                                     &time0, epoch);
+                                     &time0, epoch_bessel);
     } else {
 // Bessel epoch from date
      status = descrip_bepoch_from_date(d_date, d_counters, date, year,
-                                 &time0, epoch);
+                                 &time0, epoch_bessel);
     }
 
 /* DEBUG:
-printf("descrip_decode_date: d_date=%s date=%s year=%.1f epoch=%.4f\n",
-        d_date, date, *year, *epoch);
+printf("descrip_decode_date: d_date=%s date=%s year=%.1f epoch_bessel=%.4f\n",
+        d_date, date, *year, *epoch_bessel);
 */
 
 return(0);

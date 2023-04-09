@@ -143,6 +143,7 @@ enum
     ID_FILTER_5,
     ID_FILTER_6,
     ID_FILTER_7,
+    ID_FILTER_8,
 
 };
 

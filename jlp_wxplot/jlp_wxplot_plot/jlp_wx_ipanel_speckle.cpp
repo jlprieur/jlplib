@@ -177,9 +177,11 @@ char buffer[80];
   if(centered_polar_coordinates) {
 // Polar conversion relative to the center of the frame:
    speckle_convert_to_centered_polar(xac, yac, nx1, ny1, &rho, &theta, &theta180);
+// JLP2022: I only use theta since theta180 introduces artefacts here (before computing the mean)
+// and theta is corrected fro quadrant by atan2
    sprintf(buffer,
            "%%%% rho=%.2f theta=%.2f xc=%.2f yc=%.2f (%.1f,%.1f,%.1f,%d) %s",
-           rho, theta180, xac, yac, xc, yc, diam, poly_order, method);
+           rho, theta, xac, yac, xc, yc, diam, poly_order, method);
   } else {
    sprintf(buffer, "%%%% xc=%.2f yc=%.2f (%.1f,%.1f,%.1f,%d) %s",
            xac, yac, xc, yc, diam, poly_order, method);
@@ -188,7 +190,7 @@ char buffer[80];
   if(astrom_only) {
      strcpy(log_message,buffer);
   } else {
-     sprintf(log_message, "%s \n%%%% maxi=%.2f flux=%.3g sky=%.2f+/-%.2f %s",
+     sprintf(log_message, "%s \n%%%% maxi=%.2g flux=%.3g sky=%.2g+/-%.2g %s",
              buffer, maxi, flux, mean_sky, sigma_sky, method);
   }
 
@@ -268,7 +270,7 @@ return(0);
 *
 * OUTPUT:
 *  rho: angular separation (in pixels)
-*  theta: position angle in degrees (0 for Ox, 90 for Oy)
+*  theta: position angle in degrees (0 for Ox, 90 for Oy) in [-180,+180]
 *  theta180: position angle in degrees (between -90 and +90 degrees)
 ***************************************************************************/
 int speckle_convert_to_centered_polar(double xm, double ym, int nx1, int ny1,
@@ -280,6 +282,7 @@ double v1, v2;
   v1 = xm - (double)(nx1)/2.;
   v2 = ym - (double)(ny1)/2.;
 
+// JLP2022: now theta meas. in [-180,+180] and corrected for quadrant by atan2
  speckle_convert_to_polar(v1, v2, rho, theta, theta180);
 
 return(0);
@@ -293,7 +296,7 @@ return(0);
 *
 * OUTPUT:
 *  rho: angular separation (in pixels)
-*  theta: position angle in degrees (0 for Ox, 90 for Oy)
+*  theta: position angle in degrees (0 for Ox, 90 for Oy) in [-180,+180]
 *  theta180: position angle in degrees (between -90 and +90 degrees)
 ***************************************************************************/
 int speckle_convert_to_polar(double xm, double ym,
@@ -306,8 +309,10 @@ int speckle_convert_to_polar(double xm, double ym,
      else if (ym < 0.) *theta = -90.;
      else *theta = 0.;
   } else {
+// *theta is the angle in [-180, 180]
      *theta = 180. * atan2(ym, xm) / PI;
   }
+// JLP2022: now theta meas. in [-180,+180] and corrected for quadrant by atan2
 
 /* For autocorrelations... */
    if(*theta < -90) {

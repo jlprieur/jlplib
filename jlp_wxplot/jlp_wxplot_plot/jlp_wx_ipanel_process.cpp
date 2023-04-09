@@ -63,8 +63,9 @@ return;
 /**************************************************************************
 * 0=NONE
 * 1=soft unsharp (UNSH1) 2=medium unsharp (UNSH2) 3=hard unsharp (UNSH3)
-* 4=high contrast1 (VHC1) 5=high contrast2 (VHC2), 6=high contrast3 (VHC3)
-* 7=very high contrast4 (VHC4) 
+* 4=hard unsharp (UNSH4)
+* 5=high contrast1 (VHC1) 6=high contrast2 (VHC2), 7=high contrast3 (VHC3)
+* 8=very high contrast4 (VHC4) 
 **************************************************************************/
 void JLP_wxImagePanel::ApplyFilter(int filter0)
 {
@@ -95,6 +96,11 @@ switch(filter0) {
   case 3:
     FilterUnsharp(4);
     break;
+// Filter 4=Unsharp4: unsharp masking with a very small square box
+// Setting cell half_width to 3
+  case 4:
+    FilterUnsharp(3);
+    break;
 /***
 * FilterHighContrast filter_option:
 * 1 = HC1: Wiener deconvolution version 2008 with unresolved modsq
@@ -105,13 +111,13 @@ switch(filter0) {
 * 5 = VHC3: median profile version 2008 without unresolved modsq
 * 6 = VHC4: median profile version 2015 without unresolved modsq
 ****/
-// Filter 4, 5, 6, 7 = FilterHighContrast 1, 2, 3, 4, 5, 6
+// Filter 5, 6, 7, 8 = FilterHighContrast 1, 2, 3, 4, 5, 6
 // strioscopic filter (with high contrast)
-  case 4:
   case 5:
   case 6:
   case 7:
-    hc_filter_option = filter0 - 1;
+  case 8:
+    hc_filter_option = filter0 - 2;
     FilterHighContrast(hc_filter_option);
     break;
 }

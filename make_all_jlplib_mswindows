@@ -1,5 +1,5 @@
 #!/bin/sh
-cd jlp_cfitsio/distrib/cfit3410_zip
+cd jlp_cfitsio/distrib/cfitsio-4.0.0
 ./configure
 make 
 cp libcfitsio.a c:/EXEC/Mylib/

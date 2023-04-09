@@ -201,7 +201,10 @@ bool saved = false;
    {
        // This one guesses image format from filename extension
        // (it may fail if the extension is not recognized):
-       image1.SaveFile(savefilename);
+       if(!image1.SaveFile(savefilename))
+  wxMessageBox(wxT("Format is not available in this version"), 
+	       wxT("JLP_Gdev_wxWID::SaveGraphicToFile"),
+               wxOK | wxICON_ERROR);
    }
 return;
 }
@@ -247,7 +250,7 @@ if(status) {
                                Jgc0.axis_limits[1], Jgc0.axis_limits[2],
                                Jgc0.axis_limits[3]);
   Jwx->PlotAllCurves_splot();
-  delete Jwx;
+//  delete Jwx;
  }
 
 return(status);
@@ -303,7 +306,7 @@ for(i = 0; i < f1_nx1 * f1_ny1; i++) image_f1[i] = dble_image0[i];
 
 // Work space for pstcopy1 only:
 image_i = new int[f1_nx1 * f1_ny1];
-for(i = 0; i < f1_nx1 * f1_ny1; i++); image_i[i] = 0;
+for(i = 0; i < f1_nx1 * f1_ny1; i++) image_i[i] = 0;
 
  ncolors = 256;
  strcpy(image_comments, "");

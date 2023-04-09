@@ -750,6 +750,10 @@ wxMEDIUM_GREY_BRUSH, wxLIGHT_GREY_BRUSH, wxTRANSPARENT_BRUSH, wxCYAN_BRUSH,
 wxRED_BRUSH,
   backup_dc->SetBackground( *wxWHITE_BRUSH);
 */
+ // JLP2023: to solve problems with black screen for slices
+  if(Jgc0.gdev_graphic_type == 1) {
+    backup_dc->SetBackground( *wxWHITE_BRUSH);
+  }
 
 /* pen.h
 wxRED_PEN, wxCYAN_PEN, wxGREEN_PEN, wxBLACK_PEN, wxWHITE_PEN,

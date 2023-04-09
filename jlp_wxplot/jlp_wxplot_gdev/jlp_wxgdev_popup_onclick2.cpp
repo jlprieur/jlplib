@@ -87,8 +87,9 @@ return;
 *
 * 0=NONE
 * 1=soft unsharp (UNSH1) 2=medium unsharp (UNSH2) 3=hard unsharp (UNSH3)
-* 4=high contrast1 (VHC1) 5=high contrast2 (VHC2) 6=high contrast3 (VHC3)
-* 7=high contrast4 (VHC4)
+* 4=hard unsharp (UNSH4)
+* 5=high contrast1 (VHC1) 6=high contrast2 (VHC2), 7=high contrast3 (VHC3)
+* 8=very high contrast4 (VHC4)
 **************************************************************************/
 void JLP_wxGDev_Popup::OnSelectFilter(wxCommandEvent& event)
 {
@@ -125,6 +126,9 @@ if(initialized != 1234) return;
     break;
    case ID_FILTER_7:
     filter0 = 7;
+    break;
+   case ID_FILTER_8:
+    filter0 = 8;
     break;
   }
 

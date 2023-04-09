@@ -270,6 +270,7 @@ if(initialized != 1234 || menuFilter == NULL) return;
   menuFilter->Check(ID_FILTER_5, false);
   menuFilter->Check(ID_FILTER_6, false);
   menuFilter->Check(ID_FILTER_7, false);
+  menuFilter->Check(ID_FILTER_8, false);
 */
 
 // Then select good one:
@@ -306,6 +307,10 @@ if(initialized != 1234 || menuFilter == NULL) return;
     case 7:
       if(menuFilter->FindItem(ID_FILTER_7) != NULL)
         menuFilter->Check(ID_FILTER_7, true);
+      break;
+    case 8:
+      if(menuFilter->FindItem(ID_FILTER_8) != NULL)
+        menuFilter->Check(ID_FILTER_8, true);
       break;
   }
 
