@@ -41,15 +41,15 @@ JLP_WXPLOT_LIB = $(mylib)/jlp_wxplot.a
 else
 
 CPP = c++
-CPPFLAGS=-g -Wcomment -Wformat -Wall  
+CPPFLAGS=-g -Wcomment -Wformat -Wall -std=c++11 
 
 LOCAL_FLAGS=-I./jlp_wxplot_include -I. \
 	-I..\\jlp_fits -I..\\jlp_splot \
 	-I../jlp_splot_idv -I../jlp_gsegraf/jlp_gsegraf_include \
 	-I../jlp_gseg_wxwid \
 	-I../jlp_numeric -I$(CFITSIO_INCL_DIR) \
-	-D$(JLP_SYSTEM) -DJLP_USE_WXWID2 -D__WXMSW__ -D_WINSOCK2API_ -DwxSIZE_T_IS_UINT
-CPP_WXFLAGS= -IC:\\wxWidgets-3.2.1\\include -std=gnu++11 
+	-D$(JLP_SYSTEM) -DJLP_USE_WXWID2 -D__WXMSW__ -D_WINSOCK2API_
+CPP_WXFLAGS= `c:/wxWidgets-3.2.4/build-jlp/wx-config --cppflags`
 
 JLP_WXPLOT_LIB = c:\\EXEC\\MyLib\\jlp_wxplot.a
 endif

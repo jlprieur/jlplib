@@ -275,10 +275,9 @@ static int jlp_rd_bintab_spec(fitsfile *fptr, long *nrows, float **wavelength,
                               float **snr, long **order_nb, int icorot,
                               int firstrow, int nelements, int vm)
 {
-int tfields, nfields=20, nmax, istat;
+int i, tfields, nfields=20, nmax, istat;
 long naxis, naxis1, naxis2;
-register int i;
-char ext_name[30], xtension[30], keywd[8], commts[81];
+char ext_name[30], xtension[32], keywd[32], commts[81];
 char ttype[nfields][20], tform[nfields][20], tunit[nfields][20];
 
 if(talk > 1) printf("\n ==> Binary table \n"),
@@ -400,9 +399,8 @@ return(0);
 ****************************************************************/
 static int jlp_read_chdu_info(fitsfile *fptr, int *status)
 {
-int nkeys, key_now;
+int k, nkeys, key_now;
 char kwd_name[20], kwd_val[80], kwd_comments[80];
-register int k;
 
 /* Get key_now=current index key_pos and nkeys=number of keywords */
 *status = 0;
@@ -783,10 +781,9 @@ static int jlp_write_spheader(fitsfile **fptr, char *filename, char *comments,
                               const long nrows, const int tfields)
 {
 long int  naxis; 
-int istat;
+int i, istat;
 char buf1[40], buf2[40], buf3[40];
 char *ttype[3], *tform[3], *tunit[3], err_message[81], extname[20];
-register int i;
 
  istat = 0;
  fits_create_file(fptr, filename, &istat);

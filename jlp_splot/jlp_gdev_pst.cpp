@@ -402,7 +402,7 @@ int JLP_GDev_PST::polygon_device(int mgo_x, int mgo_y, double expand,
 {
 double dtheta, theta;
 double g_dx, g_dy, aspect;
-register int i;
+int i;
 double radius;
 double xpsize, ypsize;        /* scale for points == g_dx*pdef*expand */
 static int num = -1;          /* number of vertices used last time */
@@ -655,7 +655,7 @@ return(0);
 **************************************************************/
 int JLP_GDev_PST::pst_code256(int *image, int size, int *r, int ncolors)
 {
-register int i, k;
+int i, k;
 int icode, ival;
 
   k = 0;
@@ -680,7 +680,7 @@ int icode, ival;
 int JLP_GDev_PST::pst_code16(int *image, int size, int *r, int ncolors)
 {
 int icode, ival;
-register int i, k;
+int i, k;
 
   k = 0;
   for(i=0; i<size; i++)
@@ -789,7 +789,7 @@ int JLP_GDev_PST::plot_imageRGB(int *image, int nx, int ny, int idim,
 {
 double width_im, height_im, dev_x, dev_y;
 int  red, green, blue, in_frame;
-register int  i, j, k, icell;
+int  i, j, k, icell;
 
   fprintf(Jgc0.fdv,"gsave\n");
 

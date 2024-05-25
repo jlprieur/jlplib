@@ -157,21 +157,27 @@ fitsfile *fptr;
 #ifdef DEBUG
 printf("jlp0_dble_rdfits/DEBUG/infile=%s\n", infile);
 #endif
+printf("jlp0_dble_rdfits/QQQ: infile=%s\n", infile);
 
 strcpy(jlp_descr, "");
+
+ status = jlp1_open_fits_file0(infile, &fptr, err_mess);
+ if(status != 0) {
+    fprintf(stderr, "jlp0_dble_rdfits/Error in jlp1_open_fits_file: %s\n", err_mess);
+    return(-1);
+ }
 
 // Decode header
  istat = jlp1_rdfits_header(infile, nx1, ny1, nz1, &naxis, &bitpix,
                       comments, jlp_descr, dflag, err_mess);
  if (istat) {
+   fprintf(stderr, "jlp0_dble_rdfits/Error reading header of >%s< istat=%d\n",
+           infile, istat);
    sprintf(err_mess,"jlp0_dble_rdfits/Error reading header of >%s< istat=%d\n",
            infile, istat);
    istat = 0; fits_close_file(fptr,&istat);
    return(-1);
    }
-
- status = jlp1_open_fits_file0(infile, &fptr, err_mess);
- if(status != 0) return(status);
 
 #ifdef DEBUG
 printf("jlp0_dble_rdfits/DEBUG: nx1=%d ny1=%d dflag=%d\n",
@@ -199,12 +205,11 @@ printf("jlp0_dble_rdfits/DEBUG/comments=>%s<\n DEBUG/jlp_descr: \n>%s<\n", comme
      return(-1);
    }
 
-
 /* Close fits file: */
    istat = 0;
    fits_close_file(fptr,&istat);
 
-return(istat);
+return(0);
 }
 /**********************************************************************
 * jlp0_3dxfits_rd_header
@@ -557,6 +562,8 @@ char  filename[256], *pcc, err_message[81];
      }
      fits_read_errmsg(err_message);
      sprintf(err_mess,"jlp1_open_fits_file0/ Cannot open input file : >%s< istat=%d\n %s \n",
+            filename, istat, err_message);
+     fprintf(stderr, "jlp1_open_fits_file0/ Cannot open input file : >%s< istat=%d\n %s \n",
             filename, istat, err_message);
    }
 return(istat);

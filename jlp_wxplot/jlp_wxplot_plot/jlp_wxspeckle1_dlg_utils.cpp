@@ -636,7 +636,9 @@ int i, k, iyy;
 pc = comments;
 while(*pc) {
   if(!strncmp(pc, "10mm", 4)){*eyepiece = 10; break;}
+  else if(!strncmp(pc, "15mm", 4)){*eyepiece = 15; break;}
   else if(!strncmp(pc, "20mm", 4)){*eyepiece = 20; break;}
+  else if(!strncmp(pc, "24mm", 4)){*eyepiece = 24; break;}
   else if(!strncmp(pc, "32mm", 4)){*eyepiece = 32; break;}
   pc++;
   }

@@ -108,7 +108,7 @@ static void LinearItt(BYTE* out_ima_k, const double* in_ima, const int nx,
 {
 int iw;
 double gain1, range;
-register int i;
+int i;
 
 range = max_val - min_val;
 if(range < 1.e-9) range = 1;
@@ -256,7 +256,7 @@ static void LogItt(BYTE* out_ima_k, const double* in_ima, const int nx,
                    const double bad_value)
 {
 double work, range;
-register int i;
+int i;
 
 range = max_val - min_val;
 if(range < 1.e-9) range = 1;
@@ -460,7 +460,7 @@ void Min_Max_with_location(const double* image, const int nx, const int ny,
 {
 double work;
 int imax, imin;
-register int i;
+int i;
 
 // Look for mean, minimum, maximum:
  *max = -1.e+12; *min = +1.e+12;

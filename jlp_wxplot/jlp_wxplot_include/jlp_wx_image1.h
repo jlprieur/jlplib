@@ -56,7 +56,7 @@ public:
     void UpdateBitmap();
     void GetInfo(wxString& InfoMessage);
     void RestoreOriginalImage() {
-      register int i;
+      int i;
       for(i = 0; i < nx1 * ny1; i++) dble_image1[i] = orig_dble_image1[i];
       }
     void SetZoom(int zoom_fact);

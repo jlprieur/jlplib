@@ -42,8 +42,7 @@ main()
   int         nx1, ny1, idim;
   char         infile[100], outfile[100];
   char         comments[81], jlp_descr[1024];
-  int         istatus, dflag;
-  register int i;
+  int         i, istatus, dflag;
 
 JLP_INQUIFMT();
 
@@ -96,8 +95,7 @@ int JLP_RDFITS_2D_UINT1(UINT1 **array1, int *nx1, int *ny1, int *nz1,
 {
 double *dble_array1;
 char jlp_descr[1024];
-int dflag, status;
-register int i;
+int i, dflag, status;
 
 /* Set dflag to 0, since descriptors are wanted */
 dflag = 0;
@@ -133,8 +131,7 @@ int JLP_RDFITS_2D_UINT2(UINT2 **array1, int *nx1, int *ny1, int *nz1,
 {
 double *dble_array1;
 char jlp_descr[1024];
-int dflag, status;
-register int i;
+int i, dflag, status;
 
 /* Set dflag to 0, since descriptors are wanted */
 dflag = 0;
@@ -170,8 +167,7 @@ int JLP_RDFITS_2D_flt(float **array1, int *nx1, int *ny1, int *nz1,
 {
 double *dble_array1;
 char jlp_descr[1024];
-int dflag, status;
-register int i;
+int i, dflag, status;
 
 /* Set dflag to 0, since descriptors are wanted */
 dflag = 0;

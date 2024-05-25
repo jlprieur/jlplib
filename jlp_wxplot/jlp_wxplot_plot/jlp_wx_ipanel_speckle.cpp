@@ -60,7 +60,7 @@ int astrom_gaussian_fit(double *array1, int nx1, int ny1,
 double sigx, sigy, rg, errors[4];
 double val, *xx, *yy, *f1, radd, radd_circle;
 int status, npts;
-register int i, j, k;
+int i, j, k;
 
 // Initialization of the output variables (in case of fitting error):
  *xac = xc;
@@ -218,7 +218,7 @@ int astrom_barycenter(double *array1, int nx1, int ny1,
 double sum, xm, ym, dx, dy;
 double val, mean, radd, radd_circle;
 int nval;
-register int i, j;
+int i, j;
 
 radd_circle = SQUARE(diam / 2.);
 
@@ -348,7 +348,7 @@ double sum_edges, sumsq_edges;
 int n_edges, negative_nval, nval;
 double val, radd, radd_circle, maxval;
 double mean_edges, sigma_edges;
-register int i, j;
+int i, j;
 
 radd_circle = SQUARE(radius);
 maxval=image_patch[(int)xc + (int)yc * nx1];

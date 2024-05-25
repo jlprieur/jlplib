@@ -339,7 +339,7 @@ void PS_FontISOLatin1(FILE *fp, char *fontname, char *isofontname)
 /**********************************************************************/
 void PS_GetString(char *string)
 {
-register   int     i, j;
+int     i, j;
 char    newstring[200];
 
 i=0;
@@ -542,7 +542,7 @@ void PS_Lut(FILE *fp, double width, double height, double zmin,
             double red, double green, double blue)
 /**********************************************************************/
 {
-register   int     i, j;
+int     i, j;
 double   z, az, bz;
 double   expz, manx, pasz, decz;
 
@@ -645,7 +645,7 @@ void  PS_LutRGB(FILE *fp, double width, double height, double zmin, double zmax,
                 char *fontname, double fontsize, double linewidth,
                 double red, double green, double blue)
 {
-register   int     i, k;
+int     i, k;
 int     nbr_colors;
 double   z, az, bz;
 double   expz, manx, pasz, decz;
@@ -754,7 +754,7 @@ if (fp != NULL)
 **********************************************************************/
 void PS_Image(FILE *fp, double width, double height, int nx, int ny, int *image)
 {
-register   int  i, j, k;
+int  i, j, k;
 int  gray;
 
 if (fp != NULL)
@@ -801,7 +801,7 @@ if (fp != NULL)
 void     PS_Image1_8bits(FILE *fp, double width, double height, int nx, int ny,
                          int idim, int *image, int *r, int *pst_lut)
 {
-register   int  i, j, k, icell;
+int  i, j, k, icell;
 int  gray;
 
 if (fp != NULL)
@@ -855,7 +855,7 @@ if (fp != NULL)
 void     PS_Image1_4bits(FILE *fp, double width, double height, int nx, int ny,
                          int idim, int *image, int *r, int *pst_lut)
 {
-register   int  i, j, k, icell;
+int  i, j, k, icell;
 int  gray;
 
 if (fp != NULL)
@@ -903,7 +903,7 @@ if (fp != NULL)
 void     PS_ImageRGB(FILE *fp, double width, double height, int nx, int ny, 
                      int *image, int lut[3][256])
 {
-register   int  i, j, k;
+int  i, j, k;
 int  red, green ,blue;
 
 if (fp != NULL)
@@ -955,7 +955,7 @@ if (fp != NULL)
 void PS_ImageRGB1(FILE *fp, double width, double height, int nx, int ny,
                   int idim, int *image, int *r, int *g, int *b)
 {
-register   int  i, j, k, icell;
+int  i, j, k, icell;
 int  red, green, blue;
 
 if (fp != NULL)
@@ -1010,7 +1010,7 @@ if (fp != NULL)
 **********************************************************************/
 void PS_Isoc(FILE *fp, double width, double height, int ny, int nx, int **sobel)
 {
-register   int  i, j;
+int  i, j;
 int  b1, b2, b3, b4, h1, h2;
 /*
 int  x1, x2, y1, y2;
@@ -1129,7 +1129,7 @@ void PS_Bar3d(FILE *fp, double width, double height, int ny, int nx,
               int linepattern, double linewidth, 
               double red, double green, double blue)
 {
-register  int            i, j;
+int            i, j;
 double          v1, v2, v3, v4, w1, w2, w3, w4, wx, wy, bas, haut;
 double          xi1, xi2, xi3, xi4, yi1, yi2, yi3, yi4;
 double          xs1, xs2, xs3, xs4, ys1, ys2, ys3, ys4;
@@ -2047,7 +2047,7 @@ void  PS_UVcoverage(FILE *fp, int nbr_config, int *nbr_baseline,
                     double ax, double bx, double ay, double by, double linewidth,
                     double red, double green, double blue)
 {
-register   int  b, bb, c, s;
+int  b, bb, c, s;
 
 if (fp != NULL)
   {
@@ -2148,7 +2148,7 @@ void  PS_Curve(FILE *fp, double v1, double v3, double v2, double v4,
                double red, double green, double blue)
 /**********************************************************************/
 {
-register   int        i;
+int        i;
 int        c1, c2, c3, c4, code1, code2, code;
 double      ax, bx, ay, by, xmin, xmax, ymin, ymax;
 
@@ -2221,7 +2221,7 @@ void  PS_Symbol(FILE *fp, double v1, double v3, double v2, double v4,
                 double *x, double *y, int symbpattern,double linewidth,
                 double red, double green, double blue)
 {
-register   int        i;
+int        i;
 double      ax, bx, ay, by, xmin, xmax, ymin, ymax;
 
 ax = (v2-v1)/(w2-w1);
@@ -2439,7 +2439,7 @@ void  PS_LutRGB1(FILE *fp, double width, double height, double zmin, double zmax
                  char *zlegend, char *fontname, double fontsize, double linewidth,
                  double red, double green, double blue)
 {
-register   int     i, k, icell;
+int     i, k, icell;
 int     rr, gg, bb;
 double   z, az, bz, expz, manx, pasz, decz;
 

@@ -34,8 +34,7 @@ static int ConvertDoubleToColors(const double *dble_image, const int nx,
 JLP_wxImage1::JLP_wxImage1(wxImage image)
 {
 BYTE rr, gg, bb, *image_data;
-register int i;
-int should_fit_inside0 = 0;
+int i, should_fit_inside0 = 0;
 int nx0, ny0;
 // Dummy values for width and height of window:
 wxSize window_size0(500, 300);
@@ -96,7 +95,7 @@ void JLP_wxImage1::Init_PrivateParameters(const int nx10, const int ny10,
                                           const wxSize window_size0,
                                           const int should_fit_inside0)
 {
-register int i;
+int i;
 
   nx1 = nx10;
   ny1 = ny10;
@@ -213,8 +212,7 @@ int JLP_wxImage1::JLP_SetupFromDouble(double *dble_image, int nx, int ny,
                                       const int should_fit_inside0,
                                       int max_lut_level)
 {
-int status;
-register int i;
+int i, status;
 
 // Allocate memory
   Init_PrivateParameters(nx, ny, window_size0, should_fit_inside0);
@@ -320,8 +318,7 @@ static int ConvertDoubleToColors(const double *dble_image, const int nx,
                                  const int ITT_is_linear)
 {
 BYTE *ima_k;
-int k;
-register int i;
+int i, k;
 char itt_type0[64];
 
 ima_k = new BYTE[nx * ny];

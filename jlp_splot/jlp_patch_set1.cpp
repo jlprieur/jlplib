@@ -79,7 +79,7 @@ int CREATE_NOISE_ARRAY(double **noise_array, int noise_dim)
 {
 double ww;
 long int seed;
-register int i;
+int i;
 
 *noise_array = new double[noise_dim];
   seed = 1;
@@ -125,7 +125,7 @@ double test, sdor, dx, dy, radmin2, diam_max, radmax, radmax2, rad2;
 double xran;
 int kq, nr, nterms, npts, imin, imax, jmin, jmax;
 int noto, ioor, jreject, ndim = NDIM_MAX;
-register int i, j, k;
+int i, j, k;
 
 *sigma_sky = 0.;
 
@@ -331,7 +331,7 @@ double xran;
 int imin, imax, jmin, jmax;
 int ndim = NDIM_MAX, npts[NDIM_MAX], nprof;
 double xc, yc, ww;
-register int i, j, k;
+int i, j, k;
 
 *sigma_sky = 0.;
 
@@ -477,7 +477,7 @@ return(0);
 static int get_profile_value(double radc, double *rad, double *mean, int nprof, 
                              double *mean_value)
 {
-register int i;
+int i;
 int status = -1, kp;
 
 /* kp: index of closer value of radc in rad array */
@@ -548,7 +548,7 @@ double aa[30], akj[30][30], aaa[30], ss[30][30], yg[30];
 double ggsqt[30], gg[30][30], qq[30][30][2];
 double sum, flnpts = 0, zzz, zzbar, tt, gk;
 int ix, jy, jul, kul, ixx, jyy;
-register int i, j, k, l, m;
+int i, j, k, l, m;
  
 if(*nterms >= *npts) {
   sprintf(err_message,"NEQSOL/Error: too few points nterms=%d npts=%d", 
@@ -789,7 +789,7 @@ static int patch_reject(double *xx, double *yy, double *zz, int *ndim, double *d
 int indxp[21], indxn[21], npos, nneg;
 double avr, uu, vv;
 double rr, ss;
-register int i, j;
+int i, j;
   
 #ifdef DEBUG
   printf("REJECT/Test=%f jreject=%d\n", *tt, *jreject);

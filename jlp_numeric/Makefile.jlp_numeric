@@ -33,7 +33,7 @@ LOCAL_FLAGS=-Dunix -DSYSTEM_FIVE -DLINUX -D$(JLP_SYSTEM) \
 F77=gfortran
 # For SUSE 6.4: -fno_globals to avoid pb with MADRID() ...
 #FFLAGS=-g -fno-globals
-FFLAGS=-g -Wall
+FFLAGS=-g -Wall -fallow-argument-mismatch
 
 mylib=$(JLPLIB)/jlp
 
@@ -49,7 +49,7 @@ CPP=c++
 LOCAL_FLAGS= -D$(JLP_SYSTEM) -I. -I$(CFITSIO_INCL_DIR)
 
 F77=gfortran
-FFLAGS=-g -Wall
+FFLAGS=-g -Wall -fallow-argument-mismatch
 
 mylib=c:\\EXEC\\MyLib
 

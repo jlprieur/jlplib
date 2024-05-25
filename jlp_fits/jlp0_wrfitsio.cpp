@@ -100,9 +100,8 @@ int JLP_D_WRITEIMAG(double *d_array, int *nx1, int *ny1, int *idim1,
                   char *filename, char *comments)
 {
 char jlp_descr[1]; 
-int dflag, istatus, out_type;
+int i, j, dflag, istatus, out_type;
 float *f_array;
-register int i, j;
 
 if((f_array = (float *) malloc((*nx1) * (*ny1) * sizeof(float))) == NULL)
   {
@@ -140,10 +139,9 @@ char     author[20], buf1[40], buf2[40];
 char     *pcc, lhcuts[32], err_message[81];
 long int naxes[2], nelements, nx, ny, idim; 
 float    work, lcut, hcut, *tmp_array;
-int      naxis, istat;
+int      i, j, naxis, istat;
 /* *fptr = pointer to FITS file, defined in fitsio.h */
 fitsfile *fptr;      
-register int i, j;
 
 #if DEBUG
    printf("Beginning of JLP_WRFITS out_type=%d\n",*out_type);
@@ -306,8 +304,7 @@ return(0);
 ---------------------------------------------------------------------*/
 static int jlp_wdescr_fits(char *jlp_descr, fitsfile *fptr)
 {
- register int i, k;
- int istat;
+ int i, k, istat;
  char buffer[81], mydescr[1024], *pc, err_message[81];
 
   strcpy(mydescr,jlp_descr);

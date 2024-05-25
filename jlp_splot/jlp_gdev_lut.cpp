@@ -74,7 +74,7 @@ int JLP_GDev::convert_to_lut(double *image1, int nx1, int ny1, int idim1,
                              double lower_itt, double upper_itt)
 /***************************************************************/
 {
-register int   i, j;
+int   i, j;
 int   i1, j1, ivalue, imax, gamma1, gamma_d;	
 double scale, range, xcolors, work;
 
@@ -297,7 +297,7 @@ int jlp_change_lut_full(char *lut_type, const int reversed, int *ioff,
                         const int ncolors, const int max_lut_level)
 {
 int status = 0;
-register int i;
+int i;
 
 /* Erase LUT arrays : */
    for(i = 0; i < ncolors; i++) {
@@ -417,7 +417,7 @@ int JLP_GDev::jlp_key(int nn1, double lower_itt, double upper_itt,
 {
 double expand=1.4, len1;
 int nn2, ncolors, smallest_ix, smallest_iy;
-register int i, j;
+int i, j;
 int nx1, ny1, xstart1, ystart1, xend1, yend1;
 int *array, black_and_white, ixlen, iylen;
 
@@ -523,7 +523,7 @@ static int rgb_lut_saw(const int ioff, const int islope,
                        int *r, int *g, int *b, 
                        const int ncolors, const int max_lut_level)
 {
-register int i;
+int i;
 int iwork, ival, slope, ioff1;
 double val;
 
@@ -569,7 +569,7 @@ static int rgb_lut_gray(const int ioff, const int islope,
 {
 int ival, ioff1;
 double val, slope;
-register int i;
+int i;
 
 /* Subtract something to *ioff, otherwise too dark: */
 	 ioff1 = ioff - islope/2;
@@ -614,7 +614,7 @@ static int rgb_lut_log_rainbow(const int ioff, const int islope,
 {
  int n2, ival, ioff1, islope1;
  double val, slope;
- register int i;
+ int i;
 
  islope1 = MINI(ncolors,islope);
  ioff1 = MAXI(0,ioff);
@@ -676,7 +676,7 @@ static int rgb_lut_pisco(int *r, int *g, int *b,
 {
 int i1, i2, i3, imax;
 double rslope, gslope, bslope, ascale;
-register int i;
+int i;
 
 // Erases lut: 
  for(i = 0; i < ncolors; i++)
@@ -768,7 +768,7 @@ static int rgb_lut_rainbow(const int ioff, const int islope,
 {
  int n2, col_range, ival, ioff1, islope1, ix;
  double val, slope;
- register int i;
+ int i;
 
  islope1 = MINI(ncolors,islope);
  ioff1 = MAXI(0,ioff);
@@ -863,7 +863,7 @@ static int rgb_lut_for_curves(const int ioff, const int islope,
                               const int ncolors, const int max_lut_level)
 {
  int col_range;
- register int i;
+ int i;
 
 rgb_lut_log_rainbow(ioff, islope, r, g, b, ncolors, max_lut_level);
 

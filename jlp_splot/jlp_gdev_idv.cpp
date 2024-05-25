@@ -41,7 +41,7 @@ static JLP_GDev *Jgd1[DEV_MAX] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL
 ***************************************************************/
 int GDev_alloc_idv(JLP_GDev *Jgd0, int *idv, char *err_messg)
 {
-register int i;
+int i;
 
 *idv = -1;
 

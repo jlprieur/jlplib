@@ -1,0 +1,5 @@
+version 4.3.1 is bad (error 104 with fits_open)
+
+version 4.0.0:
+ sed -i 's/TBYTE/TTBYTE/g' *.h
+ sed -i 's/TBYTE/TTBYTE/g' *.c

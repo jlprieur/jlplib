@@ -27,7 +27,7 @@ main()
 double ll[NMAX*NMAX], uu[NMAX*NMAX], aa[NMAX*NMAX], bb[NMAX], dd;
 double aa_inv[NMAX*NMAX];
 int nn, indx[NMAX];
-register int i, j, k;
+int i, j, k;
 nn = 3;
 for(j = 0; j < nn*nn; j++) {ll[j] = 0.; uu[j] = 0.; aa[j] = 0.;}
 
@@ -127,8 +127,7 @@ mat_printf(aa_inv,nn,nn);
 ****************************************************************************/
 int lu_decomp(double *aa, int nn, int *indx, double *dd)
 {
-register int i, j, k;
-int jmax;
+int i, j, k, jmax;
 double big, dum, sum, temp;
 double *vv;
 
@@ -236,7 +235,7 @@ return(0);
 ***********************************************************/
 int lu_backsub(double *aa, int nn, int *indx, double *bb)
 {
-register int i, ii, ip, j;
+int i, ii, ip, j;
 double sum;
 
 ii = -1;
@@ -276,8 +275,7 @@ return(0);
 int mat_lu_solve(double *aa, double *xx, double *bb, int nn)
 {
 double *aa0, dd;
-int *indx;
-register int j;
+int j, *indx;
 
 /* Copy to xx, to prevent bb from being erased in lu_backsub */
 for(j = 0; j < nn; j++) xx[j] = bb[j];
@@ -309,7 +307,7 @@ int mat_lu_inverse(double *aa, double *aa_inv, int nn)
 {
 double *bb, *aa0, dd;
 int *indx;
-register int i, j;
+int i, j;
 
 aa0 = (double *) malloc(nn * nn * sizeof(double));
 indx = (int *) malloc(nn * sizeof(int));
@@ -348,7 +346,7 @@ return(0);
 ***********************************************************/
 int mat_product(double *out, double *in1, double *in2, int ncol1, int nlin1)
 {
-register int i, j, k;
+int i, j, k;
 
 for(j = 0; j < nlin1; j++)
   {
@@ -366,7 +364,7 @@ return(0);
 ***********************************************************/
 int mat_printf(double *aa, int ncol, int nlin)
 {
-register int i, j;
+int i, j;
 
 for(j = 0; j < nlin; j++)
   {

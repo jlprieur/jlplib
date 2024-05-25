@@ -49,7 +49,7 @@ int UnsharpMaskingFilter(double *in_image1, double *out_image2,
 {
 double sum, mini0, value, value_orig, mean;
 int iw, jw;
-register int i, j, ii, jj;
+int i, j, ii, jj;
 
 for(i = 0; i < nx2 * ny2; i++) out_image2[i] = in_image1[i];
 
@@ -117,7 +117,7 @@ int HighContrastFilter1(double *modsq_centered, double *autoc,
 {
 double ww, *tmp, mini_value;
 int ixc, jxc, nxx2, nyy2;
-register int i, j;
+int i, j;
 // rad2 is forbidden by Windows !
 double rad_sq, sigma12, sigma22;
 FFTW_COMPLEX *data;
@@ -201,7 +201,7 @@ int HighContrastFilter2(double *modsq_centered, double *autoc, int nx2, int ny2)
 {
 double *tmp_r, *tmp_i, sum_yi_fi, sum_fi_fi, fi, a_coeff, b_coeff;
 int ixc, jxc, idirect, iwidth, version_2008 = 1;
-register int i, j;
+int i, j;
 // Something strange with Windows/gcc: rad2 is not allowed as a variable!
 /* So I substitute with "rad22" ... */
 double mini_value, rad22, sigma1_2, sigma2_2, gaussian_filter, ww;
@@ -348,8 +348,7 @@ int MedianProfileFilter(double *modsq_centered, double *autoc,
                         const int nx2, const int ny2)
 {
 double *tmp_r, *tmp_i, *pro0;
-int np0, ioption;
-register int i;
+int i, np0, ioption;
 
 tmp_r = new double[nx2 * ny2];
 tmp_i = new double[nx2 * ny2];
@@ -399,7 +398,7 @@ int *npro;
 // rad2 forbidden by Windows compiler !
 double xc, yc, rad22;
 int nmax, ipro;
-register int i, j;
+int i, j;
 
 nmax = 4 * nx0 + ny0;
 ppro = new double[np0 * nmax];
@@ -471,7 +470,7 @@ int SubtractProfile(double *ima0, int nx0, int ny0, double *pro0, int np0)
 double *back_model;
 double xc, yc, rad22;
 int ipro;
-register int i, j;
+int i, j;
 
 back_model = new double[nx0 * ny0];
 for(i = 0; i < nx0 * ny0; i++) back_model[i] = 0.;
@@ -520,7 +519,7 @@ double *tmp;
 double wback, wdata, noise_array[1], diam, sigma_sky;
 double sum_1, sum_f, sum_z, sum_fz, sum_ff, a0, a1, det;
 int ii, jj, ixc, iyc, iside;
-register int i, j;
+int i, j;
 char err_messg[128];
 
 if(autoc_data == NULL || back_model == NULL

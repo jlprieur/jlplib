@@ -28,8 +28,8 @@ static  int qs2_char(char *array, int length, int *index, int left, int right);
 int main(int argc, char *argv[])
 {
 float array[NMAX];
-int nn, index[NMAX];
-register int i, k;
+int i, k, nn, index[NMAX];
+
   printf("JLP_SORT to test sorting routines\n");
 
  for (k = 0; k < 2; k++)
@@ -95,7 +95,7 @@ return(0);
 ***************************************************************************/
 static void qs(float *array, int left, int right)
 {
-register int i, j;
+int i, j;
 float x, y;
 
 i = left; j = right;
@@ -124,7 +124,7 @@ if(i < right) qs(array, i, right);
 ***************************************************************************/
 static void qs_dble(double *array, int left, int right)
 {
-register int i, j;
+int i, j;
 double x, y;
 
 i = left; j = right;
@@ -162,7 +162,7 @@ if(i < right) qs_dble(array, i, right);
 ****************************************************************************/
 int JLP_QSORT_INDX(float *array, int *index, int *nn)
 {
-register int i;
+int i;
 
 /* Initialization of index array: */
 for(i = 0; i < *nn; i++) index[i] = i;
@@ -175,7 +175,7 @@ return(0);
 /************** Double precision version: ********************/
 int JLP_QSORT_INDX_DBLE(double *array, int *index, int *nn)
 {
-register int i;
+int i;
 for(i = 0; i < *nn; i++) index[i] = i;
 if(*nn < 2) return(0);
  qs2_dble(array, index, 0, (*nn)-1);
@@ -187,7 +187,7 @@ return(0);
 ********************************************************************/
 int JLP_QSORT_INDX_CHAR(char *array, int *length, int *index, int *nn)
 {
-register int i;
+int i;
 
 /* DEBUG
 int k;
@@ -216,8 +216,7 @@ return(0);
 ***************************************************************************/
 static void qs2(float *array, int *index, int left, int right)
 {
-register int i, j;
-int iy;
+int i, j, iy;
 float x, y;
 
 i = left; j = right;
@@ -252,8 +251,7 @@ return;
 *******************************************************************/
 static void qs2_dble(double *array, int *index, int left, int right)
 {
-register int i, j;
-int iy;
+int i, j, iy;
 double x, y;
 
 i = left; j = right;
@@ -292,7 +290,7 @@ return;
 *******************************************************************/
 static int qs2_char(char *array, int length, int *index, int i_left, int i_right)
 {
-register int i, j, jc;
+int i, j, jc;
 int iy, nlen = length;
 char x[80], y[80];
 

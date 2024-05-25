@@ -53,8 +53,7 @@ int jlp_minimize(double *pp, int npts, int pp_dim, double ftol, int *iter,
                  int iter_max, double *fret, double (*func)(double *),
                  void (*dfunc)(double *, double *), int positive, int lbfgs)
 {
-register int i;
-int istat;
+int i, istat;
 
 if(lbfgs)
 /* Transfer to "C" arrays starting at 0.

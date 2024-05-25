@@ -139,7 +139,7 @@ int JLP_CGRAD(double *aa, double *psi, double *phi, INT4 *nx1, INT4 *ny1,
               INT4 *ifail)
 {
 int nx, ny;
-register int i, j, n_iter;
+int i, j, n_iter;
 /*
 double phi_n[NX], phi_n1[NX], res_n[NX], res_n1[NX];
 double z_n[NX], d_n[NX], d_n1[NX], work[NY], w1[NY], w2[NY];
@@ -597,8 +597,7 @@ return(0);
 ***************************************************************/
 int jlp_eigen_values(double *bb, int nx, double *eigen_min, double *eigen_max)
 {
-register int i, j;
-int isize, n_iter;
+int i, j, isize, n_iter;
 double norm, old_norm, ww, *xx, *yy;
 
 /* Get memory space: */

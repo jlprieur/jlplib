@@ -131,7 +131,7 @@ int JLP_wxImagePanel::FilterUnsharp(int box_width)
 {
 double *tmp;
 wxString str1;
-register int i;
+int i;
 bool reset_ITT_to_MinMax;
 
 // Restore original image (to prevent piling up the filters):
@@ -173,11 +173,10 @@ int JLP_wxImagePanel::FilterHighContrast(int filter_option)
 {
 double *modsq_centered;
 double *tmp_r, *tmp_i;
-register int i;
 wxString str1;
 bool reset_ITT_to_MinMax;
 bool version_2008;
-int status;
+int i, status;
 
 // Restore original image (to prevent piling up the filters):
  RestoreOriginalImage();
@@ -470,7 +469,7 @@ double *tmp_r, *tmp_i;
 int status;
 double ww, ww1, ww2;
 int nn, imax, jmax;
-register int i, j;
+int i, j;
 
 // Load unresolved autocorrelation if needed:
  if(UnresolvedAutoc == NULL) {

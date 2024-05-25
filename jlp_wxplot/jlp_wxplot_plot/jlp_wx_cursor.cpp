@@ -169,7 +169,7 @@ int nxb = 32, nyb = 32;
 // wxBitmap down_arrow_bitmap(my_down_arrow_bits, 32, 32);
 wxBitmap *down_arrow_bitmap, *down_arrow_mask_bitmap;
 #endif
-register int i;
+int i;
 char down_arrow_bits_char[128], down_arrow_mask_char[128];
 // White is 1, Black is 0 for MSW:
 if(c_PenColour == *wxWHITE) {
@@ -214,8 +214,7 @@ static void create_cross_cursor(wxCursor &cross_cursor,
 // 32*32 = 128 * 8
 // 64*64 = 512 * 8
 char cross_bits[512], cross_mask[512];
-int nxb, nyb, ic, jc;
-register int i;
+int i, nxb, nyb, ic, jc;
 #ifdef __WXMSW__
 // mask: 0 is opaque, 1 is transparent for MSWindows:
 // Maximum size 32x32 bits for MSWindows:

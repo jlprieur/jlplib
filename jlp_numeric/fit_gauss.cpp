@@ -75,7 +75,7 @@ char *argv[];
 float xx[NPTS], yy[NPTS], f1[NPTS];
 int npts, nx, ny, status, ifail;
 float sigx, sigy, xc, yc, rho, wx, wy, errors[5];
-register int i, j, k;
+int i, j, k;
 
   printf(" Fit_gauss/JLP version 19/10/98 \n");
 
@@ -113,13 +113,15 @@ printf(" Output in fit_gauss.log \n");
 exit(0);
 }
 #endif
+/*********************************************************************
+*
+*********************************************************************/
 int jlp_fit_gauss_flt(float *xx0, float *yy0, float *ff0, INT4 *npts,
                       float *sigx0, float *sigy0, float *xc0, float *yc0,
                       float *rho0, float *errors0, INT4 *ifail)
 {
 double *xx, *yy, *ff, sigx, sigy, xc, yc, rho, *errors;
-int status;
-register int i;
+int i, status;
 
 // Allocate memory and transfert to double arrays:
 xx = (double *)malloc(*npts * sizeof(double)); 
@@ -149,7 +151,7 @@ for(i = 0; i < 4; i++) errors0[i] = errors[i];
 free(xx);
 free(yy);
 free(ff);
-free(yy);
+free(errors);
 return(status);
 }
 /*****************************************************************
@@ -187,7 +189,7 @@ double sumsq, mean, min, max, xm, ym, xs, ys, npoints;
 INT4 kmax, ncoeff, status, npts_positive;
 INT4 nx_aa, ny_aa;
 double wx, wy;
-register int i, k;
+int i, k;
 #ifdef DEBUG
 FILE *fp1;
 #endif
@@ -424,7 +426,7 @@ return(0);
 static int compute_variance(double *aa, double *err_phi, INT4 nx_aa, INT4 ny_aa)
 {
 double ata[NCOEFF*NCOEFF];
-register int i;
+int i;
 
 compute_ata(ata,aa,nx_aa,ny_aa);
 
@@ -453,7 +455,7 @@ return(0);
 *********************************************************************/
 static int compute_ata(double *ata, double *aa, INT4 nx_aa, INT4 ny_aa)
 {
-register int i, j, k;
+int i, j, k;
 
 for(j = 0; j < nx_aa; j++)
    {
@@ -477,7 +479,7 @@ static int compute_sum(double sum[2*KMAXI+1][2*KMAXI+1], INT4 kmax,
                        double *xx, double *yy, INT4 npts)
 {
 double x[2*KMAXI+1], y[2*KMAXI+1];
-register int i, j, k;
+int i, j, k;
 int kmax_sum;
 
 kmax_sum = kmax * 2;
@@ -523,7 +525,7 @@ return(0);
 *********************************************************************/
 static int compute_psi(double *psi, double *zz, INT4 npts)
 {
-register int j;
+int j;
 
 for(j = 0; j < npts; j++)
   {
@@ -540,7 +542,7 @@ return(0);
 static int compute_aa(double *aa, double *xx1, double *yy1,
                       INT4 nx_aa, INT4 ny_aa)
 {
-register int j;
+int j;
 
 /* Loop on the lines */
    for(j = 0; j < ny_aa; j ++)
@@ -563,7 +565,7 @@ return(0);
 int calpoly_0(double xx, double yy, double *phi, INT4 ncoeff, INT4 kmax,
               double *value)
 {
-register int i, j, k, m;
+int i, j, k, m;
 double sum, x[KMAXI+1], y[KMAXI+1];
 
 x[0] = 1.;

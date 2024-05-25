@@ -59,11 +59,10 @@ int JLP_GDev::draw_curve(double *xplot, double *yplot, double *errx,
                          double *erry, int npts0, char *nchar0, 
                          char *pcolor0, int error_bars0)
 {
-register int  i;
 double box_xmin0, box_xmax0, box_ymin0, box_ymax0;
 char ctest[2], default_color[40];
 double min_xval, max_xval, min_yval, max_yval;
-int isymb, isize;
+int i, isymb, isize;
 
 box_xmin0 = Jgc0_box_xmin();
 box_xmax0 = Jgc0_box_xmax();
@@ -214,7 +213,7 @@ double box_xmin0, box_xmax0, box_ymin0, box_ymax0;
 double x0, x1, y0, y1, min_xval, max_xval, min_yval, max_yval;
 char nchar1[4], pcolor[32];
 int status = -1, lwidth = 0, ltype = 0, old_ltype = 0, coloured_histo = 0; 
-register int i;
+int i;
 
 box_xmin0 = Jgc0_box_xmin();
 box_xmax0 = Jgc0_box_xmax();
@@ -314,7 +313,7 @@ return(status);
 int JLP_GDev::draw_dashed_line(double *xplot, double *yplot, int npts0, 
                                int ltype0, char *pcolor0)
 {
-register int i;
+int i;
 double xx, yy, min_xval, min_yval, max_xval, max_yval;
 int ixa, ixb, iya, iyb;
 char old_color[40];

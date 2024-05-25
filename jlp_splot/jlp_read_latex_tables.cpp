@@ -329,9 +329,8 @@ return(status);
 int latex_write_fvalue(char *b_data, char *b_out, double value, int icol, 
                        int nber_of_decimals) 
 {
-int ic, column_is_found, istart, iend;
+int i, ic, column_is_found, istart, iend;
 char data[360], *pc;
-register int i;
 
 strcpy(data, b_data);
 

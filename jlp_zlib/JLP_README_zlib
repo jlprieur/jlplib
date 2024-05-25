@@ -1,0 +1,7 @@
+# JLP: 06/02/2023: 
+./configure
+make
+make install
+
+// copy zlib.h zconf.h to /usr/local/include
+// copy libz.a to /usr/local/lib

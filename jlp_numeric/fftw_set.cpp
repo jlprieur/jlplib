@@ -60,8 +60,7 @@ int main()
 {
 #define NX 8
 #define NY 8
-register int i;
-int nx = NX, ny = NY;
+int i, nx = NX, ny = NY;
 double re[NX*NY], im[NX*NY];
 fftw_complex* image;
 char s[80];
@@ -167,7 +166,7 @@ int nx1, ny1, direct, status;
 
 #ifndef TOTO_
 double sum;
-register int i;
+int i;
 #endif
 
 if(*idim != *nx)
@@ -222,9 +221,8 @@ return(status);
 * --------------------------------------------------------------*/
 int fftw_2D_double(double *re, double *im, int nx, int ny, int direct)
 {
-register int i;
 double norm;
-int isize, dir;
+int i, isize, dir;
 fftw_plan the_plan;
 fftw_complex *in_array, *out_array;
 
@@ -298,9 +296,8 @@ return(0);
 * --------------------------------------------------------------*/
 int fftw_2D_float(float *re, float *im, int nx, int ny, int direct)
 {
-register int i;
 double norm;
-int isize, dir;
+int i, isize, dir;
 fftw_plan the_plan;
 fftw_complex *in_array, *out_array;
 
@@ -371,9 +368,8 @@ return(0);
 * --------------------------------------------------------------*/
 int fftw_1D_Y_float(float *re, float *im, int nx, int ny, int direct)
 {
-register int i, j;
 double norm;
-int dir;
+int i, j, dir;
 fftw_plan the_plan;
 fftw_complex *in_array, *out_array;
 
@@ -451,9 +447,8 @@ return(0);
 * --------------------------------------------------------------*/
 int fftw_1D_Y_double(double *re, double *im, int nx, int ny, int direct)
 {
-register int i, j;
 double norm;
-int dir;
+int i, j, dir;
 fftw_plan the_plan;
 fftw_complex *in_array, *out_array;
 
@@ -535,8 +530,7 @@ int fftw_setup(char* fftw_directory, int nx0, int ny0, char *error_message)
 {
 char fwd_name[60], bkwd_name[60];
 FILE *fp_wisd;
-int ToOutput;
-register int i;
+int i, ToOutput;
 
 strcpy(error_message, "");
 
@@ -661,7 +655,7 @@ return(0);
 * --------------------------------------------------------------*/
 int fftw_fast(fftw_complex *image, int nx, int ny, int direct)
 {
-register int i;
+int i;
 double norm;
 char fftw_directory[128], error_message[128];
 

@@ -27,7 +27,7 @@ int gdp_sum_circle(double *array1, int nx, int ny, double xc, double yc,
 {
 // Something strange with g++/Cygnus: rad2 is not allowed as a variable!
 double radd, radius2;
-register int i, j;
+int i, j;
 
 radius2 = SQUARE(radius);
 *sum = 0.;

@@ -97,7 +97,7 @@ int auto_scale_double_box(double *image1, int nx1, int ny1, int idim,
 double sum, sumsq, mean, sigma;
 double w1, mini, maxi, mini1, maxi1;
 int npts, min_max_scale, jj;
-register int i, j;
+int i, j;
 
 #ifdef DEBUG
  printf("auto_scale_double/ nx1=%d ny1=%d idim=%d\n", nx1, ny1, idim);
@@ -210,7 +210,7 @@ int auto_scale_double_box(double *image1, int nx1, int ny1, int idim,
 double sum, sumsq, mean, sigma;
 double w1, mini, maxi, mini1, maxi1;
 int npts, jj;
-register int i, j;
+int i, j;
 
 #ifdef DEBUG
  printf("auto_scale_double/ ix1,iy1,ix2,iy2=(%d %d) (%d %d) \n", 
@@ -307,7 +307,7 @@ if((maxi - mean) > 3. * sigma) *upper_itt = mean + 3. * sigma;
 int auto_sky(double *in_image, int nx, int ny, int idim, double *sky_level)
 {
 int nn;
-register int i, j, k;
+int i, j, k;
 double sum[4];
 
 /* Compute the size of the areas used to compute the mean in the corners */
@@ -346,7 +346,7 @@ int auto_sky_d(double *in_image, int nx, int ny, int idim, double *sky_level,
                double *sky_noise)
 {
 int nn, k0, k1;
-register int i, j, k;
+int i, j, k;
 double sum[4], sumsq[4];
 
 /* Compute the size of the areas used to compute the mean in the corners */

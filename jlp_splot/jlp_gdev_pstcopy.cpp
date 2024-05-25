@@ -429,7 +429,7 @@ static int laser_compress2(int *image1, int nx1, int ny1, int idim,
                            int *comp_image, int comp_nx, int comp_ny,
                            int ifact)
 {
-register int i, j, k;
+int i, j, k;
 
 /* If no compression, simply copy input image to output image: */
 if(ifact == 1)
@@ -475,7 +475,7 @@ static int laser_compress_mean(int *image1, int nx1, int ny1, int idim,
 {
 double sum;
 int ifact2, iistart, iiend, jjstart, jjend;
-register int i, j, ii, jj, k;
+int i, j, ii, jj, k;
 
 /* If no compression, simply copy input image to output image: */
 if(ifact == 1)

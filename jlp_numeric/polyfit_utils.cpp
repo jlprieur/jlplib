@@ -26,8 +26,7 @@ int main(int argc, char *argv[])
 {
 double xc[4], error_xc[4], rms_resid;
 double xx[200], yy[200];
-int status, npts = 200, poly_order;
-register int i;
+int i, status, npts = 200, poly_order;
 
 printf(" Program to test polyfit routine\n");
 printf(" JLP Version 07-02-07 \n");
@@ -56,7 +55,7 @@ static int compute_residuals(double *xx, double *yy, int npts,
                              double *xc, int poly_order, double *rms_resid)
 {
 double sum, sumsq, ww, poly_value;
-register int i;
+int i;
 
   sum = 0.;
   sumsq = 0;
@@ -110,8 +109,7 @@ int POLYFIT(double *xx, double *yy, int *npts, int *poly_order,
             double *xc, double *error_xc, double *rms_resid)
 {
 double *AA;
-int ifail, status, ncoeff;
-register int i, k;
+int i, k, ifail, status, ncoeff;
 
 ncoeff = *poly_order + 1;
 
@@ -174,7 +172,7 @@ return(ifail);
 int CALPOLY(double *x, double *y, double *xc, int *poly_order)
 {
 double ww;
-register int k;
+int k;
 
 *y = xc[0];
 ww = *x;

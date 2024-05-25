@@ -42,8 +42,7 @@ int JLP_WRFITS_2D_flt(float *array1, int nx1, int ny1, int idim1,
 {
 char jlp_descr[1]; 
 double *d_array1;
-int istatus, out_type;
-register int i, j;
+int i, j, istatus, out_type;
 
 out_type = 1;
 jlp_descr[0] = '\0';
@@ -56,7 +55,7 @@ for(j = 0; j < ny1; j++) {
  }
 JLP_WRFITS_2D_dble_descr(d_array1, nx1, ny1, idim1, filename, comments, 
                          jlp_descr, &istatus, out_type, err_mess);
-delete[] d_array1;
+delete d_array1;
 
 return(istatus);
 }
@@ -94,10 +93,9 @@ char  *pcc, lhcuts[32], err_message[81], author[80];
 char      buf1[40], buf2[40], fname[128];
 long int  naxes[2], nelements, nx, ny, idim; 
 float     work, lcut, hcut, *tmp_array;
-int       naxis, istat;
+int       i, j, naxis, istat;
 /* *fptr = pointer to FITS file, defined in fitsio.h */
-  fitsfile *fptr;      
-  register int i, j;
+fitsfile *fptr;      
 
 #if DEBUG
    printf("Beginning of JLP_WRFITS_2D_dble_descr out_type=%d\n", out_type);
@@ -261,8 +259,7 @@ return(0);
 ---------------------------------------------------------------------*/
 static int jlp_wdescr_fits(char *jlp_descr, fitsfile *fptr)
 {
- register int i, k;
- int istat;
+ int i, k, istat;
  char buf1[40], buf2[40];
  char buffer[81], mydescr[1024], *pc, err_message[81];
 

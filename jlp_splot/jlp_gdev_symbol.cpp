@@ -100,7 +100,7 @@ return(0);
 ***************************************************************/
 int JLP_GDev::symbol(int ix, int iy, int isize, int isymb)
 {
-register int i, j;
+int i, j;
 double aspect1, expand1;
 double angle; 
 /* JLP2007 go to double to improve accuracy of small symbols: */

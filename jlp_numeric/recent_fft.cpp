@@ -26,8 +26,7 @@
 int RECENT_FFT(float *in, float *out, INT4 *nx, INT4 *ny, INT4 *idim)
 {
 float w1, w2, w3, w4;
-register int i, j;
-int nx2, ny2, dim;
+int i, j, nx2, ny2, dim;
 
 dim = *idim;
 nx2 = (int)(*nx / 2); ny2 = (int)(*ny / 2);
@@ -69,8 +68,7 @@ nx2 = (int)(*nx / 2); ny2 = (int)(*ny / 2);
 int RECENT_FFT_DOUBLE(double *in, double *out, INT4 *nx, INT4 *ny, INT4 *idim)
 {
 double w1, w2, w3, w4;
-register int i, j;
-int nx2, ny2, dim;
+int i, j, nx2, ny2, dim;
 
 dim = *idim;
 // JLP2016: now handle cases when nx or ny are odd numbers:
@@ -110,8 +108,7 @@ nx2 = (int)(*nx / 2); ny2 = (int)(*ny / 2);
 int RECENT_FFT_1D_Y(double *in, double *out, INT4 *nx, INT4 *ny, INT4 *idim)
 {
 float w1, w2;
-register int i, j;
-int ny2, dim;
+int i, j, ny2, dim;
 
 dim = *idim;
 ny2 = (int)(*ny / 2); 
@@ -148,8 +145,7 @@ ny2 = (int)(*ny / 2);
 int RECENT_FFT_1D_Y_FLOAT(float *in, float *out, INT4 *nx, INT4 *ny, INT4 *idim)
 {
 float w1, w2;
-register int i, j;
-int ny2, dim;
+int i, j, ny2, dim;
 
 dim = *idim;
 ny2 = (int)(*ny / 2); 
@@ -186,8 +182,7 @@ ny2 = (int)(*ny / 2);
 int RECENT_FFT_1D_X_FLOAT(float *in, float *out, INT4 *nx, INT4 *ny, INT4 *idim)
 {
 float w1, w2;
-register int i, j;
-int nx2, dim;
+int i, j, nx2, dim;
 
 dim = *idim;
 nx2 = (int)(*nx / 2); 
@@ -222,8 +217,7 @@ nx2 = (int)(*nx / 2);
 int RECENT_FFT_1D_X(double *in, double *out, INT4 *nx, INT4 *ny, INT4 *idim)
 {
 float w1, w2;
-register int i, j;
-int nx2, dim;
+int i, j, nx2, dim;
 
 dim = *idim;
 nx2 = (int)(*nx / 2); 
@@ -256,7 +250,7 @@ nx2 = (int)(*nx / 2);
 ************************************************************/
 int TO_SINGLE(double *in, float *out, INT4 *nx, INT4 *ny, INT4 *idim)
 {
-register int i, j;
+int i, j;
  for(j = 0; j < *ny; j++)
    for(i = 0; i < *nx; i++)
      out[i + j * (*idim)] = (float)in[i + j * (*idim)];
@@ -268,7 +262,7 @@ return(0);
 ************************************************************/
 int TO_DOUBLE(float *in, double *out, INT4 *nx, INT4 *ny, INT4 *idim)
 {
-register int i, j;
+int i, j;
  for(j = 0; j < *ny; j++)
    for(i = 0; i < *nx; i++)
      out[i + j * (*idim)] = (double)in[i + j * (*idim)];

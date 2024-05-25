@@ -210,7 +210,7 @@ int AstrometryInCircle2(double *array1, int nx1, int ny1, double xc,
                         double yc, double radius, char *results) 
 {
 double radd, radius2, w1 = 0., sum, sumx, sumy, x_cent, y_cent;
-register int i, j;
+int i, j;
 
  radius2 = SQUARE(radius);
 
@@ -289,7 +289,7 @@ int SumCircle2(double *array1, int nx, int ny, double xc, double yc,
 {
 // Something strange with g++/Cygnus: rad2 is not allowed as a variable!
 double radd, radius2, w1;
-register int i, j;
+int i, j;
 
 radius2 = SQUARE(radius);
 *sum = 0.;

@@ -36,10 +36,12 @@ CPP = g++
 ###############################################################
 else
 
+# C++ flags to use with wxWidgets code 
+CPP_WXFLAGS := `c:/wxWidgets-3.2.4/build-jlp/wx-config --cppflags`
 LOCAL_FLAGS=-I. -I..\\jlp_gsegraf\\jlp_gsegraf_include -I..\\jlp_wxplot\\jlp_wxplot_include -I..\\jlp_fits \
 	-I..\\jlp_splot -I..\\jlp_numeric \
-	-D$(JLP_SYSTEM) -D__WXMSW__ -D_WINSOCK2API_ -DwxSIZE_T_IS_UINT
-CPP_WXFLAGS= -IC:\\wxWidgets-3.2.1\\include -std=gnu++11 
+	-D$(JLP_SYSTEM) -D__WXMSW__ -D_WINSOCK2API_ -std=gnu++11 
+### $(JLP_SYSTEM) -D__WXMSW__ -D_WINSOCK2API_ -DwxSIZE_T_IS_UINT -std=gnu++11 
 CPP = g++
 
 JLP_WXGSEG_LIB = c:\\EXEC\\MyLib\\jlp_gseg_wxwid.a

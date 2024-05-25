@@ -85,13 +85,12 @@ int jlp0_rdfits_2d_data_dble(char *filename, fitsfile *fptr,
                              int idim, int *istatus)
 {
  char         err_message[81];
- int          istat, any_null_values;
+ int          i, j, istat, any_null_values;
  long         nelements;
  float        *f_array2;
  INT1         *i1_array2;
  INT2         *i2_array2;
  INT4         *i4_array2;
- register int i, j;
 
 *istatus = 0;
 f_array2 = NULL;
@@ -394,9 +393,8 @@ int jlp1_rdfits_header(char *infile, int *nx1, int *ny1, int *nz1,
 {
  fitsfile *fptr;
  char         buffer[81], buf1[80];
- int          maxdim = 3, simple, istat, extend, status;
+ int          maxdim = 3, simple, i, istat, extend, status;
  long         naxes[3], pcount, gcount;
- register int i;
 
  *nx1 = 0;
  *ny1 = 0;

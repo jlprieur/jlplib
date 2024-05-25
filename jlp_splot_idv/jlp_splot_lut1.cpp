@@ -59,7 +59,7 @@ int i, j, status = -1;
 int *image22;
 double *image_d1;
 
-if((nx1 <= 0) || (ny1 <= 0) || (nx1 > idim1)) {
+if((*nx1 <= 0) || (*ny1 <= 0) || (*nx1 > *idim1)) {
   return(-1);
   }
 
